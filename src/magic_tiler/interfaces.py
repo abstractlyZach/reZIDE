@@ -1,6 +1,6 @@
 import abc
 
-class TilingWindowManager(class):
+class TilingWindowManager(object):
     @abc.abstractmethod
     def make_horizontal_sibling(window_title_regex:str, command) -> None:
         pass
