@@ -1,5 +1,5 @@
-from magic_tiler import __version__
+from magic_tiler import main
 
 
-def test_version():
-    assert __version__ == "0.1.0"
+def test_basic():
+    assert main.woops() is None

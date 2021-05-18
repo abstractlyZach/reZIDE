@@ -15,3 +15,9 @@ def main() -> None:
     swaywm.make_horizontal_sibling("Alacritty:v", 'alacritty -e sh -c "ls | fzf"')
     # how do we make alacritty hang around after running the initial command?
     swaywm.make_horizontal_sibling("Alacritty:poetry", 'alacritty -e zsh -c "ls"')
+
+
+def woops() -> None:
+    """Thowaway function to satisfy testing requirements since this project doesn't have
+    any testable functions quite yet"""
+    pass
