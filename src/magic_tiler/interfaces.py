@@ -18,6 +18,12 @@ class TilingWindowManager(object):
     def resize_height(self, window_title_regex: str, container_percentage: int) -> None:
         pass
 
+    @property
+    @abc.abstractmethod
+    def num_workspace_windows(self) -> int:
+        """Count the windows on the current workspace"""
+        pass
+
 
 class Runner(object):
     @abc.abstractmethod

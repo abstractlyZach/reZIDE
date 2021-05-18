@@ -12,9 +12,12 @@ from magic_tiler import sway
 def main() -> None:
     logging.basicConfig(level=logging.INFO)
     swaywm = sway.Sway(subprocess_runner.SubprocessRunner())
-    swaywm.make_horizontal_sibling("Alacritty:v", 'alacritty -e sh -c "ls | fzf"')
+    # swaywm.make_horizontal_sibling("Alacritty:v", 'alacritty -e sh -c "ls | fzf"')
     # how do we make alacritty hang around after running the initial command?
-    swaywm.make_horizontal_sibling("Alacritty:poetry", 'alacritty -e zsh -c "ls"')
+    # swaywm.make_horizontal_sibling("Alacritty:poetry", 'alacritty -e zsh -c "ls"')
+    logging.info(
+        f"{swaywm.num_workspace_windows} windows are open in the current workspace"
+    )
 
 
 def woops() -> None:
