@@ -49,6 +49,7 @@ Sure, I could just use `tmux`, but that came with some issues:
 * allow different IDEs to be defined through a readable file (like TOML)
 * run arbitrary commands (not just shells and TUIs!)
 
+[screenshot](screenshots/early_magic_tile.png)
 
 ## Alternatives
 * [tmux](https://github.com/tmux/tmux)
