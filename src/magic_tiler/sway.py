@@ -38,10 +38,12 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
     def resize_width(self, window_title_regex: str, container_percentage: int) -> None:
         window = self._get_window(window_title_regex)
         window.command("focus")
-        logging.debug(f"current window percentage is {window.percent}")
+        window.command(f"resize set width {container_percentage} ppt")
 
     def resize_height(self, window_title_regex: str, container_percentage: int) -> None:
-        pass
+        window = self._get_window(window_title_regex)
+        window.command("focus")
+        window.command(f"resize set height {container_percentage} ppt")
 
     def get_window_sizes(self) -> Dict[str, Dict[str, float]]:
         return {

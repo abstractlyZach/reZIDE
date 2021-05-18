@@ -32,7 +32,9 @@ def main() -> None:
     swaywm.make_horizontal_sibling(
         "^first window$", 'alacritty --title "yet another small window"'
     )
-    swaywm.resize_width("first window", 20)
+    swaywm.resize_width("first window", 70)
+    swaywm.resize_width("second window", 75)
+    swaywm.resize_height("yet another small window", 40)
     window_sizes = swaywm.get_window_sizes()
     logging.info(pprint.pformat(window_sizes))
 
