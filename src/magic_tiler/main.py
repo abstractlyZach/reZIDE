@@ -1,4 +1,5 @@
 import logging
+import pprint
 
 import click
 
@@ -28,6 +29,12 @@ def main() -> None:
     swaywm.make_vertical_sibling(
         "^first window$", 'alacritty --title "another small window"'
     )
+    swaywm.make_horizontal_sibling(
+        "^first window$", 'alacritty --title "yet another small window"'
+    )
+    swaywm.resize_width("first window", 20)
+    window_sizes = swaywm.get_window_sizes()
+    logging.info(pprint.pformat(window_sizes))
 
 
 def woops() -> None:
