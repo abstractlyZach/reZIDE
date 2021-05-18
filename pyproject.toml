@@ -37,6 +37,7 @@ omit = [
     "src/magic_tiler/interfaces.py",
     "src/magic_tiler/subprocess_runner.py",
     "src/magic_tiler/sway.py",
+    "src/magic_tiler/main.py",
 ]
 
 [tool.coverage.report]
