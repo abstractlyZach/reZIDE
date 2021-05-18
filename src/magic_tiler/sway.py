@@ -19,12 +19,20 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         self._runner = runner
 
     def make_horizontal_sibling(self, window_title_regex: str, command: str) -> None:
-        self._focus_window(window_title_regex)
-        self._runner.run_and_disown(command)
-        time.sleep(0.25)
+        window = self._get_window(window_title_regex)
+        window.command("focus")
+        window.command("split horizontal")
+        self.make_window(command)
 
     def make_vertical_sibling(self, window_title_regex: str, command: str) -> None:
-        pass
+        window = self._get_window(window_title_regex)
+        window.command("focus")
+        window.command("split vertical")
+        self.make_window(command)
+
+    def make_window(self, command: str) -> None:
+        self._runner.run_and_disown(command)
+        time.sleep(0.25)
 
     def resize_width(self, window_title_regex: str, container_percentage: int) -> None:
         pass
@@ -32,7 +40,7 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
     def resize_height(self, window_title_regex: str, container_percentage: int) -> None:
         pass
 
-    def _focus_window(self, window_title_regex: str) -> None:
+    def _get_window(self, window_title_regex: str) -> i3ipc.Con:
         tree = self._sway.get_tree()
         windows = tree.find_named(window_title_regex)
         logging.debug(f"windows are {windows}")
@@ -44,7 +52,7 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
             raise RuntimeError(
                 f'There are no windows that matches the regex "{window_title_regex}"'
             )
-        windows[0].command("focus")
+        return windows[0]
 
     @property
     def num_workspace_windows(self) -> int:

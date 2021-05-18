@@ -10,7 +10,7 @@ from magic_tiler import sway
 @click.command()
 @click.version_option(version=magic_tiler.__version__)
 def main() -> None:
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     swaywm = sway.Sway(subprocess_runner.SubprocessRunner())
     # swaywm.make_horizontal_sibling("Alacritty:v", 'alacritty -e sh -c "ls | fzf"')
     # how do we make alacritty hang around after running the initial command?
@@ -20,6 +20,14 @@ def main() -> None:
     )
     if swaywm.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
+    swaywm.make_window('alacritty --title "first window"')
+    swaywm.make_horizontal_sibling(
+        "^first window$", 'alacritty --title "second window"'
+    )
+    swaywm.make_vertical_sibling("^second window$", 'alacritty --title "small window"')
+    swaywm.make_vertical_sibling(
+        "^first window$", 'alacritty --title "another small window"'
+    )
 
 
 def woops() -> None:
