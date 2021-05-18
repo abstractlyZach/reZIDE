@@ -15,9 +15,11 @@ def main() -> None:
     # swaywm.make_horizontal_sibling("Alacritty:v", 'alacritty -e sh -c "ls | fzf"')
     # how do we make alacritty hang around after running the initial command?
     # swaywm.make_horizontal_sibling("Alacritty:poetry", 'alacritty -e zsh -c "ls"')
-    logging.info(
+    logging.debug(
         f"{swaywm.num_workspace_windows} windows are open in the current workspace"
     )
+    if swaywm.num_workspace_windows > 1:
+        raise RuntimeError("There are multiple windows open in the current workspace.")
 
 
 def woops() -> None:
