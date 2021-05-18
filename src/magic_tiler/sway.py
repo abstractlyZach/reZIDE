@@ -45,3 +45,28 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
                 f'There are no windows that matches the regex "{window_title_regex}"'
             )
         windows[0].command("focus")
+
+    @property
+    def num_workspace_windows(self) -> int:
+        """Get the number of windows open on the current workspace
+
+        The current workspace must not be a "named workspace"
+        https://i3ipc-python.readthedocs.io/en/latest/replies.html#i3ipc.WorkspaceReply
+        """
+        workspaces = self._sway.get_workspaces()
+        for workspace in workspaces:
+            if workspace.focused:
+                if workspace.num == -1:
+                    raise RuntimeError("The current workspace is a named workspace")
+                current_workspace_num = workspace.num
+                break
+        else:
+            raise RuntimeError("There is no current workspace")
+        num_windows = 0
+        for container in self._sway.get_tree().leaves():
+            logging.debug(
+                f'"{container.name}" is in workspace {container.workspace().num}'
+            )
+            if container.workspace().num == current_workspace_num:
+                num_windows += 1
+        return num_windows
