@@ -7,6 +7,7 @@ authors = ["abstractlyZach <zach3lee@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 i3ipc = "^2.2.1"
+click = "^8.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -46,3 +47,6 @@ fail_under = 100
 
 [tool.isort]
 profile = "google"
+
+[tool.poetry.scripts]
+magic-tiler = "magic_tiler.main:main"
