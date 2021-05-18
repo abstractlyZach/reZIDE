@@ -33,7 +33,11 @@ source = ["src", "*/site-packages"]
 [tool.coverage.run]
 branch = true
 source = ["magic_tiler"]
-omit = ["src/magic_tiler/interfaces.py"]
+omit = [
+    "src/magic_tiler/interfaces.py",
+    "src/magic_tiler/subprocess_runner.py",
+    "src/magic_tiler/sway.py",
+]
 
 [tool.coverage.report]
 show_missing = true
