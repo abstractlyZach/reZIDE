@@ -8,6 +8,7 @@ authors = ["abstractlyZach <zach3lee@gmail.com>"]
 python = "^3.9"
 i3ipc = "^2.2.1"
 click = "^8.0.0"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

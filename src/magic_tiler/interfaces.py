@@ -1,4 +1,5 @@
 import abc
+from typing import Dict
 
 
 class TilingWindowManager(object):
@@ -33,4 +34,10 @@ class Runner(object):
     @abc.abstractmethod
     def run_and_disown(self, command: str) -> None:
         """Run a command and don't wait for it to finish"""
+        pass
+
+
+class ConfigReader(object):
+    @abc.abstractmethod
+    def read(self, filename: str) -> Dict:
         pass

@@ -6,6 +6,10 @@
 Magic Tiler will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
 
+## Notes
+This project should work for both i3 and sway since it uses `i3ipc`. So whenever "i3" is used in this document, feel
+free to replace it with "Sway" in your head if that's what you use.
+
 ## Motivation
 Ever since I started using an ultrawide monitor in favor of 2 separate monitors, I realized
 that it was really annoying to open up a ton of windows and resize them when it was always
@@ -48,6 +52,38 @@ Sure, I could just use `tmux`, but that came with some issues:
 * create a DIY IDE with a single command
 * allow different IDEs to be defined through a readable file (like TOML)
 * run arbitrary commands (not just shells and TUIs!)
+
+## Defining an IDE in TOML
+This toml config defines a complex IDE in a simple and consistent way. Read the [TOML spec](https://toml.io/en/v1.0.0#array-of-tables)
+for more details on how to write a TOML file. I recommend drawing out the [i3 tree structure](https://i3wm.org/docs/userguide.html#_tree)
+and then typing each node into a toml file as you do a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
+
+This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The middle and right sections each have
+a terminal and the left section is split 60-40 into 2 terminals.
+
+```toml
+split = "horizontal"
+
+[[screen]]
+size = 25
+split = "vertical"
+
+[[screen.children]]
+command = "alacritty --title medium-window"
+size = 60
+
+[[screen.children]]
+command = "alacritty --title tiny-window"
+size = 40
+
+[[screen]]
+command = "alacritty --title middle-panel"
+size = 50
+
+[[screen]]
+command = "alacritty --title right-panel"
+size = 25
+```
 
 [screenshot](screenshots/early_magic_tile.png)
 
