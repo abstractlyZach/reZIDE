@@ -58,6 +58,9 @@ This toml config defines a complex IDE in a simple and consistent way. Read the 
 for more details on how to write a TOML file. I recommend drawing out the [i3 tree structure](https://i3wm.org/docs/userguide.html#_tree)
 and then typing each node into a toml file as you do a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
+This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The middle and right sections each have
+a terminal and the left section is split 60-40 into 2 terminals.
+
 ```toml
 split = "horizontal"
 
