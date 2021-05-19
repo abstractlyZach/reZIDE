@@ -1,11 +1,11 @@
-[left-panel]
+[[children]]
 command = "alacritty --title left-panel"
 size = 25
 
-[middle-panel]
+[[children]]
 command = "alacritty --title middle-panel"
 size = 50
 
-[right-panel]
+[[children]]
 command = "alacritty --title right-panel"
 size = 25
