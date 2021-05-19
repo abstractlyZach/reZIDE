@@ -39,6 +39,7 @@ omit = [
     "src/magic_tiler/subprocess_runner.py",
     "src/magic_tiler/sway.py",
     "src/magic_tiler/main.py",
+    "src/magic_tiler/get_window_sizes.py",
 ]
 
 [tool.coverage.report]
@@ -50,3 +51,4 @@ profile = "google"
 
 [tool.poetry.scripts]
 magic-tiler = "magic_tiler.main:main"
+get-window-sizes = "magic_tiler.get_window_sizes:main"

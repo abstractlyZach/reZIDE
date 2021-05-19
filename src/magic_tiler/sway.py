@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Dict, List
 
 import i3ipc
 
@@ -35,10 +36,23 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         time.sleep(0.25)
 
     def resize_width(self, window_title_regex: str, container_percentage: int) -> None:
-        pass
+        window = self._get_window(window_title_regex)
+        window.command("focus")
+        window.command(f"resize set width {container_percentage} ppt")
 
     def resize_height(self, window_title_regex: str, container_percentage: int) -> None:
-        pass
+        window = self._get_window(window_title_regex)
+        window.command("focus")
+        window.command(f"resize set height {container_percentage} ppt")
+
+    def get_window_sizes(self) -> Dict[str, Dict[str, float]]:
+        return {
+            window.name: {
+                "width": window.window_rect.width,
+                "height": window.window_rect.height,
+            }
+            for window in self._get_windows_in_current_workspace()
+        }
 
     def _get_window(self, window_title_regex: str) -> i3ipc.Con:
         tree = self._sway.get_tree()
@@ -54,13 +68,7 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
             )
         return windows[0]
 
-    @property
-    def num_workspace_windows(self) -> int:
-        """Get the number of windows open on the current workspace
-
-        The current workspace must not be a "named workspace"
-        https://i3ipc-python.readthedocs.io/en/latest/replies.html#i3ipc.WorkspaceReply
-        """
+    def _get_windows_in_current_workspace(self) -> List[i3ipc.Con]:
         workspaces = self._sway.get_workspaces()
         for workspace in workspaces:
             if workspace.focused:
@@ -70,11 +78,20 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
                 break
         else:
             raise RuntimeError("There is no current workspace")
-        num_windows = 0
+        windows_in_current_workspace = []
         for container in self._sway.get_tree().leaves():
             logging.debug(
                 f'"{container.name}" is in workspace {container.workspace().num}'
             )
             if container.workspace().num == current_workspace_num:
-                num_windows += 1
-        return num_windows
+                windows_in_current_workspace.append(container)
+        return windows_in_current_workspace
+
+    @property
+    def num_workspace_windows(self) -> int:
+        """Get the number of windows open on the current workspace
+
+        The current workspace must not be a "named workspace"
+        https://i3ipc-python.readthedocs.io/en/latest/replies.html#i3ipc.WorkspaceReply
+        """
+        return len(self._get_windows_in_current_workspace())
