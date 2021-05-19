@@ -6,6 +6,10 @@
 Magic Tiler will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
 
+## Notes
+This project should work for both i3 and sway since it uses `i3ipc`. So whenever "i3" is used in this document, feel
+free to replace it with "Sway" in your head if that's what you use.
+
 ## Motivation
 Ever since I started using an ultrawide monitor in favor of 2 separate monitors, I realized
 that it was really annoying to open up a ton of windows and resize them when it was always
