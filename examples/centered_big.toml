@@ -1,11 +1,21 @@
-[[children]]
-command = "alacritty --title left-panel"
-size = 25
+split = "vertical"
 
-[[children]]
+[[screen]]
+size = 25
+split = "horizontal"
+
+[[screen.children]]
+command = "alacritty --title medium-window"
+size = 60
+
+[[screen.children]]
+command = "alacritty --title tiny-window"
+size = 40
+
+[[screen]]
 command = "alacritty --title middle-panel"
 size = 50
 
-[[children]]
+[[screen]]
 command = "alacritty --title right-panel"
 size = 25
