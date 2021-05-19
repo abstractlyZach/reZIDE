@@ -59,11 +59,11 @@ for more details on how to write a TOML file. I recommend drawing out the [i3 tr
 and then typing each node into a toml file as you do a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
 ```toml
-split = "vertical"
+split = "horizontal"
 
 [[screen]]
 size = 25
-split = "horizontal"
+split = "vertical"
 
 [[screen.children]]
 command = "alacritty --title medium-window"

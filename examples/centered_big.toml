@@ -1,8 +1,8 @@
-split = "vertical"
+split = "horizontal"
 
 [[screen]]
 size = 25
-split = "horizontal"
+split = "vertical"
 
 [[screen.children]]
 command = "alacritty --title medium-window"

@@ -11,11 +11,11 @@ def test_toml():
                     {"size": 60, "command": "alacritty --title medium-window"},
                     {"size": 40, "command": "alacritty --title tiny-window"},
                 ],
-                "split": "horizontal",
+                "split": "vertical",
                 "size": 25,
             },
             {"size": 50, "command": "alacritty --title middle-panel"},
             {"size": 25, "command": "alacritty --title right-panel"},
         ],
-        "split": "vertical",
+        "split": "horizontal",
     }
