@@ -4,14 +4,23 @@ from magic_tiler import interfaces
 
 
 class Layout(object):
-    def __init__(self, config: interfaces.ConfigReader) -> None:
-        pass
+    def __init__(
+        self, config_reader: interfaces.ConfigReader, layout_name: str
+    ) -> None:
+        self._config = config_reader.to_dict()
+        self._windows: Dict[int, Dict] = dict()
+        self._next_window_id: int = 0
+        self._parse_node(self._config[layout_name])
+
+    def _parse_node(self, node: Dict) -> None:
+        """Recursively process a node and its children using depth-first traversal"""
+        if "children" in node:
+            for child_node in node["children"]:
+                self._parse_node(child_node)
+        else:  # process the node if it's a leaf
+            self._windows[self._next_window_id] = {"command": node["command"]}
+            self._next_window_id += 1
 
     @property
     def windows(self) -> Dict:
-        return {
-            0: {"command": "alacritty --title medium-window"},
-            1: {"command": "alacritty --title tiny-window"},
-            2: {"command": "alacritty --title middle-panel"},
-            3: {"command": "alacritty --title right-panel"},
-        }
+        return self._windows
