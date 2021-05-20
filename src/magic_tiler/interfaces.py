@@ -39,6 +39,5 @@ class Runner(object):
 
 class ConfigReader(object):
     @abc.abstractmethod
-    @abc.abstractmethod
     def to_dict(self) -> Dict:
         pass
