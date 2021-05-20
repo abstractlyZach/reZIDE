@@ -110,12 +110,43 @@ layout_test_cases = [
         },
         layout_name="screen",
     ),
+    # allow configs to define multiple layouts
+    LayoutTestCase(
+        config={
+            "screen": {
+                "children": [
+                    {"size": 100, "command": "alacritty --title wrong-panel"},
+                ],
+                "split": "horizontal",
+            },
+            "dev-ide": {
+                "children": [
+                    {
+                        "children": [
+                            {"size": 60, "command": "alacritty --title medium-window"},
+                            {"size": 40, "command": "alacritty --title tiny-window"},
+                        ],
+                        "split": "vertical",
+                        "size": 25,
+                    },
+                    {"size": 75, "command": "alacritty --title big-panel"},
+                ],
+                "split": "horizontal",
+            },
+        },
+        expected_windows={
+            0: {"command": "alacritty --title medium-window"},
+            1: {"command": "alacritty --title tiny-window"},
+            2: {"command": "alacritty --title big-panel"},
+        },
+        layout_name="dev-ide",
+    ),
 ]
 
 
 @pytest.mark.parametrize("test_case", layout_test_cases)
 def test_layout(test_case):
-    mylayout = layout.Layout(FakeConfig(test_case.config), "screen")
+    mylayout = layout.Layout(FakeConfig(test_case.config), test_case.layout_name)
     assert mylayout.windows == test_case.expected_windows
 
 
