@@ -6,6 +6,9 @@ from magic_tiler import interfaces
 
 
 class TomlConfig(interfaces.ConfigReader):
-    def read(self, filename: str) -> Dict:
+    def __init__(self, filename: str) -> None:
         with open(filename, "r") as infile:
-            return dict(toml.load(infile))
+            self._dict = dict(toml.load(infile))
+
+    def to_dict(self) -> Dict:
+        return self._dict

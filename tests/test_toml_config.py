@@ -2,9 +2,8 @@ from magic_tiler import toml_config
 
 
 def test_toml():
-    config_reader = toml_config.TomlConfig()
-    config = config_reader.read("examples/centered_big.toml")
-    assert config == {
+    config_reader = toml_config.TomlConfig("examples/centered_big.toml")
+    assert config_reader.to_dict() == {
         "screen": [
             {
                 "children": [
