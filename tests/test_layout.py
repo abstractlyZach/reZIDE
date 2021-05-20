@@ -16,7 +16,7 @@ class FakeConfig(interfaces.ConfigReader):
 
 
 LayoutTestCase = collections.namedtuple(
-    "LayoutTestCase", ["config", "expected_windows"]
+    "LayoutTestCase", ["config", "expected_windows", "layout_name"]
 )
 
 
@@ -45,6 +45,7 @@ layout_test_cases = [
             2: {"command": "alacritty --title middle-panel"},
             3: {"command": "alacritty --title right-panel"},
         },
+        layout_name="screen",
     ),
     LayoutTestCase(
         config={
@@ -62,6 +63,7 @@ layout_test_cases = [
             1: {"command": "alacritty --title middle-panel"},
             2: {"command": "alacritty --title right-panel"},
         },
+        layout_name="screen",
     ),
     # Automatically assign IDs only to windows that don't have their own IDs
     LayoutTestCase(
@@ -80,6 +82,7 @@ layout_test_cases = [
             0: {"command": "alacritty --title middle-panel"},
             1: {"command": "alacritty --title right-panel"},
         },
+        layout_name="screen",
     ),
     # automatically assigned IDs shouldn't collide with user-defined IDs
     # so we shouldn't tag the first window with ID 0
@@ -105,6 +108,7 @@ layout_test_cases = [
             2: {"command": "alacritty --title middle-right-panel"},
             3: {"command": "alacritty --title right-panel"},
         },
+        layout_name="screen",
     ),
 ]
 
