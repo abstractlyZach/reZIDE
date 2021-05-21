@@ -7,14 +7,14 @@ from magic_tiler import tiles
 
 
 class TileTestCase(NamedTuple):
-    screen_dimensions: tiles.ScreenDimensions
+    screen_dimensions: interfaces.ScreenDimensions
     expected_tile: interfaces.Tile
     tile_args: List
 
 
 tile_test_cases: List[TileTestCase] = [
     TileTestCase(
-        screen_dimensions=tiles.ScreenDimensions(100, 100),
+        screen_dimensions=interfaces.ScreenDimensions(100, 100),
         tile_args=[0.2, 0.5, interfaces.WindowDetails(command="echo hi", mark="hi")],
         expected_tile=interfaces.Tile(
             width=20,
@@ -23,7 +23,7 @@ tile_test_cases: List[TileTestCase] = [
         ),
     ),
     TileTestCase(
-        screen_dimensions=tiles.ScreenDimensions(100, 100),
+        screen_dimensions=interfaces.ScreenDimensions(100, 100),
         tile_args=[
             0.33,
             0.66,
@@ -38,7 +38,7 @@ tile_test_cases: List[TileTestCase] = [
         ),
     ),
     TileTestCase(
-        screen_dimensions=tiles.ScreenDimensions(1000, 1000),
+        screen_dimensions=interfaces.ScreenDimensions(1000, 1000),
         tile_args=[
             0.33,
             0.554,

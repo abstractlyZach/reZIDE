@@ -1,16 +1,10 @@
 import math
-from typing import NamedTuple
 
 from magic_tiler import interfaces
 
 
-class ScreenDimensions(NamedTuple):
-    width: int
-    height: int
-
-
 class TileFactory(interfaces.TileFactoryInterface):
-    def __init__(self, screen_dimensions: ScreenDimensions) -> None:
+    def __init__(self, screen_dimensions: interfaces.ScreenDimensions) -> None:
         self._screen_dimensions = screen_dimensions
 
     def make_tile(

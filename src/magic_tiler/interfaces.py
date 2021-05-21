@@ -2,6 +2,11 @@ import abc
 from typing import Dict, NamedTuple
 
 
+class ScreenDimensions(NamedTuple):
+    width: int
+    height: int
+
+
 class Window(NamedTuple):
     command: str
     width: int
