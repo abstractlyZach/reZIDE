@@ -2,54 +2,50 @@ from typing import List, NamedTuple
 
 import pytest
 
-from magic_tiler import interfaces
+from magic_tiler import dtos
 from magic_tiler import tiles
 
 
 class TileTestCase(NamedTuple):
-    screen_dimensions: interfaces.ScreenDimensions
-    expected_tile: interfaces.Tile
+    screen_dimensions: dtos.ScreenDimensions
+    expected_tile: dtos.Tile
     tile_args: List
 
 
 tile_test_cases: List[TileTestCase] = [
     TileTestCase(
-        screen_dimensions=interfaces.ScreenDimensions(100, 100),
-        tile_args=[0.2, 0.5, interfaces.WindowDetails(command="echo hi", mark="hi")],
-        expected_tile=interfaces.Tile(
+        screen_dimensions=dtos.ScreenDimensions(100, 100),
+        tile_args=[0.2, 0.5, dtos.WindowDetails(command="echo hi", mark="hi")],
+        expected_tile=dtos.Tile(
             width=20,
             height=50,
-            window=interfaces.Window(command="echo hi", width=20, height=50, mark="hi"),
+            window=dtos.Window(command="echo hi", width=20, height=50, mark="hi"),
         ),
     ),
     TileTestCase(
-        screen_dimensions=interfaces.ScreenDimensions(100, 100),
+        screen_dimensions=dtos.ScreenDimensions(100, 100),
         tile_args=[
             0.33,
             0.66,
-            interfaces.WindowDetails(command="echo bye", mark="bye"),
+            dtos.WindowDetails(command="echo bye", mark="bye"),
         ],
-        expected_tile=interfaces.Tile(
+        expected_tile=dtos.Tile(
             width=33,
             height=66,
-            window=interfaces.Window(
-                command="echo bye", width=33, height=66, mark="bye"
-            ),
+            window=dtos.Window(command="echo bye", width=33, height=66, mark="bye"),
         ),
     ),
     TileTestCase(
-        screen_dimensions=interfaces.ScreenDimensions(1000, 1000),
+        screen_dimensions=dtos.ScreenDimensions(1000, 1000),
         tile_args=[
             0.33,
             0.554,
-            interfaces.WindowDetails(command="cowsay moo", mark="moo"),
+            dtos.WindowDetails(command="cowsay moo", mark="moo"),
         ],
-        expected_tile=interfaces.Tile(
+        expected_tile=dtos.Tile(
             width=330,
             height=554,
-            window=interfaces.Window(
-                command="cowsay moo", width=330, height=554, mark="moo"
-            ),
+            window=dtos.Window(command="cowsay moo", width=330, height=554, mark="moo"),
         ),
     ),
 ]

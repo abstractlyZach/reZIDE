@@ -4,7 +4,7 @@ import pprint
 import click
 
 import magic_tiler
-from magic_tiler import interfaces
+from magic_tiler import dtos
 from magic_tiler import subprocess_runner
 from magic_tiler import sway
 
@@ -19,11 +19,11 @@ def main() -> None:
     )
     if swaywm.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    first_window = interfaces.WindowDetails(
+    first_window = dtos.WindowDetails(
         mark="first", command='alacritty --title "first window"'
     )
-    big = interfaces.WindowDetails(mark="big", command='alacritty --title "big boy"')
-    side_window = interfaces.WindowDetails(
+    big = dtos.WindowDetails(mark="big", command='alacritty --title "big boy"')
+    side_window = dtos.WindowDetails(
         mark="side", command='alacritty --title "side window"'
     )
     swaywm.make_window(first_window)

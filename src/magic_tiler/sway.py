@@ -4,7 +4,8 @@ from typing import Dict, List, Tuple
 
 import i3ipc
 
-from magic_tiler import interfaces  # pragma: nocover
+from magic_tiler import dtos
+from magic_tiler import interfaces
 
 """We need to sleep for a short time since processes take time to start.
 If we don't sleep, then we may be focusing on a different window by the
@@ -21,8 +22,8 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
 
     def make_horizontal_sibling(
         self,
-        target_window: interfaces.WindowDetails,
-        new_window: interfaces.WindowDetails,
+        target_window: dtos.WindowDetails,
+        new_window: dtos.WindowDetails,
     ) -> None:
         window = self._get_window(target_window.mark)
         window.command("focus")
@@ -31,29 +32,29 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
 
     def make_vertical_sibling(
         self,
-        target_window: interfaces.WindowDetails,
-        new_window: interfaces.WindowDetails,
+        target_window: dtos.WindowDetails,
+        new_window: dtos.WindowDetails,
     ) -> None:
         window = self._get_window(target_window.mark)
         window.command("focus")
         window.command("split vertical")
         self.make_window(new_window)
 
-    def make_window(self, window_details: interfaces.WindowDetails) -> None:
+    def make_window(self, window_details: dtos.WindowDetails) -> None:
         """Create a window, sleep to let it start up, then mark it"""
         self._runner.run_and_disown(window_details.command)
         time.sleep(SLEEP_TIME)
         self._get_focused_window().command(f"mark {window_details.mark}")
 
     def resize_width(
-        self, target_window: interfaces.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
         window = self._get_window(target_window.mark)
         window.command("focus")
         window.command(f"resize set width {container_percentage} ppt")
 
     def resize_height(
-        self, target_window: interfaces.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
         window = self._get_window(target_window.mark)
         window.command("focus")
