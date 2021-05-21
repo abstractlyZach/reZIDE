@@ -8,14 +8,30 @@ def test_toml():
             "children": [
                 {
                     "children": [
-                        {"size": 60, "command": "alacritty --title medium-window"},
-                        {"size": 40, "command": "alacritty --title tiny-window"},
+                        {
+                            "size": 60,
+                            "command": "alacritty --title medium-window",
+                            "name": "medium-window",
+                        },
+                        {
+                            "size": 40,
+                            "command": "alacritty --title tiny-window",
+                            "name": "tiny-window",
+                        },
                     ],
                     "split": "vertical",
                     "size": 25,
                 },
-                {"size": 50, "command": "alacritty --title middle-panel"},
-                {"size": 25, "command": "alacritty --title right-panel"},
+                {
+                    "size": 50,
+                    "command": "alacritty --title middle-panel",
+                    "name": "middle-panel",
+                },
+                {
+                    "size": 25,
+                    "command": "alacritty --title right-panel",
+                    "name": "right-panel",
+                },
             ],
             "split": "horizontal",
         }

@@ -8,15 +8,19 @@ split = "vertical"
 [[screen.children.children]]
 command = "alacritty --title medium-window"
 size = 60
+name = "medium-window"
 
 [[screen.children.children]]
 command = "alacritty --title tiny-window"
 size = 40
+name = "tiny-window"
 
 [[screen.children]]
 command = "alacritty --title middle-panel"
 size = 50
+name = "middle-panel"
 
 [[screen.children]]
 command = "alacritty --title right-panel"
 size = 25
+name = "right-panel"
