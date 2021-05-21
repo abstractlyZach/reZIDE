@@ -27,86 +27,69 @@ layout_test_cases = [
                 "children": [
                     {
                         "children": [
-                            {"size": 60, "command": "alacritty --title medium-window"},
-                            {"size": 40, "command": "alacritty --title tiny-window"},
+                            {
+                                "mark": "medium",
+                                "size": 60,
+                                "command": "alacritty",
+                            },
+                            {
+                                "mark": "small",
+                                "size": 40,
+                                "command": "alacritty",
+                            },
                         ],
                         "split": "vertical",
                         "size": 25,
                     },
-                    {"size": 50, "command": "alacritty --title middle-panel"},
-                    {"size": 25, "command": "alacritty --title right-panel"},
-                ],
-                "split": "horizontal",
-            }
-        },
-        expected_windows={
-            0: {"command": "alacritty --title medium-window"},
-            1: {"command": "alacritty --title tiny-window"},
-            2: {"command": "alacritty --title middle-panel"},
-            3: {"command": "alacritty --title right-panel"},
-        },
-        layout_name="screen",
-    ),
-    LayoutTestCase(
-        config={
-            "screen": {
-                "children": [
-                    {"size": 25, "command": "alacritty --title left-panel"},
-                    {"size": 50, "command": "alacritty --title middle-panel"},
-                    {"size": 25, "command": "alacritty --title right-panel"},
-                ],
-                "split": "horizontal",
-            }
-        },
-        expected_windows={
-            0: {"command": "alacritty --title left-panel"},
-            1: {"command": "alacritty --title middle-panel"},
-            2: {"command": "alacritty --title right-panel"},
-        },
-        layout_name="screen",
-    ),
-    # Automatically assign IDs only to windows that don't have their own IDs
-    LayoutTestCase(
-        config={
-            "screen": {
-                "children": [
-                    {"size": 25, "command": "alacritty --title left-panel", "id": 50},
-                    {"size": 50, "command": "alacritty --title middle-panel"},
-                    {"size": 25, "command": "alacritty --title right-panel"},
-                ],
-                "split": "horizontal",
-            }
-        },
-        expected_windows={
-            50: {"command": "alacritty --title left-panel"},
-            0: {"command": "alacritty --title middle-panel"},
-            1: {"command": "alacritty --title right-panel"},
-        },
-        layout_name="screen",
-    ),
-    # automatically assigned IDs shouldn't collide with user-defined IDs
-    # so we shouldn't tag the first window with ID 0
-    LayoutTestCase(
-        config={
-            "screen": {
-                "children": [
-                    {"size": 25, "command": "alacritty --title left-panel"},
                     {
+                        "mark": "big",
                         "size": 50,
-                        "command": "alacritty --title middle-left-panel",
-                        "id": 0,
+                        "command": "alacritty",
                     },
-                    {"size": 50, "command": "alacritty --title middle-right-panel"},
-                    {"size": 25, "command": "alacritty --title right-panel"},
+                    {
+                        "mark": "right",
+                        "size": 25,
+                        "command": "alacritty",
+                    },
                 ],
                 "split": "horizontal",
             }
         },
         expected_windows={
-            1: {"command": "alacritty --title left-panel"},
-            0: {"command": "alacritty --title middle-left-panel"},
-            2: {"command": "alacritty --title middle-right-panel"},
-            3: {"command": "alacritty --title right-panel"},
+            "medium": interfaces.WindowDetails(command="alacritty", mark="medium"),
+            "small": interfaces.WindowDetails(command="alacritty", mark="small"),
+            "big": interfaces.WindowDetails(command="alacritty", mark="big"),
+            "right": interfaces.WindowDetails(command="alacritty", mark="right"),
+        },
+        layout_name="screen",
+    ),
+    LayoutTestCase(
+        config={
+            "screen": {
+                "children": [
+                    {
+                        "mark": "left",
+                        "size": 25,
+                        "command": "alacritty",
+                    },
+                    {
+                        "mark": "center",
+                        "size": 50,
+                        "command": "alacritty",
+                    },
+                    {
+                        "mark": "right",
+                        "size": 25,
+                        "command": "alacritty",
+                    },
+                ],
+                "split": "horizontal",
+            }
+        },
+        expected_windows={
+            "left": interfaces.WindowDetails(command="alacritty", mark="left"),
+            "center": interfaces.WindowDetails(command="alacritty", mark="center"),
+            "right": interfaces.WindowDetails(command="alacritty", mark="right"),
         },
         layout_name="screen",
     ),
@@ -115,7 +98,11 @@ layout_test_cases = [
         config={
             "screen": {
                 "children": [
-                    {"size": 100, "command": "alacritty --title wrong-panel"},
+                    {
+                        "mark": "mymark",
+                        "size": 100,
+                        "command": "alacritty",
+                    },
                 ],
                 "split": "horizontal",
             },
@@ -123,21 +110,33 @@ layout_test_cases = [
                 "children": [
                     {
                         "children": [
-                            {"size": 60, "command": "alacritty --title medium-window"},
-                            {"size": 40, "command": "alacritty --title tiny-window"},
+                            {
+                                "mark": "linter",
+                                "size": 60,
+                                "command": "alacritty",
+                            },
+                            {
+                                "mark": "terminal",
+                                "size": 40,
+                                "command": "alacritty",
+                            },
                         ],
                         "split": "vertical",
                         "size": 25,
                     },
-                    {"size": 75, "command": "alacritty --title big-panel"},
+                    {
+                        "mark": "jumbo",
+                        "size": 75,
+                        "command": "alacritty",
+                    },
                 ],
                 "split": "horizontal",
             },
         },
         expected_windows={
-            0: {"command": "alacritty --title medium-window"},
-            1: {"command": "alacritty --title tiny-window"},
-            2: {"command": "alacritty --title big-panel"},
+            "linter": interfaces.WindowDetails(command="alacritty", mark="linter"),
+            "terminal": interfaces.WindowDetails(command="alacritty", mark="terminal"),
+            "jumbo": interfaces.WindowDetails(command="alacritty", mark="jumbo"),
         },
         layout_name="dev-ide",
     ),
@@ -148,26 +147,6 @@ layout_test_cases = [
 def test_layout(test_case):
     mylayout = layout.Layout(FakeConfig(test_case.config), test_case.layout_name)
     assert mylayout.windows == test_case.expected_windows
-
-
-def test_duplicate_ids_raise_exception():
-    config = {
-        "screen": {
-            "children": [
-                {"size": 25, "command": "alacritty --title left-panel", "id": 17},
-                {
-                    "size": 50,
-                    "command": "alacritty --title middle-left-panel",
-                    "id": 17,
-                },
-                {"size": 50, "command": "alacritty --title middle-right-panel"},
-                {"size": 25, "command": "alacritty --title right-panel"},
-            ],
-            "split": "horizontal",
-        }
-    }
-    with pytest.raises(KeyError):
-        layout.Layout(FakeConfig(config), "screen")
 
 
 def test_cant_find_layout():
