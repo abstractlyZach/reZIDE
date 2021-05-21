@@ -4,7 +4,6 @@ import pytest
 
 from magic_tiler import interfaces
 from magic_tiler import tiles
-from magic_tiler import windows
 
 
 class TileTestCase(NamedTuple):
@@ -20,7 +19,7 @@ tile_test_cases: List[TileTestCase] = [
         expected_tile=interfaces.Tile(
             width=20,
             height=50,
-            window=windows.Window(command="echo hi", width=20, height=50, mark="hi"),
+            window=interfaces.Window(command="echo hi", width=20, height=50, mark="hi"),
         ),
     ),
     TileTestCase(
@@ -33,7 +32,9 @@ tile_test_cases: List[TileTestCase] = [
         expected_tile=interfaces.Tile(
             width=33,
             height=66,
-            window=windows.Window(command="echo bye", width=33, height=66, mark="bye"),
+            window=interfaces.Window(
+                command="echo bye", width=33, height=66, mark="bye"
+            ),
         ),
     ),
     TileTestCase(
@@ -46,7 +47,7 @@ tile_test_cases: List[TileTestCase] = [
         expected_tile=interfaces.Tile(
             width=330,
             height=554,
-            window=windows.Window(
+            window=interfaces.Window(
                 command="cowsay moo", width=330, height=554, mark="moo"
             ),
         ),

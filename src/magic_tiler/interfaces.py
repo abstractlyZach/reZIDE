@@ -1,7 +1,12 @@
 import abc
 from typing import Dict, NamedTuple
 
-from magic_tiler import windows
+
+class Window(NamedTuple):
+    command: str
+    width: int
+    height: int
+    mark: str
 
 
 class WindowDetails(NamedTuple):
@@ -20,7 +25,7 @@ class Tile(NamedTuple):
 
     width: int
     height: int
-    window: windows.Window
+    window: Window
 
 
 class TilingWindowManager(object):

@@ -2,7 +2,6 @@ import math
 from typing import NamedTuple
 
 from magic_tiler import interfaces
-from magic_tiler import windows
 
 
 class ScreenDimensions(NamedTuple):
@@ -23,7 +22,7 @@ class TileFactory(interfaces.TileFactoryInterface):
         # calculate the pixel width and height of the window and tile
         absolute_width = math.floor(relative_width * self._screen_dimensions.width)
         absolute_height = math.floor(relative_height * self._screen_dimensions.height)
-        window = windows.Window(
+        window = interfaces.Window(
             command=window_details.command,
             width=absolute_width,
             height=absolute_height,
