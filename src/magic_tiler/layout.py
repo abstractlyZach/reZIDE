@@ -29,7 +29,7 @@ class Layout(object):
             if "id" in node:  # custom user-defined id
                 if node["id"] in self._reserved_ids:
                     raise KeyError(
-                        "There are multiple windows with the same ID in your config"
+                        f"There are multiple windows with ID {node['id']} in your config"
                     )
                 self._reserved_ids.add(node["id"])
 
