@@ -23,6 +23,14 @@ class MakeTileArgs(NamedTuple):
     window_details: dtos.WindowDetails
 
 
+def make_dummy_tile() -> dtos.Tile:
+    return dtos.Tile(
+        height=0,
+        width=0,
+        window=dtos.Window(command="", width=0, height=0, mark=""),
+    )
+
+
 class SpyTileFactory(interfaces.TileFactoryInterface):
     """Gets passed into Layouts using dependency injection
     and spys on their calls so we can make sure that we're doing
@@ -45,12 +53,7 @@ class SpyTileFactory(interfaces.TileFactoryInterface):
                 window_details=window_details,
             )
         )
-        # return a canned dummy tile
-        return dtos.Tile(
-            width=0,
-            height=0,
-            window=dtos.Window(command="", width=0, height=0, mark=""),
-        )
+        return make_dummy_tile()
 
     @property
     def calls(self):
@@ -227,27 +230,22 @@ layout_test_cases = [
 
 
 @pytest.mark.parametrize("test_case", layout_test_cases)
-def test_layout(test_case):
-    tile_factory = SpyTileFactory()
-    layout.Layout(FakeConfig(test_case.config), test_case.layout_name, tile_factory)
-    assert tile_factory.calls == test_case.expected_call_args
+def test_layout_calls_tile_factory(test_case):
+    """Make sure we're calling the tile factory correctly"""
+    spy_tile_factory = SpyTileFactory()
+    layout.Layout(FakeConfig(test_case.config), test_case.layout_name, spy_tile_factory)
+    assert spy_tile_factory.calls == test_case.expected_call_args
 
 
 def test_use_tile_factory_output():
-    tile_factory = SpyTileFactory()
+    """Make sure we're using whatever output we get from the tile factory"""
+    fake_tile_factory = SpyTileFactory()
     mylayout = layout.Layout(
         FakeConfig(layout_test_cases[0].config),
         layout_test_cases[0].layout_name,
-        tile_factory,
+        fake_tile_factory,
     )
-    assert mylayout.tiles == [
-        dtos.Tile(
-            height=0,
-            width=0,
-            window=dtos.Window(command="", width=0, height=0, mark=""),
-        )
-        for i in range(4)
-    ]
+    assert mylayout.tiles == [make_dummy_tile() for i in range(4)]
 
 
 def test_cant_find_layout():
