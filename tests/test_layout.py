@@ -15,6 +15,16 @@ class FakeConfig(interfaces.ConfigReader):
         return self._config_dict
 
 
+class FakeTileFactory(interfaces.TileFactoryInterface):
+    def make_tile(
+        self,
+        relative_width: float,
+        relative_height: float,
+        window_details: interfaces.WindowDetails,
+    ) -> interfaces.Tile:
+        pass
+
+
 LayoutTestCase = collections.namedtuple(
     "LayoutTestCase", ["config", "expected_windows", "layout_name"]
 )
@@ -145,10 +155,14 @@ layout_test_cases = [
 
 @pytest.mark.parametrize("test_case", layout_test_cases)
 def test_layout(test_case):
-    mylayout = layout.Layout(FakeConfig(test_case.config), test_case.layout_name)
+    mylayout = layout.Layout(
+        FakeConfig(test_case.config), test_case.layout_name, FakeTileFactory()
+    )
     assert mylayout.windows == test_case.expected_windows
 
 
 def test_cant_find_layout():
     with pytest.raises(KeyError):
-        layout.Layout(FakeConfig(layout_test_cases[0].config), "nonexistent")
+        layout.Layout(
+            FakeConfig(layout_test_cases[0].config), "nonexistent", FakeTileFactory()
+        )
