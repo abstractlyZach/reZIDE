@@ -32,13 +32,10 @@ class TileFactory(object):
     ) -> Tile:
         absolute_width = math.floor(relative_width * self._screen_dimensions.width)
         absolute_height = math.floor(relative_height * self._screen_dimensions.height)
-        return Tile(
+        window = windows.Window(
+            id=window_details["id"],
+            command=window_details["command"],
             width=absolute_width,
             height=absolute_height,
-            window=windows.Window(
-                id=window_details["id"],
-                command=window_details["command"],
-                width=absolute_width,
-                height=absolute_height,
-            ),
         )
+        return Tile(width=absolute_width, height=absolute_height, window=window)
