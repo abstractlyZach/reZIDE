@@ -11,12 +11,12 @@ def test_toml():
                         {
                             "size": 60,
                             "command": "alacritty --title medium-window",
-                            "name": "medium-window",
+                            "mark": "medium-window",
                         },
                         {
                             "size": 40,
                             "command": "alacritty --title tiny-window",
-                            "name": "tiny-window",
+                            "mark": "tiny-window",
                         },
                     ],
                     "split": "vertical",
@@ -25,12 +25,12 @@ def test_toml():
                 {
                     "size": 50,
                     "command": "alacritty --title middle-panel",
-                    "name": "middle-panel",
+                    "mark": "middle-panel",
                 },
                 {
                     "size": 25,
                     "command": "alacritty --title right-panel",
-                    "name": "right-panel",
+                    "mark": "right-panel",
                 },
             ],
             "split": "horizontal",
