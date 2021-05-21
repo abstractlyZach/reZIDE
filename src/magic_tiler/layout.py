@@ -11,13 +11,10 @@ class Layout(object):
     ) -> None:
         self._windows: Dict[str, interfaces.WindowDetails] = dict()
         try:
-            config = config_reader.to_dict()[layout_name]
+            root_node = config_reader.to_dict()[layout_name]
         except KeyError:
             raise KeyError(f'Could not find layout "{layout_name}" in config')
-        self._parse_config(config)
-
-    def _parse_config(self, layout_dict: Dict) -> None:
-        self._parse_node(layout_dict)
+        self._parse_node(root_node)
 
     def _parse_node(self, node: Dict) -> None:
         """Recursively process a node and its children using depth-first traversal"""
