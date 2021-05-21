@@ -30,6 +30,7 @@ class TileFactory(object):
     def make_tile(
         self, relative_width: float, relative_height: float, window_details: Dict
     ) -> Tile:
+        # calculate the pixel width and height of the window and tile
         absolute_width = math.floor(relative_width * self._screen_dimensions.width)
         absolute_height = math.floor(relative_height * self._screen_dimensions.height)
         window = windows.Window(
