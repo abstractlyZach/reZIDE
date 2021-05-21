@@ -1,64 +1,35 @@
 import abc
-from typing import Dict, NamedTuple
+from typing import Dict
 
-
-class ScreenDimensions(NamedTuple):
-    width: int
-    height: int
-
-
-class Window(NamedTuple):
-    command: str
-    width: int
-    height: int
-    mark: str
-
-
-class WindowDetails(NamedTuple):
-    mark: str
-    command: str
-
-
-class Tile(NamedTuple):
-    """A class that represents the area covered by a window and its gaps.
-
-    If you combine all tiles in a layout, it should cover the entire screen
-    (excluding the status bar???)
-
-    A tile's main job is to store a Window class and the dimensions of the tile
-    """
-
-    width: int
-    height: int
-    window: Window
+from magic_tiler import dtos
 
 
 class TilingWindowManager(object):
     @abc.abstractmethod
-    def make_window(self, window_details: WindowDetails) -> None:
+    def make_window(self, window_details: dtos.WindowDetails) -> None:
         pass
 
     @abc.abstractmethod
     def make_horizontal_sibling(
-        self, target_window: WindowDetails, new_window: WindowDetails
+        self, target_window: dtos.WindowDetails, new_window: dtos.WindowDetails
     ) -> None:
         pass
 
     @abc.abstractmethod
     def make_vertical_sibling(
-        self, target_window: WindowDetails, new_window: WindowDetails
+        self, target_window: dtos.WindowDetails, new_window: dtos.WindowDetails
     ) -> None:
         pass
 
     @abc.abstractmethod
     def resize_width(
-        self, target_window: WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
         pass
 
     @abc.abstractmethod
     def resize_height(
-        self, target_window: WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
         pass
 
@@ -88,6 +59,6 @@ class TileFactoryInterface(object):
         self,
         relative_width: float,
         relative_height: float,
-        window_details: WindowDetails,
-    ) -> Tile:
+        window_details: dtos.WindowDetails,
+    ) -> dtos.Tile:
         pass

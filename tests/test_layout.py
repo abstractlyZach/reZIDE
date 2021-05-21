@@ -3,6 +3,7 @@ from typing import Dict
 
 import pytest
 
+from magic_tiler import dtos
 from magic_tiler import interfaces
 from magic_tiler import layout
 
@@ -20,8 +21,8 @@ class FakeTileFactory(interfaces.TileFactoryInterface):
         self,
         relative_width: float,
         relative_height: float,
-        window_details: interfaces.WindowDetails,
-    ) -> interfaces.Tile:
+        window_details: dtos.WindowDetails,
+    ) -> dtos.Tile:
         pass
 
 
@@ -66,10 +67,10 @@ layout_test_cases = [
             }
         },
         expected_windows={
-            "medium": interfaces.WindowDetails(command="alacritty", mark="medium"),
-            "small": interfaces.WindowDetails(command="alacritty", mark="small"),
-            "big": interfaces.WindowDetails(command="alacritty", mark="big"),
-            "right": interfaces.WindowDetails(command="alacritty", mark="right"),
+            "medium": dtos.WindowDetails(command="alacritty", mark="medium"),
+            "small": dtos.WindowDetails(command="alacritty", mark="small"),
+            "big": dtos.WindowDetails(command="alacritty", mark="big"),
+            "right": dtos.WindowDetails(command="alacritty", mark="right"),
         },
         layout_name="screen",
     ),
@@ -97,9 +98,9 @@ layout_test_cases = [
             }
         },
         expected_windows={
-            "left": interfaces.WindowDetails(command="alacritty", mark="left"),
-            "center": interfaces.WindowDetails(command="alacritty", mark="center"),
-            "right": interfaces.WindowDetails(command="alacritty", mark="right"),
+            "left": dtos.WindowDetails(command="alacritty", mark="left"),
+            "center": dtos.WindowDetails(command="alacritty", mark="center"),
+            "right": dtos.WindowDetails(command="alacritty", mark="right"),
         },
         layout_name="screen",
     ),
@@ -144,9 +145,9 @@ layout_test_cases = [
             },
         },
         expected_windows={
-            "linter": interfaces.WindowDetails(command="alacritty", mark="linter"),
-            "terminal": interfaces.WindowDetails(command="alacritty", mark="terminal"),
-            "jumbo": interfaces.WindowDetails(command="alacritty", mark="jumbo"),
+            "linter": dtos.WindowDetails(command="alacritty", mark="linter"),
+            "terminal": dtos.WindowDetails(command="alacritty", mark="terminal"),
+            "jumbo": dtos.WindowDetails(command="alacritty", mark="jumbo"),
         },
         layout_name="dev-ide",
     ),

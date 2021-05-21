@@ -1,5 +1,6 @@
 from typing import Dict
 
+from magic_tiler import dtos
 from magic_tiler import interfaces
 
 
@@ -12,7 +13,7 @@ class Layout(object):
         layout_name: str,
         tile_factory: interfaces.TileFactoryInterface,
     ) -> None:
-        self._windows: Dict[str, interfaces.WindowDetails] = dict()
+        self._windows: Dict[str, dtos.WindowDetails] = dict()
         try:
             root_node = config_reader.to_dict()[layout_name]
         except KeyError:
@@ -26,7 +27,7 @@ class Layout(object):
                 self._parse_node(child_node)
         else:  # process the node if it's a leaf
             mark = node["mark"]
-            self._windows[mark] = interfaces.WindowDetails(
+            self._windows[mark] = dtos.WindowDetails(
                 mark=node["mark"], command=node["command"]
             )
 
