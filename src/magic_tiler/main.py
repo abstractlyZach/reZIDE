@@ -19,18 +19,16 @@ def main() -> None:
     )
     if swaywm.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    first_window = dtos.WindowDetails(
-        mark="first", command='alacritty --title "first window"'
-    )
-    big = dtos.WindowDetails(mark="big", command='alacritty --title "big boy"')
-    side_window = dtos.WindowDetails(
-        mark="side", command='alacritty --title "side window"'
+    first_window = dtos.WindowDetails(mark="first", command='alacritty -e sh -c "fzf"')
+    big = dtos.WindowDetails(mark="big", command='alacritty -e sh -c "kak README.md"')
+    gutter = dtos.WindowDetails(
+        mark="gutter", command='alacritty -e sh -c "neofetch; zsh -i"'
     )
     swaywm.make_window(first_window)
     swaywm.make_horizontal_sibling(first_window, big)
     swaywm.resize_width(first_window, 25)
-    swaywm.make_horizontal_sibling(big, side_window)
-    swaywm.resize_width(side_window, 33)
+    swaywm.make_vertical_sibling(big, gutter)
+    swaywm.resize_height(gutter, 33)
     window_sizes = swaywm.get_window_sizes()
     logging.info(pprint.pformat(window_sizes))
 

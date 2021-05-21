@@ -12,7 +12,7 @@ If we don't sleep, then we may be focusing on a different window by the
 time that the current window is spawning, which would put it in the wrong
 split.
 """
-SLEEP_TIME = 0.15
+SLEEP_TIME = 0.30
 
 
 class Sway(interfaces.TilingWindowManager):  # pragma: nocover
