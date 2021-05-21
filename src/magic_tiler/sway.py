@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import i3ipc
 
@@ -11,7 +11,7 @@ If we don't sleep, then we may be focusing on a different window by the
 time that the current window is spawning, which would put it in the wrong
 split.
 """
-SLEEP_TIME = 0.25
+SLEEP_TIME = 0.15
 
 
 class Sway(interfaces.TilingWindowManager):  # pragma: nocover
@@ -19,53 +19,73 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         self._sway = i3ipc.Connection()
         self._runner = runner
 
-    def make_horizontal_sibling(self, window_title_regex: str, command: str) -> None:
-        window = self._get_window(window_title_regex)
+    def make_horizontal_sibling(
+        self,
+        target_window: interfaces.WindowDetails,
+        new_window: interfaces.WindowDetails,
+    ) -> None:
+        window = self._get_window(target_window.mark)
         window.command("focus")
         window.command("split horizontal")
-        self.make_window(command)
+        self.make_window(new_window)
 
-    def make_vertical_sibling(self, window_title_regex: str, command: str) -> None:
-        window = self._get_window(window_title_regex)
+    def make_vertical_sibling(
+        self,
+        target_window: interfaces.WindowDetails,
+        new_window: interfaces.WindowDetails,
+    ) -> None:
+        window = self._get_window(target_window.mark)
         window.command("focus")
         window.command("split vertical")
-        self.make_window(command)
+        self.make_window(new_window)
 
-    def make_window(self, command: str) -> None:
-        self._runner.run_and_disown(command)
-        time.sleep(0.25)
+    def make_window(self, window_details: interfaces.WindowDetails) -> None:
+        """Create a window, sleep to let it start up, then mark it"""
+        self._runner.run_and_disown(window_details.command)
+        time.sleep(SLEEP_TIME)
+        self._get_focused_window().command(f"mark {window_details.mark}")
 
-    def resize_width(self, window_title_regex: str, container_percentage: int) -> None:
-        window = self._get_window(window_title_regex)
+    def resize_width(
+        self, target_window: interfaces.WindowDetails, container_percentage: int
+    ) -> None:
+        window = self._get_window(target_window.mark)
         window.command("focus")
         window.command(f"resize set width {container_percentage} ppt")
 
-    def resize_height(self, window_title_regex: str, container_percentage: int) -> None:
-        window = self._get_window(window_title_regex)
+    def resize_height(
+        self, target_window: interfaces.WindowDetails, container_percentage: int
+    ) -> None:
+        window = self._get_window(target_window.mark)
         window.command("focus")
         window.command(f"resize set height {container_percentage} ppt")
 
-    def get_window_sizes(self) -> Dict[str, Dict[str, float]]:
+    def get_window_sizes(self) -> Dict[Tuple, Dict[str, float]]:
         return {
-            window.name: {
+            tuple(window.marks): {
                 "width": window.window_rect.width,
                 "height": window.window_rect.height,
             }
             for window in self._get_windows_in_current_workspace()
         }
 
-    def _get_window(self, window_title_regex: str) -> i3ipc.Con:
+    def _get_focused_window(self) -> i3ipc.Con:
         tree = self._sway.get_tree()
-        windows = tree.find_named(window_title_regex)
+        focused = tree.find_focused()
+        if not focused:
+            raise RuntimeError("There is no focused window")
+        return focused
+
+    def _get_window(self, mark: str) -> i3ipc.Con:
+        tree = self._sway.get_tree()
+        windows = tree.find_marked(mark)
+        logging.debug(f'searching for mark "{mark}"')
         logging.debug(f"windows are {windows}")
         if len(windows) > 1:
             raise RuntimeError(
-                f'There is more than 1 window that matches the regex "{window_title_regex}"'
+                f'There is more than 1 window that matches the regex "{mark}"'
             )
         if len(windows) < 1:
-            raise RuntimeError(
-                f'There are no windows that matches the regex "{window_title_regex}"'
-            )
+            raise RuntimeError(f'There are no windows that matches the regex "{mark}"')
         return windows[0]
 
     def _get_windows_in_current_workspace(self) -> List[i3ipc.Con]:
@@ -81,7 +101,8 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         windows_in_current_workspace = []
         for container in self._sway.get_tree().leaves():
             logging.debug(
-                f'"{container.name}" is in workspace {container.workspace().num}'
+                f'"{container.name}" is in workspace {container.workspace().num} with '
+                + f'marks "{container.marks}"'
             )
             if container.workspace().num == current_workspace_num:
                 windows_in_current_workspace.append(container)
