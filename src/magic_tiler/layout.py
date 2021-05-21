@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from magic_tiler import dtos
 from magic_tiler import interfaces
@@ -13,6 +13,8 @@ class Layout(object):
         layout_name: str,
         tile_factory: interfaces.TileFactoryInterface,
     ) -> None:
+        self._tile_factory: interfaces.TileFactoryInterface = tile_factory
+        self._tiles: List[dtos.Tile] = []
         self._windows: Dict[str, dtos.WindowDetails] = dict()
         try:
             root_node = config_reader.to_dict()[layout_name]
@@ -26,11 +28,11 @@ class Layout(object):
             for child_node in node["children"]:
                 self._parse_node(child_node)
         else:  # process the node if it's a leaf
-            mark = node["mark"]
-            self._windows[mark] = dtos.WindowDetails(
-                mark=node["mark"], command=node["command"]
+            new_tile = self._tile_factory.make_tile(
+                0, 0, dtos.WindowDetails(mark=node["mark"], command=node["command"])
             )
+            self._tiles.append(new_tile)
 
     @property
-    def windows(self) -> Dict:
-        return self._windows
+    def tiles(self) -> List[dtos.Tile]:
+        return self._tiles
