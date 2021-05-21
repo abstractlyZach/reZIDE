@@ -168,3 +168,8 @@ def test_duplicate_ids_raise_exception():
     }
     with pytest.raises(KeyError):
         layout.Layout(FakeConfig(config), "screen")
+
+
+def test_cant_find_layout():
+    with pytest.raises(KeyError):
+        layout.Layout(FakeConfig(layout_test_cases[0].config), "nonexistent")

@@ -10,7 +10,11 @@ class Layout(object):
         self, config_reader: interfaces.ConfigReader, layout_name: str
     ) -> None:
         self._windows: Dict[int, Dict] = dict()
-        self._parse_config(config_reader.to_dict()[layout_name])
+        try:
+            config = config_reader.to_dict()[layout_name]
+        except KeyError:
+            raise KeyError(f'Could not find layout "{layout_name}" in config')
+        self._parse_config(config)
 
     def _parse_config(self, layout_dict: Dict) -> None:
         self._reserved_ids: Set = set()
