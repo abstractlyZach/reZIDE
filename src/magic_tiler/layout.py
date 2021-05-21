@@ -7,7 +7,10 @@ class Layout(object):
     """Convert a configuration into a collection of Tiles"""
 
     def __init__(
-        self, config_reader: interfaces.ConfigReader, layout_name: str
+        self,
+        config_reader: interfaces.ConfigReader,
+        layout_name: str,
+        tile_factory: interfaces.TileFactoryInterface,
     ) -> None:
         self._windows: Dict[str, interfaces.WindowDetails] = dict()
         try:
