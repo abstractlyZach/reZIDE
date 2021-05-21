@@ -6,3 +6,4 @@ class Window(NamedTuple):
     command: str
     width: int
     height: int
+    name: str

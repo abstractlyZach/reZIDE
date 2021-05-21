@@ -38,5 +38,6 @@ class TileFactory(object):
             command=window_details["command"],
             width=absolute_width,
             height=absolute_height,
+            name=window_details["name"],
         )
         return Tile(width=absolute_width, height=absolute_height, window=window)
