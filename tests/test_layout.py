@@ -103,24 +103,24 @@ layout_test_cases = [
         },
         expected_call_args=[
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
-                window_details=dtos.WindowDetails(mark="medium", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
-                window_details=dtos.WindowDetails(mark="small", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.5,
                 window_details=dtos.WindowDetails(mark="big", command="alacritty"),
             ),
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.25,
                 window_details=dtos.WindowDetails(mark="right", command="alacritty"),
+            ),
+            MakeTileArgs(
+                relative_height=0.6,
+                relative_width=0.25,
+                window_details=dtos.WindowDetails(mark="medium", command="alacritty"),
+            ),
+            MakeTileArgs(
+                relative_height=0.4,
+                relative_width=0.25,
+                window_details=dtos.WindowDetails(mark="small", command="alacritty"),
             ),
         ],
         layout_name="screen",
@@ -150,18 +150,18 @@ layout_test_cases = [
         },
         expected_call_args=[
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.25,
                 window_details=dtos.WindowDetails(mark="left", command="alacritty"),
             ),
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.5,
                 window_details=dtos.WindowDetails(mark="center", command="alacritty"),
             ),
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.25,
                 window_details=dtos.WindowDetails(mark="right", command="alacritty"),
             ),
         ],
@@ -209,19 +209,19 @@ layout_test_cases = [
         },
         expected_call_args=[
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=1.0,
+                relative_width=0.75,
+                window_details=dtos.WindowDetails(mark="jumbo", command="alacritty"),
+            ),
+            MakeTileArgs(
+                relative_height=0.6,
+                relative_width=0.25,
                 window_details=dtos.WindowDetails(mark="linter", command="alacritty"),
             ),
             MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
+                relative_height=0.4,
+                relative_width=0.25,
                 window_details=dtos.WindowDetails(mark="terminal", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0,
-                relative_width=0,
-                window_details=dtos.WindowDetails(mark="jumbo", command="alacritty"),
             ),
         ],
         layout_name="dev-ide",
@@ -241,8 +241,42 @@ def test_use_tile_factory_output():
     """Make sure we're using whatever output we get from the tile factory"""
     fake_tile_factory = SpyTileFactory()
     mylayout = layout.Layout(
-        FakeConfig(layout_test_cases[0].config),
-        layout_test_cases[0].layout_name,
+        FakeConfig(
+            {
+                "screen": {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "mark": "medium",
+                                    "size": 60,
+                                    "command": "alacritty",
+                                },
+                                {
+                                    "mark": "small",
+                                    "size": 40,
+                                    "command": "alacritty",
+                                },
+                            ],
+                            "split": "vertical",
+                            "size": 25,
+                        },
+                        {
+                            "mark": "big",
+                            "size": 50,
+                            "command": "alacritty",
+                        },
+                        {
+                            "mark": "right",
+                            "size": 25,
+                            "command": "alacritty",
+                        },
+                    ],
+                    "split": "horizontal",
+                }
+            }
+        ),
+        "screen",
         fake_tile_factory,
     )
     assert mylayout.tiles == [make_dummy_tile() for i in range(4)]
@@ -252,4 +286,16 @@ def test_cant_find_layout():
     with pytest.raises(KeyError):
         layout.Layout(
             FakeConfig(layout_test_cases[0].config), "nonexistent", SpyTileFactory()
+        )
+
+
+def test_size_shouldnt_be_defined_in_root_node():
+    with pytest.raises(RuntimeError):
+        layout.Layout(FakeConfig({"a": {"size": 9000}}), "a", SpyTileFactory())
+
+
+def test_no_invalid_split_orientation():
+    with pytest.raises(RuntimeError):
+        layout.Layout(
+            FakeConfig({"a": {"split": "laskdjflaskdjf"}}), "a", SpyTileFactory()
         )
