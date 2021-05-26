@@ -16,9 +16,8 @@ SLEEP_TIME = 0.30
 
 
 class Sway(interfaces.TilingWindowManager):  # pragma: nocover
-    def __init__(self, runner: interfaces.Runner) -> None:
+    def __init__(self) -> None:
         self._sway = i3ipc.Connection()
-        self._runner = runner
 
     def make_horizontal_sibling(
         self,
@@ -42,7 +41,7 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
 
     def make_window(self, window_details: dtos.WindowDetails) -> None:
         """Create a window, sleep to let it start up, then mark it"""
-        self._runner.run_and_disown(window_details.command)
+        self._sway.command(f"exec {window_details.command}")
         time.sleep(SLEEP_TIME)
         self._get_focused_window().command(f"mark {window_details.mark}")
 
