@@ -5,7 +5,6 @@ import click
 
 import magic_tiler
 from magic_tiler.utils import dtos
-from magic_tiler.utils import subprocess_runner
 from magic_tiler.utils import sway
 
 # maps from verbosity level to log levels
@@ -35,7 +34,7 @@ def main(verbosity_level: int) -> None:
     log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
     logging.basicConfig(level=log_level)
     logging.info(f"Log level set to {log_level}")
-    swaywm = sway.Sway(subprocess_runner.SubprocessRunner())
+    swaywm = sway.Sway()
     logging.debug(
         f"{swaywm.num_workspace_windows} windows are open in the current workspace"
     )

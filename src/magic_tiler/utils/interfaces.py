@@ -40,13 +40,6 @@ class TilingWindowManager(object):
         pass
 
 
-class Runner(object):
-    @abc.abstractmethod
-    def run_and_disown(self, command: str) -> None:
-        """Run a command and don't wait for it to finish"""
-        pass
-
-
 class ConfigReader(object):
     @abc.abstractmethod
     def to_dict(self) -> Dict:
