@@ -16,6 +16,10 @@ VERBOSITY_LOG_LEVELS = {
 }
 
 
+# TODO: is it possible to do a dry-run where we just log info but don't
+# open windows or run commands? maybe a fake supbrocess runner?
+
+
 @click.command()
 @click.option(
     "-v",
