@@ -32,7 +32,9 @@ VERBOSITY_LOG_LEVELS = {
 )
 @click.version_option(version=magic_tiler.__version__)
 def main(verbosity_level: int) -> None:
-    logging.basicConfig(level=VERBOSITY_LOG_LEVELS[verbosity_level])
+    log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
+    logging.basicConfig(level=log_level)
+    logging.info(f"Log level set to {log_level}")
     swaywm = sway.Sway(subprocess_runner.SubprocessRunner())
     logging.debug(
         f"{swaywm.num_workspace_windows} windows are open in the current workspace"
