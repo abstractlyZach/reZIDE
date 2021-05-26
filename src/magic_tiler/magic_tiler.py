@@ -4,9 +4,9 @@ import pprint
 import click
 
 import magic_tiler
-from magic_tiler import sway
 from magic_tiler.utils import dtos
 from magic_tiler.utils import subprocess_runner
+from magic_tiler.utils import sway
 
 # maps from verbosity level to log levels
 VERBOSITY_LOG_LEVELS = {
