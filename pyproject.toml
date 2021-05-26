@@ -39,7 +39,6 @@ omit = [
     # abstract functions so we never actually call their code
     "src/magic_tiler/utils/interfaces.py",
     # external apis
-    "src/magic_tiler/utils/subprocess_runner.py",
     "src/magic_tiler/utils/sway.py",
     # top-level scripts
     "src/magic_tiler/magic_tiler.py",
