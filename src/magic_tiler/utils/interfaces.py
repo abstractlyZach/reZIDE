@@ -1,7 +1,7 @@
 import abc
 from typing import Dict
 
-from magic_tiler import dtos
+from magic_tiler.utils import dtos
 
 
 class TilingWindowManager(object):

@@ -40,7 +40,7 @@ omit = [
     "src/magic_tiler/utils/interfaces.py",
     # external apis
     "src/magic_tiler/utils/subprocess_runner.py",
-    "src/magic_tiler/sway.py",
+    "src/magic_tiler/utils/sway.py",
     # top-level scripts
     "src/magic_tiler/magic_tiler.py",
     "src/magic_tiler/get_window_sizes.py",

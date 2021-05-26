@@ -1,6 +1,6 @@
 import math
 
-from magic_tiler import dtos
+from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
 
 

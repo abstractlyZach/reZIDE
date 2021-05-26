@@ -2,8 +2,8 @@ import pprint
 
 import click
 
-from magic_tiler import sway
 from magic_tiler.utils import subprocess_runner
+from magic_tiler.utils import sway
 
 
 @click.command()
