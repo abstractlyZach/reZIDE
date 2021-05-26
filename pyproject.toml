@@ -44,6 +44,7 @@ omit = [
     # top-level scripts
     "src/magic_tiler/main.py",
     "src/magic_tiler/get_window_sizes.py",
+    "src/magic_tiler/get_tree.py",
 ]
 
 [tool.coverage.report]
@@ -56,6 +57,7 @@ profile = "google"
 [tool.poetry.scripts]
 magic-tiler = "magic_tiler.main:main"
 get-window-sizes = "magic_tiler.get_window_sizes:main"
+get-tree = "magic_tiler.get_tree:main"
 
 [tool.pytest.ini_options]
 addopts = "--exitfirst --verbosity=2"
