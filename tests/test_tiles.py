@@ -2,8 +2,8 @@ from typing import List, NamedTuple
 
 import pytest
 
-from magic_tiler import dtos
-from magic_tiler import tiles
+from magic_tiler.utils import dtos
+from magic_tiler.utils import tiles
 
 
 class TileTestCase(NamedTuple):

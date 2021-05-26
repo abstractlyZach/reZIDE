@@ -4,8 +4,8 @@ from typing import Dict, List, Tuple
 
 import i3ipc
 
-from magic_tiler import dtos
-from magic_tiler import interfaces
+from magic_tiler.utils import dtos
+from magic_tiler.utils import interfaces
 
 """We need to sleep for a short time since processes take time to start.
 If we don't sleep, then we may be focusing on a different window by the

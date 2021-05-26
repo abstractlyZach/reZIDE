@@ -4,15 +4,37 @@ import pprint
 import click
 
 import magic_tiler
-from magic_tiler import dtos
-from magic_tiler import subprocess_runner
-from magic_tiler import sway
+from magic_tiler.utils import dtos
+from magic_tiler.utils import subprocess_runner
+from magic_tiler.utils import sway
+
+# maps from verbosity level to log levels
+VERBOSITY_LOG_LEVELS = {
+    0: logging.WARNING,
+    1: logging.INFO,
+    2: logging.DEBUG,
+}
+
+
+# TODO: is it possible to do a dry-run where we just log info but don't
+# open windows or run commands? maybe a fake supbrocess runner?
 
 
 @click.command()
+@click.option(
+    "-v",
+    "--verbose",
+    "verbosity_level",
+    default=0,
+    count=True,
+    help="Set verbosity. Add more v's to increase verbosity. For example, -v is "
+    + "verbosity level 1 and -vv is verbosity level 2",
+)
 @click.version_option(version=magic_tiler.__version__)
-def main() -> None:
-    logging.basicConfig(level=logging.DEBUG)
+def main(verbosity_level: int) -> None:
+    log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
+    logging.basicConfig(level=log_level)
+    logging.info(f"Log level set to {log_level}")
     swaywm = sway.Sway(subprocess_runner.SubprocessRunner())
     logging.debug(
         f"{swaywm.num_workspace_windows} windows are open in the current workspace"
@@ -31,9 +53,3 @@ def main() -> None:
     swaywm.resize_height(gutter, 33)
     window_sizes = swaywm.get_window_sizes()
     logging.info(pprint.pformat(window_sizes))
-
-
-def woops() -> None:
-    """Thowaway function to satisfy testing requirements since this project doesn't have
-    any testable functions quite yet"""
-    pass

@@ -1,4 +1,4 @@
-from magic_tiler import toml_config
+from magic_tiler.utils import toml_config
 
 
 def test_toml():

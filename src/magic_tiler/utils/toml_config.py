@@ -2,7 +2,7 @@ from typing import Dict
 
 import toml
 
-from magic_tiler import interfaces
+from magic_tiler.utils import interfaces
 
 
 class TomlConfig(interfaces.ConfigReader):

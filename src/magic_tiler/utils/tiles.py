@@ -1,7 +1,7 @@
 import math
 
-from magic_tiler import dtos
-from magic_tiler import interfaces
+from magic_tiler.utils import dtos
+from magic_tiler.utils import interfaces
 
 
 class TileFactory(interfaces.TileFactoryInterface):

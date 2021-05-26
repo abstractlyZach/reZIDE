@@ -1,7 +1,7 @@
 import shlex
 import subprocess  # noqa: S404
 
-from magic_tiler import interfaces
+from magic_tiler.utils import interfaces
 
 
 class SubprocessRunner(interfaces.Runner):
