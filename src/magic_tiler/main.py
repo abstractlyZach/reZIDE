@@ -31,9 +31,3 @@ def main() -> None:
     swaywm.resize_height(gutter, 33)
     window_sizes = swaywm.get_window_sizes()
     logging.info(pprint.pformat(window_sizes))
-
-
-def woops() -> None:
-    """Thowaway function to satisfy testing requirements since this project doesn't have
-    any testable functions quite yet"""
-    pass
