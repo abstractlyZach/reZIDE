@@ -33,7 +33,7 @@ VERBOSITY_LOG_LEVELS = {
 def main(verbosity_level: int) -> None:
     log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
     logging.basicConfig(level=log_level)
-    logging.info("Log level set to {log_level}")
+    logging.info(f"Log level set to {log_level}")
     swaywm = sway.Sway()
     logging.debug(
         f"{swaywm.num_workspace_windows} windows are open in the current workspace"
