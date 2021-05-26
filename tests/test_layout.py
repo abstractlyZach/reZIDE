@@ -3,8 +3,8 @@ from typing import Dict, List, NamedTuple
 import pytest
 
 from magic_tiler import dtos
-from magic_tiler import interfaces
 from magic_tiler import layout
+from magic_tiler.utils import interfaces
 
 
 class FakeConfig(interfaces.ConfigReader):

@@ -4,7 +4,7 @@ import pprint
 from typing import Dict, List, NamedTuple
 
 from magic_tiler import dtos
-from magic_tiler import interfaces
+from magic_tiler.utils import interfaces
 
 
 class Node(NamedTuple):

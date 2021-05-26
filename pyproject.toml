@@ -37,7 +37,7 @@ branch = true
 source = ["magic_tiler"]
 omit = [
     # abstract functions so we never actually call their code
-    "src/magic_tiler/interfaces.py",
+    "src/magic_tiler/utils/interfaces.py",
     # external apis
     "src/magic_tiler/subprocess_runner.py",
     "src/magic_tiler/sway.py",
