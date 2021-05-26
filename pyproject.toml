@@ -42,7 +42,7 @@ omit = [
     "src/magic_tiler/subprocess_runner.py",
     "src/magic_tiler/sway.py",
     # top-level scripts
-    "src/magic_tiler/main.py",
+    "src/magic_tiler/magic_tiler.py",
     "src/magic_tiler/get_window_sizes.py",
     "src/magic_tiler/get_tree.py",
 ]
@@ -55,7 +55,7 @@ fail_under = 100
 profile = "google"
 
 [tool.poetry.scripts]
-magic-tiler = "magic_tiler.main:main"
+magic-tiler = "magic_tiler.magic_tiler:main"
 get-window-sizes = "magic_tiler.get_window_sizes:main"
 get-tree = "magic_tiler.get_tree:main"
 
