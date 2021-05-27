@@ -14,6 +14,13 @@ class Node(NamedTuple):
     parent_split_orientation: str
 
 
+# we need to use a depth-y breadth-first traversal in order to properly
+# open up the sway windows. basically, we need sway to reserve space
+# for splits beyond the top-level split, so we need to create a window
+# to reserve that space. Therefore we do breadth-first traversal, but we
+# promote the first window in each section straight to the front of the queue
+
+
 class Layout(object):
     """Convert a configuration into a collection of Tiles"""
 
@@ -65,7 +72,18 @@ class Layout(object):
             else:
                 raise RuntimeError("not a valid split orientation!")
             if "children" in current_node.node:
-                for child_dict in current_node.node["children"]:
+                if len(current_node.node["children"]) < 2:
+                    raise RuntimeError("A parent node must have more than 2 children")
+                priority_node = current_node.node["children"][0]
+                node_queue.appendleft(
+                    Node(
+                        node=priority_node,
+                        parent_relative_width=relative_width,
+                        parent_relative_height=relative_height,
+                        parent_split_orientation=current_node.node["split"],
+                    )
+                )
+                for child_dict in current_node.node["children"][1:]:
                     node_queue.append(
                         Node(
                             node=child_dict,

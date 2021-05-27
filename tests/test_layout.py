@@ -234,7 +234,8 @@ def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
     spy_tile_factory = SpyTileFactory()
     layout.Layout(FakeConfig(test_case.config), test_case.layout_name, spy_tile_factory)
-    assert spy_tile_factory.calls == test_case.expected_call_args
+    for expected_call_args in test_case.expected_call_args:
+        assert expected_call_args in spy_tile_factory.calls
 
 
 def test_use_tile_factory_output():
@@ -299,3 +300,55 @@ def test_no_invalid_split_orientation():
         layout.Layout(
             FakeConfig({"a": {"split": "laskdjflaskdjf"}}), "a", SpyTileFactory()
         )
+
+
+def test_throws_error_if_not_enough_children():
+    with pytest.raises(RuntimeError):
+        layout.Layout(
+            FakeConfig({"a": {"split": "horizontal", "children": []}}),
+            "a",
+            SpyTileFactory(),
+        )
+    with pytest.raises(RuntimeError):
+        layout.Layout(
+            FakeConfig(
+                {
+                    "a": {
+                        "split": "horizontal",
+                        "children": [
+                            {
+                                "mark": "hi",
+                                "size": 10,
+                                "command": "echo hi",
+                            }
+                        ],
+                    }
+                }
+            ),
+            "a",
+            SpyTileFactory(),
+        )
+    # no exception raised with same config but 2 children
+    layout.Layout(
+        FakeConfig(
+            {
+                "a": {
+                    "split": "horizontal",
+                    "children": [
+                        {
+                            "mark": "hi",
+                            "size": 10,
+                            "command": "echo hi",
+                        },
+                        {
+                            "mark": "hi",
+                            "size": 10,
+                            "command": "echo hi",
+                        },
+                    ],
+                }
+            }
+        ),
+        "a",
+        SpyTileFactory(),
+    )
