@@ -1,4 +1,4 @@
-from typing import Dict, List, NamedTuple
+from typing import Any, Dict, List, NamedTuple
 
 import pytest
 
@@ -15,6 +15,11 @@ class FakeConfig(interfaces.ConfigReader):
         return self._config_dict
 
 
+class WindowManagerCall(NamedTuple):
+    command: str
+    arg: Any
+
+
 class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into Layouts using dependency injection
     and spys on their calls so we can make sure that we're doing
@@ -22,13 +27,13 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     """
 
     def __init__(self):
-        self._calls: List[dtos.WindowDetails] = []
+        self._calls: List[WindowManagerCall] = []
 
     def make_window(
         self,
         window_details: dtos.WindowDetails,
     ) -> None:
-        self._calls.append(window_details)
+        self._calls.append(WindowManagerCall(command="make", arg=window_details))
 
     @property
     def calls(self):
@@ -51,7 +56,7 @@ class SpyWindowManager(interfaces.TilingWindowManager):
 
 class LayoutTestCase(NamedTuple):
     config: Dict
-    expected_call_args: List[dtos.WindowDetails]
+    expected_call_args: List[WindowManagerCall]
     layout_name: str
 
 
@@ -91,10 +96,21 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            dtos.WindowDetails(mark="medium", command="alacritty"),
-            dtos.WindowDetails(mark="big", command="alacritty"),
-            dtos.WindowDetails(mark="right", command="alacritty"),
-            dtos.WindowDetails(mark="small", command="alacritty"),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="medium", command="alacritty"),
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="big", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="right", command="alacritty"),
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="small", command="alacritty"),
+            ),
         ],
         layout_name="screen",
     ),
@@ -122,9 +138,17 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            dtos.WindowDetails(mark="left", command="alacritty"),
-            dtos.WindowDetails(mark="center", command="alacritty"),
-            dtos.WindowDetails(mark="right", command="alacritty"),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="left", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="center", command="alacritty"),
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="right", command="alacritty"),
+            ),
         ],
         layout_name="screen",
     ),
@@ -169,9 +193,18 @@ layout_test_cases = [
             },
         },
         expected_call_args=[
-            dtos.WindowDetails(mark="linter", command="alacritty"),
-            dtos.WindowDetails(mark="jumbo", command="alacritty"),
-            dtos.WindowDetails(mark="terminal", command="alacritty"),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="linter", command="alacritty"),
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="jumbo", command="alacritty"),
+            ),
+            WindowManagerCall(
+                command="make",
+                arg=dtos.WindowDetails(mark="terminal", command="alacritty"),
+            ),
         ],
         layout_name="dev-ide",
     ),
@@ -247,15 +280,33 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            dtos.WindowDetails(mark="A", command="alacritty"),
-            dtos.WindowDetails(mark="C", command="alacritty"),
-            dtos.WindowDetails(mark="F", command="alacritty"),
-            dtos.WindowDetails(mark="I", command="alacritty"),
-            dtos.WindowDetails(mark="H", command="alacritty"),
-            dtos.WindowDetails(mark="B", command="alacritty"),
-            dtos.WindowDetails(mark="G", command="alacritty"),
-            dtos.WindowDetails(mark="D", command="alacritty"),
-            dtos.WindowDetails(mark="E", command="alacritty"),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="A", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="C", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="F", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="I", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="H", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="B", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="G", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="D", command="alacritty")
+            ),
+            WindowManagerCall(
+                command="make", arg=dtos.WindowDetails(mark="E", command="alacritty")
+            ),
         ],
         layout_name="complicated",
     ),
