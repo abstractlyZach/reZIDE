@@ -52,6 +52,15 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         window.command("focus")
         window.command(f"resize set width {container_percentage} ppt")
 
+    def focus(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    def split_horizontal(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    def split_vertical(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
     def resize_height(
         self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:

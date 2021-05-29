@@ -53,6 +53,15 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     ) -> None:
         pass
 
+    def focus(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    def split_horizontal(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    def split_vertical(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
 
 class LayoutTestCase(NamedTuple):
     config: Dict

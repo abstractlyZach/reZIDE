@@ -21,6 +21,18 @@ class TilingWindowManager(object):
     ) -> None:
         pass
 
+    @abc.abstractmethod
+    def focus(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    @abc.abstractmethod
+    def split_horizontal(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    @abc.abstractmethod
+    def split_vertical(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
     @property
     @abc.abstractmethod
     def num_workspace_windows(self) -> int:
