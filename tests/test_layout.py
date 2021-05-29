@@ -15,14 +15,6 @@ class FakeConfig(interfaces.ConfigReader):
         return self._config_dict
 
 
-class MakeTileArgs(NamedTuple):
-    """A DTO for testing call args to TileFactory.make_tile()"""
-
-    relative_width: float
-    relative_height: float
-    window_details: dtos.WindowDetails
-
-
 def make_dummy_tile() -> dtos.Tile:
     return dtos.Tile(
         height=0,
@@ -38,21 +30,13 @@ class SpyTileFactory(interfaces.TileFactoryInterface):
     """
 
     def __init__(self):
-        self._calls: List[MakeTileArgs] = []
+        self._calls: List[dtos.WindowDetails] = []
 
     def make_tile(
         self,
-        relative_width: float,
-        relative_height: float,
         window_details: dtos.WindowDetails,
     ) -> dtos.Tile:
-        self._calls.append(
-            MakeTileArgs(
-                relative_width=relative_width,
-                relative_height=relative_height,
-                window_details=window_details,
-            )
-        )
+        self._calls.append(window_details)
         return make_dummy_tile()
 
     @property
@@ -62,7 +46,7 @@ class SpyTileFactory(interfaces.TileFactoryInterface):
 
 class LayoutTestCase(NamedTuple):
     config: Dict
-    expected_call_args: List[MakeTileArgs]
+    expected_call_args: List[dtos.WindowDetails]
     layout_name: str
 
 
@@ -102,26 +86,10 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.5,
-                window_details=dtos.WindowDetails(mark="big", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="right", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0.6,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="medium", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0.4,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="small", command="alacritty"),
-            ),
+            dtos.WindowDetails(mark="medium", command="alacritty"),
+            dtos.WindowDetails(mark="big", command="alacritty"),
+            dtos.WindowDetails(mark="right", command="alacritty"),
+            dtos.WindowDetails(mark="small", command="alacritty"),
         ],
         layout_name="screen",
     ),
@@ -149,21 +117,9 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="left", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.5,
-                window_details=dtos.WindowDetails(mark="center", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="right", command="alacritty"),
-            ),
+            dtos.WindowDetails(mark="left", command="alacritty"),
+            dtos.WindowDetails(mark="center", command="alacritty"),
+            dtos.WindowDetails(mark="right", command="alacritty"),
         ],
         layout_name="screen",
     ),
@@ -208,23 +164,95 @@ layout_test_cases = [
             },
         },
         expected_call_args=[
-            MakeTileArgs(
-                relative_height=1.0,
-                relative_width=0.75,
-                window_details=dtos.WindowDetails(mark="jumbo", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0.6,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="linter", command="alacritty"),
-            ),
-            MakeTileArgs(
-                relative_height=0.4,
-                relative_width=0.25,
-                window_details=dtos.WindowDetails(mark="terminal", command="alacritty"),
-            ),
+            dtos.WindowDetails(mark="linter", command="alacritty"),
+            dtos.WindowDetails(mark="jumbo", command="alacritty"),
+            dtos.WindowDetails(mark="terminal", command="alacritty"),
         ],
         layout_name="dev-ide",
+    ),
+    LayoutTestCase(
+        config={
+            "complicated": {
+                "split": "horizontal",
+                "children": [
+                    {
+                        "split": "vertical",
+                        "children": [
+                            {
+                                "split": "horizontal",
+                                "children": [
+                                    {
+                                        "mark": "A",
+                                        "command": "alacritty",
+                                    },
+                                    {
+                                        "mark": "B",
+                                        "command": "alacritty",
+                                    },
+                                ],
+                            },
+                            {
+                                "split": "horizontal",
+                                "children": [
+                                    {
+                                        "mark": "F",
+                                        "command": "alacritty",
+                                    },
+                                    {
+                                        "mark": "G",
+                                        "command": "alacritty",
+                                    },
+                                ],
+                            },
+                            {
+                                "mark": "I",
+                                "command": "alacritty",
+                            },
+                        ],
+                    },
+                    {
+                        "split": "vertical",
+                        "children": [
+                            {
+                                "split": "horizontal",
+                                "children": [
+                                    {
+                                        "mark": "C",
+                                        "command": "alacritty",
+                                    },
+                                    {
+                                        "split": "vertical",
+                                        "children": [
+                                            {
+                                                "mark": "D",
+                                                "command": "alacritty",
+                                            },
+                                            {
+                                                "mark": "E",
+                                                "command": "alacritty",
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                            {"mark": "H", "command": "alacritty"},
+                        ],
+                    },
+                ],
+            }
+        },
+        expected_call_args=[
+            dtos.WindowDetails(mark="A", command="alacritty"),
+            dtos.WindowDetails(mark="C", command="alacritty"),
+            dtos.WindowDetails(mark="F", command="alacritty"),
+            dtos.WindowDetails(mark="I", command="alacritty"),
+            dtos.WindowDetails(mark="H", command="alacritty"),
+            dtos.WindowDetails(mark="D", command="alacritty"),
+            dtos.WindowDetails(mark="B", command="alacritty"),
+            dtos.WindowDetails(mark="G", command="alacritty"),
+            dtos.WindowDetails(mark="E", command="alacritty"),
+        ],
+        layout_name="complicated",
     ),
 ]
 
@@ -234,8 +262,7 @@ def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
     spy_tile_factory = SpyTileFactory()
     layout.Layout(FakeConfig(test_case.config), test_case.layout_name, spy_tile_factory)
-    for expected_call_args in test_case.expected_call_args:
-        assert expected_call_args in spy_tile_factory.calls
+    assert test_case.expected_call_args == spy_tile_factory.calls
 
 
 def test_use_tile_factory_output():
