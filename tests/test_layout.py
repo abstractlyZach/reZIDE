@@ -23,7 +23,7 @@ def make_dummy_tile() -> dtos.Tile:
     )
 
 
-class SpyTileFactory(interfaces.TileFactoryInterface):
+class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into Layouts using dependency injection
     and spys on their calls so we can make sure that we're doing
     the tile math correctly
@@ -32,16 +32,29 @@ class SpyTileFactory(interfaces.TileFactoryInterface):
     def __init__(self):
         self._calls: List[dtos.WindowDetails] = []
 
-    def make_tile(
+    def make_window(
         self,
         window_details: dtos.WindowDetails,
-    ) -> dtos.Tile:
+    ) -> None:
         self._calls.append(window_details)
-        return make_dummy_tile()
 
     @property
     def calls(self):
         return self._calls
+
+    @property
+    def num_workspace_windows(self):
+        pass
+
+    def resize_width(
+        self, target_window: dtos.WindowDetails, container_percentage: int
+    ) -> None:
+        pass
+
+    def resize_height(
+        self, target_window: dtos.WindowDetails, container_percentage: int
+    ) -> None:
+        pass
 
 
 class LayoutTestCase(NamedTuple):
@@ -247,9 +260,9 @@ layout_test_cases = [
             dtos.WindowDetails(mark="F", command="alacritty"),
             dtos.WindowDetails(mark="I", command="alacritty"),
             dtos.WindowDetails(mark="H", command="alacritty"),
-            dtos.WindowDetails(mark="D", command="alacritty"),
             dtos.WindowDetails(mark="B", command="alacritty"),
             dtos.WindowDetails(mark="G", command="alacritty"),
+            dtos.WindowDetails(mark="D", command="alacritty"),
             dtos.WindowDetails(mark="E", command="alacritty"),
         ],
         layout_name="complicated",
@@ -260,72 +273,29 @@ layout_test_cases = [
 @pytest.mark.parametrize("test_case", layout_test_cases)
 def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
-    spy_tile_factory = SpyTileFactory()
-    layout.Layout(FakeConfig(test_case.config), test_case.layout_name, spy_tile_factory)
-    assert test_case.expected_call_args == spy_tile_factory.calls
-
-
-def test_use_tile_factory_output():
-    """Make sure we're using whatever output we get from the tile factory"""
-    fake_tile_factory = SpyTileFactory()
-    mylayout = layout.Layout(
-        FakeConfig(
-            {
-                "screen": {
-                    "children": [
-                        {
-                            "children": [
-                                {
-                                    "mark": "medium",
-                                    "size": 60,
-                                    "command": "alacritty",
-                                },
-                                {
-                                    "mark": "small",
-                                    "size": 40,
-                                    "command": "alacritty",
-                                },
-                            ],
-                            "split": "vertical",
-                            "size": 25,
-                        },
-                        {
-                            "mark": "big",
-                            "size": 50,
-                            "command": "alacritty",
-                        },
-                        {
-                            "mark": "right",
-                            "size": 25,
-                            "command": "alacritty",
-                        },
-                    ],
-                    "split": "horizontal",
-                }
-            }
-        ),
-        "screen",
-        fake_tile_factory,
+    spy_window_manager = SpyWindowManager()
+    layout.Layout(
+        FakeConfig(test_case.config), test_case.layout_name, spy_window_manager
     )
-    assert mylayout.tiles == [make_dummy_tile() for i in range(4)]
+    assert spy_window_manager.calls == test_case.expected_call_args
 
 
 def test_cant_find_layout():
     with pytest.raises(KeyError):
         layout.Layout(
-            FakeConfig(layout_test_cases[0].config), "nonexistent", SpyTileFactory()
+            FakeConfig(layout_test_cases[0].config), "nonexistent", SpyWindowManager()
         )
 
 
 def test_size_shouldnt_be_defined_in_root_node():
     with pytest.raises(RuntimeError):
-        layout.Layout(FakeConfig({"a": {"size": 9000}}), "a", SpyTileFactory())
+        layout.Layout(FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
 
 
 def test_no_invalid_split_orientation():
     with pytest.raises(RuntimeError):
         layout.Layout(
-            FakeConfig({"a": {"split": "laskdjflaskdjf"}}), "a", SpyTileFactory()
+            FakeConfig({"a": {"split": "laskdjflaskdjf"}}), "a", SpyWindowManager()
         )
 
 
@@ -334,7 +304,7 @@ def test_throws_error_if_not_enough_children():
         layout.Layout(
             FakeConfig({"a": {"split": "horizontal", "children": []}}),
             "a",
-            SpyTileFactory(),
+            SpyWindowManager(),
         )
     with pytest.raises(RuntimeError):
         layout.Layout(
@@ -353,7 +323,7 @@ def test_throws_error_if_not_enough_children():
                 }
             ),
             "a",
-            SpyTileFactory(),
+            SpyWindowManager(),
         )
     # no exception raised with same config but 2 children
     layout.Layout(
@@ -377,5 +347,5 @@ def test_throws_error_if_not_enough_children():
             }
         ),
         "a",
-        SpyTileFactory(),
+        SpyWindowManager(),
     )

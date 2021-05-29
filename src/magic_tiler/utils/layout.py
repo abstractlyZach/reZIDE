@@ -1,17 +1,40 @@
+# https://stackoverflow.com/questions/36286894/name-not-defined-in-type-annotation
+from __future__ import annotations
+
 import collections
-import logging
-import pprint
-from typing import Dict, List, NamedTuple
+from typing import Any, Dict, List, Optional, Set
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
 
 
-class Node(NamedTuple):
-    node: Dict
-    parent_relative_width: float
-    parent_relative_height: float
-    parent_split_orientation: str
+class TreeNode(object):
+    def __init__(self, data: Any, parent: TreeNode = None) -> None:
+        self._data = data
+        self._children: List[TreeNode] = []
+        if parent:
+            parent.add_child(self)
+
+    def add_child(self, node: TreeNode) -> None:
+        self._children.append(node)
+
+    def get_leftmost_descendant(self) -> TreeNode:
+        if self.is_parent:
+            return self.children[0].get_leftmost_descendant()
+        else:
+            return self
+
+    @property
+    def is_parent(self) -> bool:
+        return len(self._children) > 0
+
+    @property
+    def children(self) -> List[TreeNode]:
+        return self._children
+
+    @property
+    def data(self) -> Any:
+        return self._data
 
 
 # we need to use a depth-y breadth-first traversal in order to properly
@@ -28,82 +51,48 @@ class Layout(object):
         self,
         config_reader: interfaces.ConfigReader,
         layout_name: str,
-        tile_factory: interfaces.TileFactoryInterface,
+        window_manager: interfaces.TilingWindowManager,
     ) -> None:
-        self._tile_factory: interfaces.TileFactoryInterface = tile_factory
-        self._tiles: List[dtos.Tile] = []
+        self._window_manager = window_manager
         self._windows: Dict[str, dtos.WindowDetails] = dict()
         try:
             root_node = config_reader.to_dict()[layout_name]
         except KeyError:
             raise KeyError(f'Could not find layout "{layout_name}" in config')
-        logging.debug(pprint.pformat(root_node))
         if "size" in root_node:
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
         root_node["size"] = 100
-        self._parse_tree(root_node)
+        tree = self._create_tree(root_node)
+        self._parse_tree(tree)
 
-    def _parse_tree(self, root_node: Dict) -> None:
-        """Process a node and its children using breadth-first traversal"""
-        node_queue = collections.deque(
-            [
-                Node(
-                    node=root_node,
-                    parent_relative_width=1.0,
-                    parent_relative_height=1.0,
-                    parent_split_orientation=root_node["split"],
-                )
-            ]
-        )
-        while len(node_queue) > 0:
+    def _create_tree(self, node: Dict, parent: Optional[TreeNode] = None) -> TreeNode:
+        if "mark" in node:
+            current_node = TreeNode(
+                dtos.WindowDetails(mark=node["mark"], command=node["command"]),
+                parent=parent,
+            )
+        elif "children" in node:
+            current_node = TreeNode(node["split"])
+            if len(node["children"]) <= 1:
+                raise RuntimeError("each parent needs at least 2 children")
+            for child in node["children"]:
+                child_node = self._create_tree(child, current_node)
+                current_node.add_child(child_node)
+        else:
+            raise RuntimeError("invalid config file")
+        return current_node
+
+    def _parse_tree(self, root_node: TreeNode) -> None:
+        node_queue = collections.deque([root_node])
+        created_windows: Set[str] = set()
+        while len(node_queue) >= 1:
             current_node = node_queue.popleft()
-            if current_node.parent_split_orientation == "vertical":
-                relative_height = (
-                    current_node.parent_relative_height
-                    * current_node.node["size"]
-                    / 100
-                )
-                relative_width = current_node.parent_relative_width
-            elif current_node.parent_split_orientation == "horizontal":
-                relative_height = current_node.parent_relative_height
-                relative_width = (
-                    current_node.parent_relative_width * current_node.node["size"] / 100
-                )
+            leftmost_descendant = current_node.get_leftmost_descendant()
+            if leftmost_descendant.data.mark in created_windows:
+                pass
             else:
-                raise RuntimeError("not a valid split orientation!")
-            if "children" in current_node.node:
-                if len(current_node.node["children"]) < 2:
-                    raise RuntimeError("A parent node must have more than 2 children")
-                priority_node = current_node.node["children"][0]
-                node_queue.appendleft(
-                    Node(
-                        node=priority_node,
-                        parent_relative_width=relative_width,
-                        parent_relative_height=relative_height,
-                        parent_split_orientation=current_node.node["split"],
-                    )
-                )
-                for child_dict in current_node.node["children"][1:]:
-                    node_queue.append(
-                        Node(
-                            node=child_dict,
-                            parent_relative_width=relative_width,
-                            parent_relative_height=relative_height,
-                            parent_split_orientation=current_node.node["split"],
-                        )
-                    )
-            else:  # process the node if it's a leaf
-                logging.debug(current_node.node)
-                new_tile = self._tile_factory.make_tile(
-                    relative_width,
-                    relative_height,
-                    dtos.WindowDetails(
-                        mark=current_node.node["mark"],
-                        command=current_node.node["command"],
-                    ),
-                )
-                self._tiles.append(new_tile)
-
-    @property
-    def tiles(self) -> List[dtos.Tile]:
-        return self._tiles
+                self._window_manager.make_window(leftmost_descendant.data)
+                created_windows.add(leftmost_descendant.data.mark)
+            if current_node.is_parent:
+                for child in current_node.children:
+                    node_queue.append(child)
