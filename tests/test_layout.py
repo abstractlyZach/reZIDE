@@ -15,14 +15,6 @@ class FakeConfig(interfaces.ConfigReader):
         return self._config_dict
 
 
-def make_dummy_tile() -> dtos.Tile:
-    return dtos.Tile(
-        height=0,
-        width=0,
-        window=dtos.Window(command="", width=0, height=0, mark=""),
-    )
-
-
 class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into Layouts using dependency injection
     and spys on their calls so we can make sure that we're doing
