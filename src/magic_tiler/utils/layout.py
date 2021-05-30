@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import collections
+import logging
 from typing import Any, Dict, List, Optional, Set
 
 from magic_tiler.utils import dtos
@@ -35,6 +36,12 @@ class TreeNode(object):
     @property
     def data(self) -> Any:
         return self._data
+
+    def __str__(self) -> str:
+        return f"{self.data}: {self._children}"
+
+    def __repr__(self) -> str:
+        return f"TreeNode<{len(self.children)}>"
 
 
 # we need to use a depth-y breadth-first traversal in order to properly
@@ -72,27 +79,34 @@ class Layout(object):
                 parent=parent,
             )
         elif "children" in node:
-            current_node = TreeNode(node["split"])
+            current_node = TreeNode(node["split"], parent=parent)
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
-                child_node = self._create_tree(child, current_node)
-                current_node.add_child(child_node)
+                self._create_tree(child, current_node)
         else:
             raise RuntimeError("invalid config file")
         return current_node
 
     def _parse_tree(self, root_node: TreeNode) -> None:
         node_queue = collections.deque([root_node])
-        created_windows: Set[str] = set()
+        self._created_windows: Set[str] = set()
         while len(node_queue) >= 1:
             current_node = node_queue.popleft()
-            leftmost_descendant = current_node.get_leftmost_descendant()
-            if leftmost_descendant.data.mark in created_windows:
-                pass
-            else:
-                self._window_manager.make_window(leftmost_descendant.data)
-                created_windows.add(leftmost_descendant.data.mark)
+            logging.debug(f"dequeuing {current_node}")
             if current_node.is_parent:
+                self._attempt_to_create_leftmost_descendant(current_node.children[0])
+                self._window_manager.split(current_node.data)
+                for child in current_node.children[1:]:
+                    self._attempt_to_create_leftmost_descendant(child)
                 for child in current_node.children:
                     node_queue.append(child)
+
+    def _attempt_to_create_leftmost_descendant(self, node: TreeNode) -> None:
+        logging.debug(f"getting leftmost descendant of {node}")
+        leftmost_descendant = node.get_leftmost_descendant()
+        if leftmost_descendant.data.mark in self._created_windows:
+            self._window_manager.focus(leftmost_descendant.data)
+        else:
+            self._window_manager.make_window(leftmost_descendant.data)
+            self._created_windows.add(leftmost_descendant.data.mark)

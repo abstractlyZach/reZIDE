@@ -54,13 +54,10 @@ class SpyWindowManager(interfaces.TilingWindowManager):
         pass
 
     def focus(self, target_window: dtos.WindowDetails) -> None:
-        pass
+        self._calls.append(WindowManagerCall("focus", arg=target_window))
 
-    def split_horizontal(self, target_window: dtos.WindowDetails) -> None:
-        pass
-
-    def split_vertical(self, target_window: dtos.WindowDetails) -> None:
-        pass
+    def split(self, split_type: str) -> None:
+        self._calls.append(WindowManagerCall("split", arg=split_type))
 
 
 class LayoutTestCase(NamedTuple):
@@ -109,6 +106,7 @@ layout_test_cases = [
                 command="make",
                 arg=dtos.WindowDetails(mark="medium", command="alacritty"),
             ),
+            WindowManagerCall(command="split", arg="horizontal"),
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="big", command="alacritty")
             ),
@@ -116,6 +114,11 @@ layout_test_cases = [
                 command="make",
                 arg=dtos.WindowDetails(mark="right", command="alacritty"),
             ),
+            WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="medium", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="vertical"),
             WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="small", command="alacritty"),
@@ -150,6 +153,7 @@ layout_test_cases = [
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="left", command="alacritty")
             ),
+            WindowManagerCall(command="split", arg="horizontal"),
             WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="center", command="alacritty"),
@@ -206,10 +210,16 @@ layout_test_cases = [
                 command="make",
                 arg=dtos.WindowDetails(mark="linter", command="alacritty"),
             ),
+            WindowManagerCall(command="split", arg="horizontal"),
             WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="jumbo", command="alacritty"),
             ),
+            WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="linter", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="vertical"),
             WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="terminal", command="alacritty"),
@@ -292,9 +302,15 @@ layout_test_cases = [
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="A", command="alacritty")
             ),
+            WindowManagerCall(command="split", arg="horizontal"),
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="C", command="alacritty")
             ),
+            WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="A", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="vertical"),
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="F", command="alacritty")
             ),
@@ -302,17 +318,42 @@ layout_test_cases = [
                 command="make", arg=dtos.WindowDetails(mark="I", command="alacritty")
             ),
             WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="C", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="vertical"),
+            WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="H", command="alacritty")
             ),
+            WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="A", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="horizontal"),
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="B", command="alacritty")
             ),
             WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="F", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="horizontal"),
+            WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="G", command="alacritty")
             ),
             WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="C", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="horizontal"),
+            WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="D", command="alacritty")
             ),
+            WindowManagerCall(
+                command="focus",
+                arg=dtos.WindowDetails(mark="D", command="alacritty"),
+            ),
+            WindowManagerCall(command="split", arg="vertical"),
             WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="E", command="alacritty")
             ),

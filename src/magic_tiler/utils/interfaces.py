@@ -26,11 +26,7 @@ class TilingWindowManager(object):
         pass
 
     @abc.abstractmethod
-    def split_horizontal(self, target_window: dtos.WindowDetails) -> None:
-        pass
-
-    @abc.abstractmethod
-    def split_vertical(self, target_window: dtos.WindowDetails) -> None:
+    def split(self, split_type: str) -> None:
         pass
 
     @property
