@@ -44,16 +44,12 @@ class TreeNode(object):
         return f"TreeNode<{len(self.children)}>"
 
 
-# we need to use a depth-y breadth-first traversal in order to properly
-# open up the sway windows. basically, we need sway to reserve space
-# for splits beyond the top-level split, so we need to create a window
-# to reserve that space. Therefore we do breadth-first traversal, but we
-# promote the first window in each section straight to the front of the queue
+# We use depth-first traversal to create each leaf node in the tree. We
+# create the leftmost descendant of each parent first so that it can reserve
+# space for its other siblings.
 
 
 class Layout(object):
-    """Convert a configuration into a collection of Tiles"""
-
     def __init__(
         self,
         config_reader: interfaces.ConfigReader,
@@ -61,7 +57,6 @@ class Layout(object):
         window_manager: interfaces.TilingWindowManager,
     ) -> None:
         self._window_manager = window_manager
-        self._windows: Dict[str, dtos.WindowDetails] = dict()
         try:
             root_node = config_reader.to_dict()[layout_name]
         except KeyError:
