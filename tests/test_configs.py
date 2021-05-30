@@ -18,6 +18,9 @@ class FakeFilestore(interfaces.FileStore):
 
 
 class FakeTreeFactory(interfaces.TreeFactoryInterface):
+    def __init__(self, tree_root: tree.TreeNode):
+        self._tree = tree_root
+
     def build_tree(self, root_node: Dict) -> tree.TreeNode:
         return tree.TreeNode("a")
 
@@ -63,6 +66,6 @@ def test_toml():
 def test_config_uses_xdg_base_first():
     base_dir = "/home/abc/.config"
     filestore = FakeFilestore(exists=[base_dir + "magic_tiler/config"])
-    tree_factory = FakeTreeFactory()
+    tree_factory = FakeTreeFactory(tree.TreeNode("a"))
     config = configs.Config(filestore, tree_factory, xdg_base_dir=base_dir)
     assert config.tree == tree.TreeNode("a")
