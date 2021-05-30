@@ -10,12 +10,13 @@ def test_toml():
                     "children": [
                         {
                             "size": 60,
-                            "command": "alacritty --title medium-window",
+                            "command": "alacritty --title medium-window -e sh "
+                            + "-c 'cowsay $(fortune); zsh -i'",
                             "mark": "medium-window",
                         },
                         {
                             "size": 40,
-                            "command": "alacritty --title tiny-window",
+                            "command": "alacritty --title tiny-window -e sh -c 'neofetch; zsh'",
                             "mark": "tiny-window",
                         },
                     ],
@@ -24,12 +25,12 @@ def test_toml():
                 },
                 {
                     "size": 50,
-                    "command": "alacritty --title middle-panel",
+                    "command": "alacritty --title middle-panel -e sh -c 'kak ~/internet.txt'",
                     "mark": "middle-panel",
                 },
                 {
                     "size": 25,
-                    "command": "alacritty --title right-panel",
+                    "command": "alacritty --title right-panel -e sh -c 'broot'",
                     "mark": "right-panel",
                 },
             ],

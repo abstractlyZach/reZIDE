@@ -6,21 +6,21 @@ size = 25
 split = "vertical"
 
 [[screen.children.children]]
-command = "alacritty --title medium-window"
+command = "alacritty --title medium-window -e sh -c 'cowsay $(fortune); zsh -i'"
 size = 60
 mark = "medium-window"
 
 [[screen.children.children]]
-command = "alacritty --title tiny-window"
+command = "alacritty --title tiny-window -e sh -c 'neofetch; zsh'"
 size = 40
 mark = "tiny-window"
 
 [[screen.children]]
-command = "alacritty --title middle-panel"
+command = "alacritty --title middle-panel -e sh -c 'kak ~/internet.txt'"
 size = 50
 mark = "middle-panel"
 
 [[screen.children]]
-command = "alacritty --title right-panel"
+command = "alacritty --title right-panel -e sh -c 'broot'"
 size = 25
 mark = "right-panel"
