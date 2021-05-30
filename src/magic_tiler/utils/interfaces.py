@@ -10,18 +10,6 @@ class TilingWindowManager(object):
         pass
 
     @abc.abstractmethod
-    def make_horizontal_sibling(
-        self, target_window: dtos.WindowDetails, new_window: dtos.WindowDetails
-    ) -> None:
-        pass
-
-    @abc.abstractmethod
-    def make_vertical_sibling(
-        self, target_window: dtos.WindowDetails, new_window: dtos.WindowDetails
-    ) -> None:
-        pass
-
-    @abc.abstractmethod
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
@@ -31,6 +19,14 @@ class TilingWindowManager(object):
     def resize_height(
         self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
+        pass
+
+    @abc.abstractmethod
+    def focus(self, target_window: dtos.WindowDetails) -> None:
+        pass
+
+    @abc.abstractmethod
+    def split(self, split_type: str) -> None:
         pass
 
     @property

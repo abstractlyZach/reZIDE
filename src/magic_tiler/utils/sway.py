@@ -19,44 +19,36 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
     def __init__(self) -> None:
         self._sway = i3ipc.Connection()
 
-    def make_horizontal_sibling(
-        self,
-        target_window: dtos.WindowDetails,
-        new_window: dtos.WindowDetails,
-    ) -> None:
-        window = self._get_window(target_window.mark)
-        window.command("focus")
-        window.command("split horizontal")
-        self.make_window(new_window)
-
-    def make_vertical_sibling(
-        self,
-        target_window: dtos.WindowDetails,
-        new_window: dtos.WindowDetails,
-    ) -> None:
-        window = self._get_window(target_window.mark)
-        window.command("focus")
-        window.command("split vertical")
-        self.make_window(new_window)
-
     def make_window(self, window_details: dtos.WindowDetails) -> None:
         """Create a window, sleep to let it start up, then mark it"""
         self._sway.command(f"exec {window_details.command}")
         time.sleep(SLEEP_TIME)
         self._get_focused_window().command(f"mark {window_details.mark}")
 
+    def focus(self, target_window: dtos.WindowDetails) -> i3ipc.Con:
+        window = self._get_window(target_window.mark)
+        window.command("focus")
+        return window
+
+    def split(self, split_type: str) -> None:
+        focused = self._get_focused_window()
+        if split_type == "vertical":
+            focused.command("split vertical")
+        elif split_type == "horizontal":
+            focused.command("split horizontal")
+        else:
+            raise RuntimeError(f"invalid split type: {split_type}")
+
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
-        window = self._get_window(target_window.mark)
-        window.command("focus")
+        window = self.focus(target_window)
         window.command(f"resize set width {container_percentage} ppt")
 
     def resize_height(
         self, target_window: dtos.WindowDetails, container_percentage: int
     ) -> None:
-        window = self._get_window(target_window.mark)
-        window.command("focus")
+        window = self.focus(target_window)
         window.command(f"resize set height {container_percentage} ppt")
 
     def get_window_sizes(self) -> Dict[Tuple, Dict[str, float]]:
