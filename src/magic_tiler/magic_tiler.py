@@ -3,9 +3,9 @@ import logging
 import click
 
 import magic_tiler
+from magic_tiler.utils import configs
 from magic_tiler.utils import layout
 from magic_tiler.utils import sway
-from magic_tiler.utils import toml_config
 
 # maps from verbosity level to log levels
 VERBOSITY_LOG_LEVELS = {
@@ -40,5 +40,5 @@ def main(verbosity_level: int) -> None:
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    config = toml_config.TomlConfig("examples/centered_big.toml")
+    config = configs.TomlConfig("examples/centered_big.toml")
     layout.Layout(config, "screen", window_manager)

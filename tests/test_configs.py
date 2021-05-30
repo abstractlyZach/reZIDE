@@ -1,7 +1,7 @@
 from typing import Dict, List
 
+from magic_tiler.utils import configs
 from magic_tiler.utils import interfaces
-from magic_tiler.utils import toml_config
 from magic_tiler.utils import tree
 
 
@@ -23,7 +23,7 @@ class FakeTreeFactory(interfaces.TreeFactoryInterface):
 
 
 def test_toml():
-    config_reader = toml_config.TomlConfig("examples/centered_big.toml")
+    config_reader = configs.TomlConfig("examples/centered_big.toml")
     assert config_reader.to_dict() == {
         "screen": {
             "children": [
@@ -64,5 +64,5 @@ def test_config_uses_xdg_base_first():
     base_dir = "/home/abc/.config"
     filestore = FakeFilestore(exists=[base_dir + "magic_tiler/config"])
     tree_factory = FakeTreeFactory()
-    config = toml_config.Config(filestore, tree_factory, xdg_base_dir=base_dir)
+    config = configs.Config(filestore, tree_factory, xdg_base_dir=base_dir)
     assert config.tree == tree.TreeNode("a")
