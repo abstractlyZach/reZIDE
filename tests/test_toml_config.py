@@ -1,4 +1,25 @@
+from typing import Dict, List
+
+from magic_tiler.utils import interfaces
 from magic_tiler.utils import toml_config
+from magic_tiler.utils import tree
+
+
+class FakeFilestore(interfaces.FileStore):
+    def __init__(self, exists: List[str], file_contents: str = ""):
+        self._existing_paths = exists
+        self._file_contents = file_contents
+
+    def path_exists(self, path: str) -> bool:
+        return path in self._existing_paths
+
+    def read_file(self, path: str) -> str:
+        return self._file_contents
+
+
+class FakeTreeFactory(interfaces.TreeFactoryInterface):
+    def build_tree(self, root_node: Dict) -> tree.TreeNode:
+        return tree.TreeNode("a")
 
 
 def test_toml():
@@ -37,3 +58,11 @@ def test_toml():
             "split": "horizontal",
         }
     }
+
+
+def test_config_uses_xdg_base_first():
+    base_dir = "/home/abc/.config"
+    filestore = FakeFilestore(exists=[base_dir + "magic_tiler/config"])
+    tree_factory = FakeTreeFactory()
+    config = toml_config.Config(filestore, tree_factory, xdg_base_dir=base_dir)
+    assert config.tree == tree.TreeNode("a")

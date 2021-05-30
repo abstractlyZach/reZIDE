@@ -2,6 +2,7 @@ import abc
 from typing import Dict
 
 from magic_tiler.utils import dtos
+from magic_tiler.utils import tree
 
 
 class TilingWindowManager(object):
@@ -50,4 +51,21 @@ class TileFactoryInterface(object):
         relative_height: float,
         window_details: dtos.WindowDetails,
     ) -> dtos.Tile:
+        pass
+
+
+class FileStore(object):
+    """Any system that could store files, like a local filesystem"""
+
+    @abc.abstractmethod
+    def path_exists(self, path: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def read_file(self, path: str) -> str:
+        pass
+
+
+class TreeFactoryInterface(object):
+    def build_tree(self, root_node: Dict) -> tree.TreeNode:
         pass
