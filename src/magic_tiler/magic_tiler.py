@@ -1,5 +1,4 @@
 import logging
-import pprint
 
 import click
 
@@ -41,7 +40,5 @@ def main(verbosity_level: int) -> None:
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-
     config = toml_config.TomlConfig("examples/centered_big.toml")
-    pprint.pprint(config.to_dict())
     layout.Layout(config, "screen", window_manager)
