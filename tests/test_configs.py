@@ -85,15 +85,15 @@ def test_toml_reading():
 
 
 def test_reader_uses_xdg_config_first():
-    base_dir = "/home/abc/.config"
+    config_dir = "/home/abc/.config"
     filestore = fakes.FakeFilestore(
         {
-            base_dir + "/magic_tiler/config.toml": toml_contents,
+            config_dir + "/magic_tiler/config.toml": toml_contents,
             "abc": "def",
             "hjk": "lmno",
         }
     )
-    env = dtos.Env(home="/home/magic", xdg_config_home=base_dir)
+    env = dtos.Env(home="/home/magic", xdg_config_home=config_dir)
     config = configs.TomlConfig(filestore, env)
     assert config.to_dict() == expected_toml_dict
 
@@ -107,8 +107,15 @@ def test_reader_uses_home_dir_if_no_xdg():
 
 
 def test_throws_error_if_cant_find_config_in_home():
-    home_dir = "/home/def"
     filestore = fakes.FakeFilestore(dict())
-    env = dtos.Env(home=home_dir, xdg_config_home="")
+    env = dtos.Env(home="/home/jkl", xdg_config_home="")
+    with pytest.raises(RuntimeError):
+        configs.TomlConfig(filestore, env)
+
+
+def test_throws_error_if_cant_find_config_anywhere():
+    """Both xdg and home don't have the config"""
+    filestore = fakes.FakeFilestore(dict())
+    env = dtos.Env(home="/home/abc", xdg_config_home="/home/abc/.config")
     with pytest.raises(RuntimeError):
         configs.TomlConfig(filestore, env)
