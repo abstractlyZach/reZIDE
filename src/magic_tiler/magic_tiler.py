@@ -31,16 +31,20 @@ VERBOSITY_LOG_LEVELS = {
     help="Set verbosity. Add more v's to increase verbosity. For example, -v is "
     + "verbosity level 1 and -vv is verbosity level 2",
 )
+@click.option("-c", "--xdg-config-home-dir", envvar="XDG_CONFIG_HOME")
+@click.option("--user-home-dir", envvar="HOME")
 @click.version_option(version=magic_tiler.__version__)
-def main(verbosity_level: int) -> None:
+def main(verbosity_level: int, xdg_config_home_dir: str, user_home_dir: str) -> None:
     log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
     logging.basicConfig(level=log_level)
     logging.info(f"Log level set to {log_level}")
+    env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
+    logging.debug(f"Env is {env}")
     window_manager = sway.Sway()
     logging.debug(
         f"{window_manager.num_workspace_windows} windows are open in the current workspace"
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    config = configs.TomlConfig(filestore.LocalFilestore(), env=dtos.Env("", ""))
+    config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     layout.Layout(config, "screen", window_manager)
