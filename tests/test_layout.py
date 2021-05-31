@@ -5,14 +5,7 @@ import pytest
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import layout
-
-
-class FakeConfig(interfaces.ConfigReader):
-    def __init__(self, config_dict: Dict) -> None:
-        self._config_dict = config_dict
-
-    def to_dict(self) -> Dict:
-        return self._config_dict
+from tests import fakes
 
 
 class WindowManagerCall(NamedTuple):
@@ -368,7 +361,9 @@ def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
     spy_window_manager = SpyWindowManager()
     layout.Layout(
-        FakeConfig(test_case.config), test_case.layout_name, spy_window_manager
+        fakes.FakeConfig(test_case.config),
+        test_case.layout_name,
+        spy_window_manager,
     )
     assert spy_window_manager.calls == test_case.expected_call_args
 
@@ -376,32 +371,36 @@ def test_layout_calls_tile_factory(test_case):
 def test_cant_find_layout():
     with pytest.raises(KeyError):
         layout.Layout(
-            FakeConfig(layout_test_cases[0].config), "nonexistent", SpyWindowManager()
+            fakes.FakeConfig(layout_test_cases[0].config),
+            "nonexistent",
+            SpyWindowManager(),
         )
 
 
 def test_size_shouldnt_be_defined_in_root_node():
     with pytest.raises(RuntimeError):
-        layout.Layout(FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
+        layout.Layout(fakes.FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
 
 
 def test_no_invalid_split_orientation():
     with pytest.raises(RuntimeError):
         layout.Layout(
-            FakeConfig({"a": {"split": "laskdjflaskdjf"}}), "a", SpyWindowManager()
+            fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+            "a",
+            SpyWindowManager(),
         )
 
 
 def test_throws_error_if_not_enough_children():
     with pytest.raises(RuntimeError):
         layout.Layout(
-            FakeConfig({"a": {"split": "horizontal", "children": []}}),
+            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             "a",
             SpyWindowManager(),
         )
     with pytest.raises(RuntimeError):
         layout.Layout(
-            FakeConfig(
+            fakes.FakeConfig(
                 {
                     "a": {
                         "split": "horizontal",
@@ -420,7 +419,7 @@ def test_throws_error_if_not_enough_children():
         )
     # no exception raised with same config but 2 children
     layout.Layout(
-        FakeConfig(
+        fakes.FakeConfig(
             {
                 "a": {
                     "split": "horizontal",

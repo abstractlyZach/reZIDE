@@ -4,6 +4,8 @@ import click
 
 import magic_tiler
 from magic_tiler.utils import configs
+from magic_tiler.utils import dtos
+from magic_tiler.utils import filestore
 from magic_tiler.utils import layout
 from magic_tiler.utils import sway
 
@@ -40,5 +42,5 @@ def main(verbosity_level: int) -> None:
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    config = configs.TomlConfig("examples/centered_big.toml")
+    config = configs.TomlConfig(filestore.LocalFilestore(), env=dtos.Env("", ""))
     layout.Layout(config, "screen", window_manager)

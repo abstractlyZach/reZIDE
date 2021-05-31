@@ -34,3 +34,10 @@ class Tile(NamedTuple):
     width: int
     height: int
     window: Window
+
+
+class Env(NamedTuple):
+    """Environment variables"""
+
+    home: str
+    xdg_config_home: str
