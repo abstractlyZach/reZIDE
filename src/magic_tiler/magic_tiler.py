@@ -33,8 +33,11 @@ VERBOSITY_LOG_LEVELS = {
 )
 @click.option("-c", "--xdg-config-home-dir", envvar="XDG_CONFIG_HOME")
 @click.option("--user-home-dir", envvar="HOME")
+@click.argument("layout_name")
 @click.version_option(version=magic_tiler.__version__)
-def main(verbosity_level: int, xdg_config_home_dir: str, user_home_dir: str) -> None:
+def main(
+    verbosity_level: int, xdg_config_home_dir: str, user_home_dir: str, layout_name: str
+) -> None:
     log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
     logging.basicConfig(level=log_level)
     logging.info(f"Log level set to {log_level}")
@@ -47,4 +50,4 @@ def main(verbosity_level: int, xdg_config_home_dir: str, user_home_dir: str) -> 
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
     config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
-    layout.Layout(config, "screen", window_manager)
+    layout.Layout(config, layout_name, window_manager)
