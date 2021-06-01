@@ -41,6 +41,7 @@ command = "alacritty --title right-panel -e sh -c 'broot'"
 size = 25
 mark = "right-panel"
 """
+
 expected_toml_dict = {
     "screen": {
         "children": [
@@ -79,7 +80,9 @@ expected_toml_dict = {
 
 def test_toml_reading():
     config_reader = configs.TomlConfig(
-        fakes.FakeFilestore(files={"any": toml_contents}), dtos.Env("", "")
+        # ignore the env logic by using the "any" feature of our Fake :)
+        fakes.FakeFilestore(files={"any": toml_contents}),
+        dtos.Env(home="/home/myhomedir", xdg_config_home="/xdg"),
     )
     assert config_reader.to_dict() == expected_toml_dict
 
