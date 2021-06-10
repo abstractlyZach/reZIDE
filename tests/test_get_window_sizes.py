@@ -23,6 +23,9 @@ def test_get_window_sizes(click_runner):
 def test_click_handles_options(
     click_runner, mock_window_manager, mock_print_window_sizes
 ):
+    """Click should handle the user's input and specified flags to pass in the right
+    details to the print_window_sizes function
+    """
     click_runner.invoke(get_window_sizes.main)
     mock_print_window_sizes.assert_called_once_with(mock_window_manager())
 
