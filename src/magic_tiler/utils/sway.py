@@ -60,6 +60,10 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
             for window in self._get_windows_in_current_workspace()
         }
 
+    def get_tree(self) -> List:
+        current_workspace = self._get_focused_window().workspace()
+        return current_workspace.descendants()
+
     def _get_focused_window(self) -> i3ipc.Con:
         tree = self._sway.get_tree()
         focused = tree.find_focused()
@@ -81,15 +85,7 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
         return windows[0]
 
     def _get_windows_in_current_workspace(self) -> List[i3ipc.Con]:
-        workspaces = self._sway.get_workspaces()
-        for workspace in workspaces:
-            if workspace.focused:
-                if workspace.num == -1:
-                    raise RuntimeError("The current workspace is a named workspace")
-                current_workspace_num = workspace.num
-                break
-        else:
-            raise RuntimeError("There is no current workspace")
+        current_workspace_num = self._get_current_workspace_num()
         windows_in_current_workspace = []
         for container in self._sway.get_tree().leaves():
             logging.debug(
@@ -99,6 +95,16 @@ class Sway(interfaces.TilingWindowManager):  # pragma: nocover
             if container.workspace().num == current_workspace_num:
                 windows_in_current_workspace.append(container)
         return windows_in_current_workspace
+
+    def _get_current_workspace_num(self) -> i3ipc.Con:
+        workspaces = self._sway.get_workspaces()
+        for workspace in workspaces:
+            if workspace.focused:
+                if workspace.num == -1:
+                    raise RuntimeError("The current workspace is a named workspace")
+                return workspace.num
+        else:
+            raise RuntimeError("There is no current workspace")
 
     @property
     def num_workspace_windows(self) -> int:

@@ -1,14 +1,21 @@
 import click
-import i3ipc
+
+from magic_tiler.utils import interfaces
+from magic_tiler.utils import sway
+
+
+def print_tree(window_manager: interfaces.TilingWindowManager) -> None:
+    for node in window_manager.get_tree():
+        click.echo(click.style(node.name, fg="green", bold=True))
+        click.echo(f"x, y: ({node.rect.x}, {node.rect.y})")
+        click.echo(f"width, height: ({node.rect.width}, {node.rect.height})")
+        click.echo(f"gaps: {node.gaps}")
+        click.echo("marks: ", nl=False)
+        click.echo(click.style(f"{node.marks}", fg="cyan"))
+        click.echo()
 
 
 @click.command()
 def main() -> None:
-    i3 = i3ipc.Connection()
-    current_workspace = i3.get_tree().find_focused().workspace()
-    for node in current_workspace.descendants():
-        print(node.name)
-        print(f"x, y: ({node.rect.x}, {node.rect.y})")
-        print(f"width, height: ({node.rect.width}, {node.rect.height})")
-        print(f"gaps: {node.gaps}")
-        print()
+    window_manager = sway.Sway()
+    print_tree(window_manager)

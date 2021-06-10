@@ -24,6 +24,7 @@ mypy = "^0.812"
 flake8-annotations = "^2.6.2"
 codecov = "^2.1.11"
 pytest = "^6"
+pytest-mock = "^3.6.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -44,7 +45,6 @@ omit = [
     # top-level scripts
     "src/magic_tiler/magic_tiler.py",
     "src/magic_tiler/get_window_sizes.py",
-    "src/magic_tiler/get_tree.py",
 ]
 
 [tool.coverage.report]
@@ -62,3 +62,6 @@ get-tree = "magic_tiler.get_tree:main"
 [tool.pytest.ini_options]
 addopts = "--exitfirst --verbosity=2"
 log_file_level = "DEBUG"
+markers = [
+    'e2e',
+]
