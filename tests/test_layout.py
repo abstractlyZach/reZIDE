@@ -52,6 +52,9 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     def split(self, split_type: str) -> None:
         self._calls.append(WindowManagerCall("split", arg=split_type))
 
+    def get_tree(self):
+        pass
+
 
 class LayoutTestCase(NamedTuple):
     config: Dict

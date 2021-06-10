@@ -1,7 +1,7 @@
 all: format test lint typecheck
 
 test:
-	poetry run pytest --cov
+	poetry run pytest --cov -m "not e2e"
 
 format:
 	# reformat all files

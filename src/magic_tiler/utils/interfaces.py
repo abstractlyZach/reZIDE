@@ -1,5 +1,5 @@
 import abc
-from typing import Dict
+from typing import Dict, List
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import tree
@@ -34,6 +34,10 @@ class TilingWindowManager(object):
     @abc.abstractmethod
     def num_workspace_windows(self) -> int:
         """Count the windows on the current workspace"""
+        pass
+
+    @abc.abstractmethod
+    def get_tree(self) -> List:
         pass
 
 
