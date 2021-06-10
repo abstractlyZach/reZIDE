@@ -55,6 +55,9 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     def get_tree(self):
         pass
 
+    def get_window_sizes(self) -> Dict:
+        pass
+
 
 class LayoutTestCase(NamedTuple):
     config: Dict

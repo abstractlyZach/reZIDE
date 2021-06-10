@@ -44,7 +44,6 @@ omit = [
     "src/magic_tiler/utils/filestore.py",
     # top-level scripts
     "src/magic_tiler/magic_tiler.py",
-    "src/magic_tiler/get_window_sizes.py",
 ]
 
 [tool.coverage.report]
