@@ -1,7 +1,8 @@
+from unittest import mock
+
 import pytest
 
 from magic_tiler import get_window_sizes
-from tests import fakes
 
 
 @pytest.fixture
@@ -30,7 +31,7 @@ def test_click_handles_options(
     mock_print_window_sizes.assert_called_once_with(mock_window_manager())
 
 
-def test_print_window_sizes_run():
-    window_sizes = {("gutter",): {"height": 500, "weight": 400}}
-    window_manager = fakes.FakeWindowManager(window_sizes=window_sizes)
+def test_calls_window_manager():
+    window_manager = mock.MagicMock()
     get_window_sizes.print_window_sizes(window_manager)
+    window_manager.get_window_sizes.assert_called_once_with()
