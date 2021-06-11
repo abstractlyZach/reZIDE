@@ -52,6 +52,28 @@ def test_click_handles_options(
     )
 
 
+def test_can_override_env_variables(
+    click_runner, mock_window_manager, mock_run_magic_tiler, mock_config
+):
+    expected_env = dtos.Env(home="different_home", xdg_config_home="different_xdg")
+    result = click_runner.invoke(
+        magic_tiler.main,
+        [
+            "my_ide",
+            "--user-home-dir",
+            "different_home",
+            "--xdg-config-home-dir",
+            "different_xdg",
+        ],
+        env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+    )
+    assert result.exit_code == 0, result.exception
+    assert "" == result.output, result.exception
+    mock_run_magic_tiler.assert_called_once_with(
+        expected_env, mock_window_manager(), "my_ide", mock_config()
+    )
+
+
 def test_fails_if_too_many_windows_open():
     window_manager = fakes.FakeWindowManager(num_workspace_windows=20)
     env = dtos.Env(home="abc", xdg_config_home="def")
