@@ -1,3 +1,5 @@
+from typing import Dict, List, NamedTuple
+
 import pytest
 
 from magic_tiler import magic_tiler
@@ -36,41 +38,50 @@ def test_magic_tiler_script(click_runner):
     assert result.exit_code == 0
 
 
-def test_click_handles_options(
-    click_runner, mock_window_manager, mock_run_magic_tiler, mock_config
-):
-    fake_config = fakes.FakeConfig({"my_ide": {}})
-    mock_config.return_value = fake_config
-    expected_env = dtos.Env(home="abc", xdg_config_home="def")
-    result = click_runner.invoke(
-        magic_tiler.main, ["my_ide"], env={"HOME": "abc", "XDG_CONFIG_HOME": "def"}
-    )
-    assert result.exit_code == 0, result.exception
-    assert "" == result.output, result.exception
-    mock_run_magic_tiler.assert_called_once_with(
-        expected_env, mock_window_manager(), "my_ide", fake_config
-    )
+class ClickTestParams(NamedTuple):
+    cli_args: List[str]
+    shell_env: Dict
+    expected_env: dtos.Env
 
 
-def test_can_override_env_variables(
-    click_runner, mock_window_manager, mock_run_magic_tiler, mock_config
-):
-    expected_env = dtos.Env(home="different_home", xdg_config_home="different_xdg")
-    result = click_runner.invoke(
-        magic_tiler.main,
-        [
+test_params = [
+    ClickTestParams(
+        cli_args=["my_ide"],
+        shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+        expected_env=dtos.Env(home="abc", xdg_config_home="def"),
+    ),
+    # can we override CLI env variables?
+    ClickTestParams(
+        cli_args=[
             "my_ide",
             "--user-home-dir",
             "different_home",
             "--xdg-config-home-dir",
             "different_xdg",
         ],
-        env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+        shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+        expected_env=dtos.Env(home="different_home", xdg_config_home="different_xdg"),
+    ),
+]
+
+
+# I don't like mocking so many things, but I'm not sure how to do DI
+# when we're using Click
+@pytest.mark.parametrize("test_parameters", test_params)
+def test_successful_script(
+    click_runner,
+    mock_window_manager,
+    mock_run_magic_tiler,
+    mock_config,
+    test_parameters,
+):
+    result = click_runner.invoke(
+        magic_tiler.main, test_parameters.cli_args, env=test_parameters.shell_env
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     mock_run_magic_tiler.assert_called_once_with(
-        expected_env, mock_window_manager(), "my_ide", mock_config()
+        test_parameters.expected_env, mock_window_manager(), "my_ide", mock_config()
     )
 
 
