@@ -54,9 +54,13 @@ class FakeNode(NamedTuple):
 
 
 class FakeWindowManager(interfaces.TilingWindowManager):
-    def __init__(self, tree: Optional[List[FakeNode]] = None):
+    def __init__(
+        self, tree: Optional[List[FakeNode]] = None, window_sizes: Optional[Dict] = None
+    ):
         if tree:
             self._tree = tree
+        if window_sizes:
+            self._window_sizes = window_sizes
 
     def make_window(self, window_details: dtos.WindowDetails) -> None:
         pass
@@ -84,3 +88,6 @@ class FakeWindowManager(interfaces.TilingWindowManager):
 
     def get_tree(self) -> List[FakeNode]:
         return self._tree
+
+    def get_window_sizes(self):
+        return self._window_sizes

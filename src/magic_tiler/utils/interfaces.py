@@ -40,6 +40,10 @@ class TilingWindowManager(object):
     def get_tree(self) -> List:
         pass
 
+    @abc.abstractmethod
+    def get_window_sizes(self) -> Dict:
+        pass
+
 
 class ConfigReader(object):
     @abc.abstractmethod

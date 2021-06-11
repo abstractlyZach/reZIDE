@@ -15,7 +15,7 @@ split.
 SLEEP_TIME = 0.30
 
 
-class Sway(interfaces.TilingWindowManager):  # pragma: nocover
+class Sway(interfaces.TilingWindowManager):
     def __init__(self) -> None:
         self._sway = i3ipc.Connection()
 
