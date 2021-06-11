@@ -55,12 +55,16 @@ class FakeNode(NamedTuple):
 
 class FakeWindowManager(interfaces.TilingWindowManager):
     def __init__(
-        self, tree: Optional[List[FakeNode]] = None, window_sizes: Optional[Dict] = None
+        self,
+        tree: Optional[List[FakeNode]] = None,
+        window_sizes: Optional[Dict] = None,
+        num_workspace_windows: int = 0,
     ):
         if tree:
             self._tree = tree
         if window_sizes:
             self._window_sizes = window_sizes
+        self._num_workspace_windows = num_workspace_windows
 
     def make_window(self, window_details: dtos.WindowDetails) -> None:
         pass
@@ -84,7 +88,7 @@ class FakeWindowManager(interfaces.TilingWindowManager):
     @property
     def num_workspace_windows(self) -> int:
         """Count the windows on the current workspace"""
-        pass
+        return self._num_workspace_windows
 
     def get_tree(self) -> List[FakeNode]:
         return self._tree

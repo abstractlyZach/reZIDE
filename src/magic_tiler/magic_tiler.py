@@ -6,6 +6,7 @@ import magic_tiler
 from magic_tiler.utils import configs
 from magic_tiler.utils import dtos
 from magic_tiler.utils import filestore
+from magic_tiler.utils import interfaces
 from magic_tiler.utils import layout
 from magic_tiler.utils import sway
 
@@ -42,12 +43,21 @@ def main(
     logging.basicConfig(level=log_level)
     logging.info(f"Log level set to {log_level}")
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
-    logging.debug(f"Env is {env}")
+    config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     window_manager = sway.Sway()
+    run_magic_tiler(env, window_manager, layout_name, config)
+
+
+def run_magic_tiler(
+    env: dtos.Env,
+    window_manager: interfaces.TilingWindowManager,
+    layout_name: str,
+    config: interfaces.ConfigReader,
+) -> None:
+    logging.debug(f"Env is {env}")
     logging.debug(
         f"{window_manager.num_workspace_windows} windows are open in the current workspace"
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     layout.Layout(config, layout_name, window_manager)
