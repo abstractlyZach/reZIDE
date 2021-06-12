@@ -42,8 +42,6 @@ omit = [
     # external apis
     "src/magic_tiler/utils/sway.py",
     "src/magic_tiler/utils/filestore.py",
-    # top-level scripts
-    "src/magic_tiler/magic_tiler.py",
 ]
 
 [tool.coverage.report]
