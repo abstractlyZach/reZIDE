@@ -7,7 +7,7 @@ from magic_tiler.utils import configs
 from magic_tiler.utils import dtos
 from magic_tiler.utils import filestore
 from magic_tiler.utils import interfaces
-from magic_tiler.utils import layout
+from magic_tiler.utils import layouts
 from magic_tiler.utils import sway
 
 # maps from verbosity level to log levels
@@ -60,4 +60,5 @@ def run_magic_tiler(
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    layout.Layout(config, layout_name, window_manager)
+    layout = layouts.Layout(config, window_manager)
+    layout.spawn_windows(layout_name)

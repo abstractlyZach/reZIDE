@@ -14,12 +14,14 @@ class Layout(object):
     def __init__(
         self,
         config_reader: interfaces.ConfigReader,
-        layout_name: str,
         window_manager: interfaces.TilingWindowManager,
     ) -> None:
         self._window_manager = window_manager
+        self._config_reader = config_reader
+
+    def spawn_windows(self, layout_name: str) -> None:
         try:
-            root_node = config_reader.to_dict()[layout_name]
+            root_node = self._config_reader.to_dict()[layout_name]
         except KeyError:
             raise KeyError(f'Could not find layout "{layout_name}" in config')
         if "size" in root_node:

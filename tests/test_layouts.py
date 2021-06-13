@@ -4,7 +4,7 @@ import pytest
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
-from magic_tiler.utils import layout
+from magic_tiler.utils import layouts
 from tests import fakes
 
 
@@ -366,46 +366,60 @@ layout_test_cases = [
 def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
     spy_window_manager = SpyWindowManager()
-    layout.Layout(
+    layout = layouts.Layout(
         fakes.FakeConfig(test_case.config),
-        test_case.layout_name,
         spy_window_manager,
     )
+    layout.spawn_windows(test_case.layout_name)
     assert spy_window_manager.calls == test_case.expected_call_args
 
 
 def test_cant_find_layout():
+    layout = layouts.Layout(
+        fakes.FakeConfig(layout_test_cases[0].config),
+        SpyWindowManager(),
+    )
     with pytest.raises(KeyError):
-        layout.Layout(
-            fakes.FakeConfig(layout_test_cases[0].config),
-            "nonexistent",
-            SpyWindowManager(),
-        )
+        layout.spawn_windows("a")
 
 
 def test_size_shouldnt_be_defined_in_root_node():
+    layout = layouts.Layout(fakes.FakeConfig({"a": {"size": 9000}}), SpyWindowManager())
     with pytest.raises(RuntimeError):
-        layout.Layout(fakes.FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
+        layout.spawn_windows("a")
 
 
 def test_no_invalid_split_orientation():
+    layout = layouts.Layout(
+        fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+        SpyWindowManager(),
+    )
     with pytest.raises(RuntimeError):
-        layout.Layout(
-            fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
-            "a",
-            SpyWindowManager(),
-        )
+        layout.spawn_windows("a")
 
 
 def test_throws_error_if_not_enough_children():
-    with pytest.raises(RuntimeError):
-        layout.Layout(
+    failing_layouts = []
+    failing_layouts.append(
+        layouts.Layout(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
-            "a",
             SpyWindowManager(),
         )
-    with pytest.raises(RuntimeError):
-        layout.Layout(
+    )
+    failing_layouts.append(
+        layouts.Layout(
+            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
+            SpyWindowManager(),
+        )
+    )
+    failing_layouts.append(
+        layouts.Layout(
+            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
+            SpyWindowManager(),
+        )
+    )
+    failing_layouts.append(
+        layouts.Layout(
             fakes.FakeConfig(
                 {
                     "a": {
@@ -420,11 +434,15 @@ def test_throws_error_if_not_enough_children():
                     }
                 }
             ),
-            "a",
             SpyWindowManager(),
         )
+    )
+    for layout in failing_layouts:
+        with pytest.raises(RuntimeError):
+            layout.spawn_windows("a")
+
     # no exception raised with same config but 2 children
-    layout.Layout(
+    layout_5 = layouts.Layout(
         fakes.FakeConfig(
             {
                 "a": {
@@ -444,6 +462,6 @@ def test_throws_error_if_not_enough_children():
                 }
             }
         ),
-        "a",
         SpyWindowManager(),
     )
+    layout_5.spawn_windows("a")
