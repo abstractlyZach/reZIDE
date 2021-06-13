@@ -60,4 +60,5 @@ def run_magic_tiler(
     )
     if window_manager.num_workspace_windows > 1:
         raise RuntimeError("There are multiple windows open in the current workspace.")
-    layouts.Layout(config, layout_name, window_manager)
+    layout = layouts.Layout(config, window_manager)
+    layout.spawn_windows(layout_name)

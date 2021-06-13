@@ -97,4 +97,5 @@ def test_happy_path(mock_layout):
     config = fakes.FakeConfig({})
     env = dtos.Env(home="abc", xdg_config_home="def")
     magic_tiler.run_magic_tiler(env, window_manager, "my_ide", config)
-    mock_layout.assert_called_once_with(config, "my_ide", window_manager)
+    mock_layout.assert_called_once_with(config, window_manager)
+    mock_layout.return_value.spawn_windows.assert_called_once_with("my_ide")
