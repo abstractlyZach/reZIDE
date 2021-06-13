@@ -19,6 +19,17 @@ class Layout(object):
         self._window_manager = window_manager
         self._config_reader = config_reader
 
+    def spawn_windows(self, layout_name: str) -> None:
+        try:
+            root_node = self._config_reader.to_dict()[layout_name]
+        except KeyError:
+            raise KeyError(f'Could not find layout "{layout_name}" in config')
+        if "size" in root_node:
+            raise RuntimeError("root node shouldn't have a size. size is implied 100")
+        root_node["size"] = 100
+        tree_root = tree.create_tree(root_node)
+        self._parse_tree(tree_root)
+
     def _parse_tree(self, root_node: tree.TreeNode) -> None:
         node_queue = collections.deque([root_node])
         self._created_windows: Set[str] = set()
@@ -41,14 +52,3 @@ class Layout(object):
         else:
             self._window_manager.make_window(leftmost_descendant.data)
             self._created_windows.add(leftmost_descendant.data.mark)
-
-    def spawn_windows(self, layout_name: str) -> None:
-        try:
-            root_node = self._config_reader.to_dict()[layout_name]
-        except KeyError:
-            raise KeyError(f'Could not find layout "{layout_name}" in config')
-        if "size" in root_node:
-            raise RuntimeError("root node shouldn't have a size. size is implied 100")
-        root_node["size"] = 100
-        tree_root = tree.create_tree(root_node)
-        self._parse_tree(tree_root)
