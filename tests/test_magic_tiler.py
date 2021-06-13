@@ -81,7 +81,7 @@ def test_successful_script(
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     mock_run_magic_tiler.assert_called_once_with(
-        test_parameters.expected_env, mock_window_manager(), "my_ide", mock_config()
+        test_parameters.expected_env, mock_window_manager(), "my_ide", mock_config(), 0
     )
 
 
@@ -89,13 +89,15 @@ def test_fails_if_too_many_windows_open():
     window_manager = fakes.FakeWindowManager(num_workspace_windows=20)
     env = dtos.Env(home="abc", xdg_config_home="def")
     with pytest.raises(RuntimeError):
-        magic_tiler.run_magic_tiler(env, window_manager, "my_ide", fakes.FakeConfig({}))
+        magic_tiler.run_magic_tiler(
+            env, window_manager, "my_ide", fakes.FakeConfig({}), 0
+        )
 
 
 def test_happy_path(mock_layout):
     window_manager = fakes.FakeWindowManager()
     config = fakes.FakeConfig({})
     env = dtos.Env(home="abc", xdg_config_home="def")
-    magic_tiler.run_magic_tiler(env, window_manager, "my_ide", config)
+    magic_tiler.run_magic_tiler(env, window_manager, "my_ide", config, 0)
     mock_layout.assert_called_once_with(config, window_manager)
     mock_layout.return_value.spawn_windows.assert_called_once_with("my_ide")
