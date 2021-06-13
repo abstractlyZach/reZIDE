@@ -4,7 +4,7 @@ import pytest
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
-from magic_tiler.utils import layout
+from magic_tiler.utils import layouts
 from tests import fakes
 
 
@@ -366,7 +366,7 @@ layout_test_cases = [
 def test_layout_calls_tile_factory(test_case):
     """Make sure we're calling the tile factory correctly"""
     spy_window_manager = SpyWindowManager()
-    layout.Layout(
+    layouts.Layout(
         fakes.FakeConfig(test_case.config),
         test_case.layout_name,
         spy_window_manager,
@@ -376,7 +376,7 @@ def test_layout_calls_tile_factory(test_case):
 
 def test_cant_find_layout():
     with pytest.raises(KeyError):
-        layout.Layout(
+        layouts.Layout(
             fakes.FakeConfig(layout_test_cases[0].config),
             "nonexistent",
             SpyWindowManager(),
@@ -385,12 +385,12 @@ def test_cant_find_layout():
 
 def test_size_shouldnt_be_defined_in_root_node():
     with pytest.raises(RuntimeError):
-        layout.Layout(fakes.FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
+        layouts.Layout(fakes.FakeConfig({"a": {"size": 9000}}), "a", SpyWindowManager())
 
 
 def test_no_invalid_split_orientation():
     with pytest.raises(RuntimeError):
-        layout.Layout(
+        layouts.Layout(
             fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
             "a",
             SpyWindowManager(),
@@ -399,13 +399,13 @@ def test_no_invalid_split_orientation():
 
 def test_throws_error_if_not_enough_children():
     with pytest.raises(RuntimeError):
-        layout.Layout(
+        layouts.Layout(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             "a",
             SpyWindowManager(),
         )
     with pytest.raises(RuntimeError):
-        layout.Layout(
+        layouts.Layout(
             fakes.FakeConfig(
                 {
                     "a": {
@@ -424,7 +424,7 @@ def test_throws_error_if_not_enough_children():
             SpyWindowManager(),
         )
     # no exception raised with same config but 2 children
-    layout.Layout(
+    layouts.Layout(
         fakes.FakeConfig(
             {
                 "a": {

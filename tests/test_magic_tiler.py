@@ -26,7 +26,7 @@ def mock_config(mocker):
 
 @pytest.fixture
 def mock_layout(mocker):
-    mock = mocker.patch("magic_tiler.utils.layout.Layout")
+    mock = mocker.patch("magic_tiler.utils.layouts.Layout")
     return mock
 
 
