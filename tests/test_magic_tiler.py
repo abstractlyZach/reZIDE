@@ -28,14 +28,16 @@ def MockLayout(mocker):
 
 
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
-@pytest.mark.e2e
 @pytest.mark.skip
+@pytest.mark.e2e
 def test_magic_tiler_script(click_runner):
     result = click_runner.invoke(magic_tiler.main)
     assert result.exit_code == 0
 
 
 class ClickTestParams(NamedTuple):
+    """Store test parameters in a nice namedtuple"""
+
     cli_args: List[str]
     shell_env: Dict
     expected_parsed_env: dtos.Env
@@ -90,6 +92,7 @@ def test_successful_script(
     MockLayout,
     test_parameters,
 ):
+    """Verify that we're setting up dependencies and calling MagicTiler correctly"""
     result = click_runner.invoke(
         magic_tiler.main, test_parameters.cli_args, env=test_parameters.shell_env
     )
