@@ -41,14 +41,14 @@ def test_magic_tiler_script(click_runner):
 class ClickTestParams(NamedTuple):
     cli_args: List[str]
     shell_env: Dict
-    expected_env: dtos.Env
+    expected_parsed_env: dtos.Env
 
 
 test_params = [
     ClickTestParams(
         cli_args=["my_ide"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
-        expected_env=dtos.Env(home="abc", xdg_config_home="def"),
+        expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
     ),
     # can we override CLI env variables?
     ClickTestParams(
@@ -60,7 +60,9 @@ test_params = [
             "different_xdg",
         ],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
-        expected_env=dtos.Env(home="different_home", xdg_config_home="different_xdg"),
+        expected_parsed_env=dtos.Env(
+            home="different_home", xdg_config_home="different_xdg"
+        ),
     ),
 ]
 
@@ -81,7 +83,7 @@ def test_successful_script(
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     mock_magic_tiler.assert_called_once_with(
-        test_parameters.expected_env, mock_window_manager(), mock_config(), 0
+        test_parameters.expected_parsed_env, mock_window_manager(), mock_config(), 0
     )
     mock_magic_tiler.return_value.run.assert_called_once_with("my_ide")
 
