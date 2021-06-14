@@ -1,6 +1,6 @@
 import collections
 import logging
-from typing import Dict, List, Set
+from typing import List, Set
 
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import tree
@@ -18,7 +18,7 @@ class Layout(object):
     ) -> None:
         self._window_manager = window_manager
         self._config_reader = config_reader
-        self._root_node: Dict = dict()
+        self._layout_has_been_selected = False
         self._leaf_nodes: List[tree.TreeNode] = []
 
     def select(self, layout_name: str) -> None:
@@ -28,10 +28,11 @@ class Layout(object):
             raise KeyError(f'Could not find layout "{layout_name}" in config')
         if "size" in self._root_node:
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
+        self._layout_has_been_selected = True
         self._root_node["size"] = 100
 
     def spawn_windows(self) -> None:
-        if not self._root_node:
+        if not self._layout_has_been_selected:
             raise RuntimeError("No layout selected")
         logging.debug(
             f"{self._window_manager.num_workspace_windows} windows"
