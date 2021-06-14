@@ -65,7 +65,7 @@ test_params = [
         expected_verbosity=0,
     ),
     ClickTestParams(
-        cli_args=["my_ide", "-v"],
+        cli_args=["test_ide", "-v"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
         expected_verbosity=1,
@@ -94,7 +94,7 @@ def test_successful_script(
         MockLayout(),
         test_parameters.expected_verbosity,
     )
-    MockMagicTiler.return_value.run.assert_called_once_with("my_ide")
+    MockMagicTiler.return_value.run.assert_called_once_with(test_parameters.cli_args[0])
 
 
 def test_happy_path():
