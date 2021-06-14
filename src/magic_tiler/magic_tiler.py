@@ -74,4 +74,5 @@ class MagicTiler(object):
         logging.debug(f"Env is {env}")
 
     def run(self, layout_name: str) -> None:
-        self._layout.spawn_windows(layout_name)
+        self._layout.select(layout_name)
+        self._layout.spawn_windows()
