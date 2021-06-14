@@ -70,6 +70,12 @@ test_params = [
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
         expected_verbosity=1,
     ),
+    ClickTestParams(
+        cli_args=["super-verbose", "-vv"],
+        shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+        expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
+        expected_verbosity=2,
+    ),
 ]
 
 
@@ -97,7 +103,7 @@ def test_successful_script(
     MockMagicTiler.return_value.run.assert_called_once_with(test_parameters.cli_args[0])
 
 
-def test_happy_path():
+def test_run():
     env = dtos.Env(home="abc", xdg_config_home="def")
     layout = mock.MagicMock()
     application = magic_tiler.MagicTiler(env, layout, 0)
