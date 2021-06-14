@@ -13,7 +13,7 @@ def mock_window_manager(mocker):
 
 
 @pytest.fixture
-def mock_run_magic_tiler(mocker):
+def mock_magic_tiler(mocker):
     mock = mocker.patch("magic_tiler.magic_tiler.MagicTiler")
     return mock
 
@@ -71,7 +71,7 @@ test_params = [
 def test_successful_script(
     click_runner,
     mock_window_manager,
-    mock_run_magic_tiler,
+    mock_magic_tiler,
     mock_config,
     test_parameters,
 ):
@@ -80,10 +80,10 @@ def test_successful_script(
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
-    mock_run_magic_tiler.assert_called_once_with(
+    mock_magic_tiler.assert_called_once_with(
         test_parameters.expected_env, mock_window_manager(), mock_config(), 0
     )
-    mock_run_magic_tiler.return_value.run.assert_called_once_with("my_ide")
+    mock_magic_tiler.return_value.run.assert_called_once_with("my_ide")
 
 
 def test_fails_if_too_many_windows_open():
