@@ -15,8 +15,8 @@ class WindowManagerCall(NamedTuple):
 
 class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into Layouts using dependency injection
-    and spys on their calls so we can make sure that we're doing
-    the tile math correctly
+    and spys on their calls so we can make sure that we're handling
+    window creation correctly
     """
 
     def __init__(self, num_workspace_windows: int = 0):
@@ -364,13 +364,10 @@ layout_test_cases = [
 
 
 @pytest.mark.parametrize("test_case", layout_test_cases)
-def test_layout_calls_tile_factory(test_case):
-    """Make sure we're calling the tile factory correctly"""
+def test_layout_calls_window_manager(test_case):
+    """Make sure we're calling the window manager correctly"""
     spy_window_manager = SpyWindowManager()
-    layout = layouts.Layout(
-        fakes.FakeConfig(test_case.config),
-        spy_window_manager,
-    )
+    layout = layouts.Layout(fakes.FakeConfig(test_case.config), spy_window_manager)
     layout.spawn_windows(test_case.layout_name)
     assert spy_window_manager.calls == test_case.expected_call_args
 
