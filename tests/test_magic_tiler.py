@@ -1,10 +1,10 @@
 from typing import Dict, List, NamedTuple
+from unittest import mock
 
 import pytest
 
 from magic_tiler import magic_tiler
 from magic_tiler.utils import dtos
-from tests import fakes
 
 
 @pytest.fixture
@@ -72,6 +72,7 @@ def test_successful_script(
     MockWindowManager,
     MockMagicTiler,
     MockConfig,
+    MockLayout,
     test_parameters,
 ):
     result = click_runner.invoke(
@@ -80,24 +81,14 @@ def test_successful_script(
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     MockMagicTiler.assert_called_once_with(
-        test_parameters.expected_parsed_env, MockWindowManager(), MockConfig(), 0
+        test_parameters.expected_parsed_env, MockLayout(), 0
     )
     MockMagicTiler.return_value.run.assert_called_once_with("my_ide")
 
 
-def test_fails_if_too_many_windows_open():
-    window_manager = fakes.FakeWindowManager(num_workspace_windows=20)
+def test_happy_path():
     env = dtos.Env(home="abc", xdg_config_home="def")
-    application = magic_tiler.MagicTiler(env, window_manager, fakes.FakeConfig({}), 0)
-    with pytest.raises(RuntimeError):
-        application.run("my_ide")
-
-
-def test_happy_path(MockLayout):
-    window_manager = fakes.FakeWindowManager()
-    config = fakes.FakeConfig({})
-    env = dtos.Env(home="abc", xdg_config_home="def")
-    application = magic_tiler.MagicTiler(env, window_manager, config, 0)
+    layout = mock.MagicMock()
+    application = magic_tiler.MagicTiler(env, layout, 0)
     application.run("my_ide")
-    MockLayout.assert_called_once_with(config, window_manager)
-    MockLayout.return_value.spawn_windows.assert_called_once_with("my_ide")
+    layout.spawn_windows.assert_called_once_with("my_ide")

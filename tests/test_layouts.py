@@ -19,8 +19,9 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     the tile math correctly
     """
 
-    def __init__(self):
+    def __init__(self, num_workspace_windows: int = 0):
         self._calls: List[WindowManagerCall] = []
+        self._num_workspace_windows = num_workspace_windows
 
     def make_window(
         self,
@@ -34,7 +35,7 @@ class SpyWindowManager(interfaces.TilingWindowManager):
 
     @property
     def num_workspace_windows(self):
-        pass
+        return self._num_workspace_windows
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
@@ -465,3 +466,13 @@ def test_throws_error_if_not_enough_children():
         SpyWindowManager(),
     )
     layout_5.spawn_windows("a")
+
+
+def test_fails_if_too_many_windows_open():
+    for i in [2, 20, 100]:
+        layout = layouts.Layout(
+            fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+            SpyWindowManager(num_workspace_windows=i),
+        )
+        with pytest.raises(RuntimeError):
+            layout.spawn_windows("a")
