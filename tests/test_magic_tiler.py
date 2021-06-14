@@ -39,6 +39,7 @@ class ClickTestParams(NamedTuple):
     cli_args: List[str]
     shell_env: Dict
     expected_parsed_env: dtos.Env
+    expected_verbosity: int
 
 
 test_params = [
@@ -46,6 +47,7 @@ test_params = [
         cli_args=["my_ide"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
+        expected_verbosity=0,
     ),
     # can we override CLI env variables?
     ClickTestParams(
@@ -60,6 +62,13 @@ test_params = [
         expected_parsed_env=dtos.Env(
             home="different_home", xdg_config_home="different_xdg"
         ),
+        expected_verbosity=0,
+    ),
+    ClickTestParams(
+        cli_args=["my_ide", "-v"],
+        shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
+        expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
+        expected_verbosity=1,
     ),
 ]
 
@@ -81,7 +90,9 @@ def test_successful_script(
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     MockMagicTiler.assert_called_once_with(
-        test_parameters.expected_parsed_env, MockLayout(), 0
+        test_parameters.expected_parsed_env,
+        MockLayout(),
+        test_parameters.expected_verbosity,
     )
     MockMagicTiler.return_value.run.assert_called_once_with("my_ide")
 
