@@ -30,6 +30,7 @@ class Layout(object):
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
         self._layout_has_been_selected = True
         self._root_node["size"] = 100
+        # TODO: should parse and validate tree here in the future
 
     def spawn_windows(self) -> None:
         if not self._layout_has_been_selected:
