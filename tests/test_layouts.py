@@ -15,12 +15,13 @@ class WindowManagerCall(NamedTuple):
 
 class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into Layouts using dependency injection
-    and spys on their calls so we can make sure that we're doing
-    the tile math correctly
+    and spys on their calls so we can make sure that we're handling
+    window creation correctly
     """
 
-    def __init__(self):
+    def __init__(self, num_workspace_windows: int = 0):
         self._calls: List[WindowManagerCall] = []
+        self._num_workspace_windows = num_workspace_windows
 
     def make_window(
         self,
@@ -34,7 +35,7 @@ class SpyWindowManager(interfaces.TilingWindowManager):
 
     @property
     def num_workspace_windows(self):
-        pass
+        return self._num_workspace_windows
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
@@ -363,13 +364,10 @@ layout_test_cases = [
 
 
 @pytest.mark.parametrize("test_case", layout_test_cases)
-def test_layout_calls_tile_factory(test_case):
-    """Make sure we're calling the tile factory correctly"""
+def test_layout_calls_window_manager(test_case):
+    """Make sure we're calling the window manager correctly"""
     spy_window_manager = SpyWindowManager()
-    layout = layouts.Layout(
-        fakes.FakeConfig(test_case.config),
-        spy_window_manager,
-    )
+    layout = layouts.Layout(fakes.FakeConfig(test_case.config), spy_window_manager)
     layout.spawn_windows(test_case.layout_name)
     assert spy_window_manager.calls == test_case.expected_call_args
 
@@ -465,3 +463,13 @@ def test_throws_error_if_not_enough_children():
         SpyWindowManager(),
     )
     layout_5.spawn_windows("a")
+
+
+def test_fails_if_too_many_windows_open():
+    for i in [2, 20, 100]:
+        layout = layouts.Layout(
+            fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+            SpyWindowManager(num_workspace_windows=i),
+        )
+        with pytest.raises(RuntimeError):
+            layout.spawn_windows("a")

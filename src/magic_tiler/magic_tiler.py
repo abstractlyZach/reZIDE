@@ -6,7 +6,6 @@ import magic_tiler
 from magic_tiler.utils import configs
 from magic_tiler.utils import dtos
 from magic_tiler.utils import filestore
-from magic_tiler.utils import interfaces
 from magic_tiler.utils import layouts
 from magic_tiler.utils import sway
 
@@ -42,7 +41,8 @@ def main(
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
     config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     window_manager = sway.Sway()
-    application = MagicTiler(env, window_manager, config, verbosity_level)
+    layout = layouts.Layout(config, window_manager)
+    application = MagicTiler(env, layout, verbosity_level)
     application.run(layout_name)
 
 
@@ -52,24 +52,14 @@ class MagicTiler(object):
     def __init__(
         self,
         env: dtos.Env,
-        window_manager: interfaces.TilingWindowManager,
-        config: interfaces.ConfigReader,
+        layout: layouts.Layout,
         verbosity_level: int,
     ) -> None:
-        self._window_manager = window_manager
-        self._layout = layouts.Layout(config, window_manager)
+        self._layout = layout
         log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
         logging.basicConfig(level=log_level)
         logging.info(f"Log level set to {log_level}")
         logging.debug(f"Env is {env}")
 
     def run(self, layout_name: str) -> None:
-        logging.debug(
-            f"{self._window_manager.num_workspace_windows} windows"
-            + " are open in the current workspace"
-        )
-        if self._window_manager.num_workspace_windows > 1:
-            raise RuntimeError(
-                "There are multiple windows open in the current workspace."
-            )
         self._layout.spawn_windows(layout_name)

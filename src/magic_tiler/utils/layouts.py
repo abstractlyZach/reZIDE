@@ -20,6 +20,14 @@ class Layout(object):
         self._config_reader = config_reader
 
     def spawn_windows(self, layout_name: str) -> None:
+        logging.debug(
+            f"{self._window_manager.num_workspace_windows} windows"
+            + " are open in the current workspace"
+        )
+        if self._window_manager.num_workspace_windows > 1:
+            raise RuntimeError(
+                "There are multiple windows open in the current workspace."
+            )
         try:
             root_node = self._config_reader.to_dict()[layout_name]
         except KeyError:
