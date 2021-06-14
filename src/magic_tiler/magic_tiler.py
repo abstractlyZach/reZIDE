@@ -42,24 +42,34 @@ def main(
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
     config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     window_manager = sway.Sway()
-    run_magic_tiler(env, window_manager, layout_name, config, verbosity_level)
+    application = MagicTiler(env, window_manager, config, verbosity_level)
+    application.run(layout_name)
 
 
-def run_magic_tiler(
-    env: dtos.Env,
-    window_manager: interfaces.TilingWindowManager,
-    layout_name: str,
-    config: interfaces.ConfigReader,
-    verbosity_level: int,
-) -> None:
-    log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
-    logging.basicConfig(level=log_level)
-    logging.info(f"Log level set to {log_level}")
-    logging.debug(f"Env is {env}")
-    logging.debug(
-        f"{window_manager.num_workspace_windows} windows are open in the current workspace"
-    )
-    if window_manager.num_workspace_windows > 1:
-        raise RuntimeError("There are multiple windows open in the current workspace.")
-    layout = layouts.Layout(config, window_manager)
-    layout.spawn_windows(layout_name)
+class MagicTiler(object):
+    """Manages the application's state and calls the appropriate functions"""
+
+    def __init__(
+        self,
+        env: dtos.Env,
+        window_manager: interfaces.TilingWindowManager,
+        config: interfaces.ConfigReader,
+        verbosity_level: int,
+    ) -> None:
+        self._window_manager = window_manager
+        self._layout = layouts.Layout(config, window_manager)
+        log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
+        logging.basicConfig(level=log_level)
+        logging.info(f"Log level set to {log_level}")
+        logging.debug(f"Env is {env}")
+
+    def run(self, layout_name: str) -> None:
+        logging.debug(
+            f"{self._window_manager.num_workspace_windows} windows"
+            + " are open in the current workspace"
+        )
+        if self._window_manager.num_workspace_windows > 1:
+            raise RuntimeError(
+                "There are multiple windows open in the current workspace."
+            )
+        self._layout.spawn_windows(layout_name)
