@@ -1,6 +1,6 @@
 import collections
 import logging
-from typing import Dict, Set
+from typing import Dict, List, Set
 
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import tree
@@ -19,6 +19,7 @@ class Layout(object):
         self._window_manager = window_manager
         self._config_reader = config_reader
         self._root_node: Dict = dict()
+        self._leaf_nodes: List[tree.TreeNode] = []
 
     def select(self, layout_name: str) -> None:
         try:
@@ -65,3 +66,4 @@ class Layout(object):
         else:
             self._window_manager.make_window(leftmost_descendant.data)
             self._created_windows.add(leftmost_descendant.data.mark)
+            self._leaf_nodes.append(leftmost_descendant)
