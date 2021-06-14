@@ -1,6 +1,6 @@
 import collections
 import logging
-from typing import Set
+from typing import Dict, Set
 
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import tree
@@ -18,6 +18,7 @@ class Layout(object):
     ) -> None:
         self._window_manager = window_manager
         self._config_reader = config_reader
+        self._root_node: Dict = dict()
 
     def select(self, layout_name: str) -> None:
         try:
@@ -29,6 +30,8 @@ class Layout(object):
         self._root_node["size"] = 100
 
     def spawn_windows(self) -> None:
+        if not self._root_node:
+            raise RuntimeError("No layout selected")
         logging.debug(
             f"{self._window_manager.num_workspace_windows} windows"
             + " are open in the current workspace"

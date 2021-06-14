@@ -478,3 +478,12 @@ def test_fails_if_too_many_windows_open():
         layout.select("a")
         with pytest.raises(RuntimeError):
             layout.spawn_windows()
+
+
+def test_raises_exception_if_no_selection():
+    layout = layouts.Layout(
+        fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+        SpyWindowManager(),
+    )
+    with pytest.raises(RuntimeError):
+        layout.spawn_windows()
