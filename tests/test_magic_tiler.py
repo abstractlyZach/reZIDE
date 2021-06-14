@@ -14,20 +14,17 @@ def MockWindowManager(mocker):
 
 @pytest.fixture
 def MockMagicTiler(mocker):
-    mock = mocker.patch("magic_tiler.magic_tiler.MagicTiler")
-    return mock
+    return mocker.patch("magic_tiler.magic_tiler.MagicTiler")
 
 
 @pytest.fixture
 def MockConfig(mocker):
-    mock = mocker.patch("magic_tiler.utils.configs.TomlConfig")
-    return mock
+    return mocker.patch("magic_tiler.utils.configs.TomlConfig")
 
 
 @pytest.fixture
 def MockLayout(mocker):
-    mock = mocker.patch("magic_tiler.utils.layouts.Layout")
-    return mock
+    return mocker.patch("magic_tiler.utils.layouts.Layout")
 
 
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
