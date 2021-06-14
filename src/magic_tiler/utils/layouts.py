@@ -19,7 +19,6 @@ class Layout(object):
         self._window_manager = window_manager
         self._config_reader = config_reader
         self._layout_has_been_selected = False
-        self._leaf_nodes: List[tree.TreeNode] = []
 
     def select(self, layout_name: str) -> None:
         try:
@@ -30,6 +29,7 @@ class Layout(object):
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
         self._layout_has_been_selected = True
         self._root_node["size"] = 100
+        self._leaf_nodes: List[tree.TreeNode] = []
         # TODO: should parse and validate tree here in the future
 
     def spawn_windows(self) -> None:
@@ -47,6 +47,9 @@ class Layout(object):
         self._parse_tree(tree_root)
 
     def _parse_tree(self, root_node: tree.TreeNode) -> None:
+        """Recursively parse the tree, creating, splitting, and focusing windows as
+        appropriate
+        """
         node_queue = collections.deque([root_node])
         self._created_windows: Set[str] = set()
         while len(node_queue) >= 1:
