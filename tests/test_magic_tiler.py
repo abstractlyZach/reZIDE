@@ -8,26 +8,23 @@ from tests import fakes
 
 
 @pytest.fixture
-def mock_window_manager(mocker):
+def MockWindowManager(mocker):
     return mocker.patch("magic_tiler.utils.sway.Sway")
 
 
 @pytest.fixture
-def mock_run_magic_tiler(mocker):
-    mock = mocker.patch("magic_tiler.magic_tiler.run_magic_tiler")
-    return mock
+def MockMagicTiler(mocker):
+    return mocker.patch("magic_tiler.magic_tiler.MagicTiler")
 
 
 @pytest.fixture
-def mock_config(mocker):
-    mock = mocker.patch("magic_tiler.utils.configs.TomlConfig")
-    return mock
+def MockConfig(mocker):
+    return mocker.patch("magic_tiler.utils.configs.TomlConfig")
 
 
 @pytest.fixture
-def mock_layout(mocker):
-    mock = mocker.patch("magic_tiler.utils.layouts.Layout")
-    return mock
+def MockLayout(mocker):
+    return mocker.patch("magic_tiler.utils.layouts.Layout")
 
 
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
@@ -41,14 +38,14 @@ def test_magic_tiler_script(click_runner):
 class ClickTestParams(NamedTuple):
     cli_args: List[str]
     shell_env: Dict
-    expected_env: dtos.Env
+    expected_parsed_env: dtos.Env
 
 
 test_params = [
     ClickTestParams(
         cli_args=["my_ide"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
-        expected_env=dtos.Env(home="abc", xdg_config_home="def"),
+        expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
     ),
     # can we override CLI env variables?
     ClickTestParams(
@@ -60,7 +57,9 @@ test_params = [
             "different_xdg",
         ],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
-        expected_env=dtos.Env(home="different_home", xdg_config_home="different_xdg"),
+        expected_parsed_env=dtos.Env(
+            home="different_home", xdg_config_home="different_xdg"
+        ),
     ),
 ]
 
@@ -70,9 +69,9 @@ test_params = [
 @pytest.mark.parametrize("test_parameters", test_params)
 def test_successful_script(
     click_runner,
-    mock_window_manager,
-    mock_run_magic_tiler,
-    mock_config,
+    MockWindowManager,
+    MockMagicTiler,
+    MockConfig,
     test_parameters,
 ):
     result = click_runner.invoke(
@@ -80,24 +79,25 @@ def test_successful_script(
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
-    mock_run_magic_tiler.assert_called_once_with(
-        test_parameters.expected_env, mock_window_manager(), "my_ide", mock_config(), 0
+    MockMagicTiler.assert_called_once_with(
+        test_parameters.expected_parsed_env, MockWindowManager(), MockConfig(), 0
     )
+    MockMagicTiler.return_value.run.assert_called_once_with("my_ide")
 
 
 def test_fails_if_too_many_windows_open():
     window_manager = fakes.FakeWindowManager(num_workspace_windows=20)
     env = dtos.Env(home="abc", xdg_config_home="def")
+    application = magic_tiler.MagicTiler(env, window_manager, fakes.FakeConfig({}), 0)
     with pytest.raises(RuntimeError):
-        magic_tiler.run_magic_tiler(
-            env, window_manager, "my_ide", fakes.FakeConfig({}), 0
-        )
+        application.run("my_ide")
 
 
-def test_happy_path(mock_layout):
+def test_happy_path(MockLayout):
     window_manager = fakes.FakeWindowManager()
     config = fakes.FakeConfig({})
     env = dtos.Env(home="abc", xdg_config_home="def")
-    magic_tiler.run_magic_tiler(env, window_manager, "my_ide", config, 0)
-    mock_layout.assert_called_once_with(config, window_manager)
-    mock_layout.return_value.spawn_windows.assert_called_once_with("my_ide")
+    application = magic_tiler.MagicTiler(env, window_manager, config, 0)
+    application.run("my_ide")
+    MockLayout.assert_called_once_with(config, window_manager)
+    MockLayout.return_value.spawn_windows.assert_called_once_with("my_ide")
