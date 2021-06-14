@@ -368,7 +368,8 @@ def test_layout_calls_window_manager(test_case):
     """Make sure we're calling the window manager correctly"""
     spy_window_manager = SpyWindowManager()
     layout = layouts.Layout(fakes.FakeConfig(test_case.config), spy_window_manager)
-    layout.spawn_windows(test_case.layout_name)
+    layout.select(test_case.layout_name)
+    layout.spawn_windows()
     assert spy_window_manager.calls == test_case.expected_call_args
 
 
@@ -378,13 +379,13 @@ def test_cant_find_layout():
         SpyWindowManager(),
     )
     with pytest.raises(KeyError):
-        layout.spawn_windows("a")
+        layout.select("a")
 
 
 def test_size_shouldnt_be_defined_in_root_node():
     layout = layouts.Layout(fakes.FakeConfig({"a": {"size": 9000}}), SpyWindowManager())
     with pytest.raises(RuntimeError):
-        layout.spawn_windows("a")
+        layout.select("a")
 
 
 def test_no_invalid_split_orientation():
@@ -392,8 +393,9 @@ def test_no_invalid_split_orientation():
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
         SpyWindowManager(),
     )
+    layout.select("a")
     with pytest.raises(RuntimeError):
-        layout.spawn_windows("a")
+        layout.spawn_windows()
 
 
 def test_throws_error_if_not_enough_children():
@@ -436,8 +438,9 @@ def test_throws_error_if_not_enough_children():
         )
     )
     for layout in failing_layouts:
+        layout.select("a")
         with pytest.raises(RuntimeError):
-            layout.spawn_windows("a")
+            layout.spawn_windows()
 
     # no exception raised with same config but 2 children
     layout_5 = layouts.Layout(
@@ -462,7 +465,8 @@ def test_throws_error_if_not_enough_children():
         ),
         SpyWindowManager(),
     )
-    layout_5.spawn_windows("a")
+    layout_5.select("a")
+    layout_5.spawn_windows()
 
 
 def test_fails_if_too_many_windows_open():
@@ -471,5 +475,15 @@ def test_fails_if_too_many_windows_open():
             fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
             SpyWindowManager(num_workspace_windows=i),
         )
+        layout.select("a")
         with pytest.raises(RuntimeError):
-            layout.spawn_windows("a")
+            layout.spawn_windows()
+
+
+def test_raises_exception_if_no_selection():
+    layout = layouts.Layout(
+        fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+        SpyWindowManager(),
+    )
+    with pytest.raises(RuntimeError):
+        layout.spawn_windows()

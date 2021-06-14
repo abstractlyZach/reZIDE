@@ -111,4 +111,5 @@ def test_run():
     layout = mock.MagicMock()
     application = magic_tiler.MagicTiler(env, layout, 0)
     application.run("my_ide")
-    layout.spawn_windows.assert_called_once_with("my_ide")
+    layout.select.assert_called_once_with("my_ide")
+    layout.spawn_windows.assert_called_once_with()
