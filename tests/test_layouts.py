@@ -14,7 +14,7 @@ class WindowManagerCall(NamedTuple):
 
 
 class SpyWindowManager(interfaces.TilingWindowManager):
-    """Gets passed into Layouts using dependency injection
+    """Gets passed into LayoutManagers using dependency injection
     and spys on their calls so we can make sure that we're handling
     window creation correctly
     """
@@ -60,14 +60,14 @@ class SpyWindowManager(interfaces.TilingWindowManager):
         pass
 
 
-class LayoutTestCase(NamedTuple):
+class LayoutManagerTestCase(NamedTuple):
     config: Dict
     expected_call_args: List[WindowManagerCall]
     layout_name: str
 
 
 layout_test_cases = [
-    LayoutTestCase(
+    LayoutManagerTestCase(
         config={
             "screen": {
                 "children": [
@@ -126,7 +126,7 @@ layout_test_cases = [
         ],
         layout_name="screen",
     ),
-    LayoutTestCase(
+    LayoutManagerTestCase(
         config={
             "screen": {
                 "children": [
@@ -166,7 +166,7 @@ layout_test_cases = [
         layout_name="screen",
     ),
     # allow configs to define multiple layouts
-    LayoutTestCase(
+    LayoutManagerTestCase(
         config={
             "screen": {
                 "children": [
@@ -227,7 +227,7 @@ layout_test_cases = [
         ],
         layout_name="dev-ide",
     ),
-    LayoutTestCase(
+    LayoutManagerTestCase(
         config={
             "complicated": {
                 "split": "horizontal",
@@ -367,14 +367,16 @@ layout_test_cases = [
 def test_layout_calls_window_manager(test_case):
     """Make sure we're calling the window manager correctly"""
     spy_window_manager = SpyWindowManager()
-    layout = layouts.Layout(fakes.FakeConfig(test_case.config), spy_window_manager)
+    layout = layouts.LayoutManager(
+        fakes.FakeConfig(test_case.config), spy_window_manager
+    )
     layout.select(test_case.layout_name)
     layout.spawn_windows()
     assert spy_window_manager.calls == test_case.expected_call_args
 
 
 def test_cant_find_layout():
-    layout = layouts.Layout(
+    layout = layouts.LayoutManager(
         fakes.FakeConfig(layout_test_cases[0].config),
         SpyWindowManager(),
     )
@@ -383,13 +385,15 @@ def test_cant_find_layout():
 
 
 def test_size_shouldnt_be_defined_in_root_node():
-    layout = layouts.Layout(fakes.FakeConfig({"a": {"size": 9000}}), SpyWindowManager())
+    layout = layouts.LayoutManager(
+        fakes.FakeConfig({"a": {"size": 9000}}), SpyWindowManager()
+    )
     with pytest.raises(RuntimeError):
         layout.select("a")
 
 
 def test_no_invalid_split_orientation():
-    layout = layouts.Layout(
+    layout = layouts.LayoutManager(
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
         SpyWindowManager(),
     )
@@ -401,25 +405,25 @@ def test_no_invalid_split_orientation():
 def test_throws_error_if_not_enough_children():
     failing_layouts = []
     failing_layouts.append(
-        layouts.Layout(
+        layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
     failing_layouts.append(
-        layouts.Layout(
+        layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
     failing_layouts.append(
-        layouts.Layout(
+        layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
     failing_layouts.append(
-        layouts.Layout(
+        layouts.LayoutManager(
             fakes.FakeConfig(
                 {
                     "a": {
@@ -443,7 +447,7 @@ def test_throws_error_if_not_enough_children():
             layout.spawn_windows()
 
     # no exception raised with same config but 2 children
-    layout_5 = layouts.Layout(
+    layout_5 = layouts.LayoutManager(
         fakes.FakeConfig(
             {
                 "a": {
@@ -471,7 +475,7 @@ def test_throws_error_if_not_enough_children():
 
 def test_fails_if_too_many_windows_open():
     for i in [2, 20, 100]:
-        layout = layouts.Layout(
+        layout = layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
             SpyWindowManager(num_workspace_windows=i),
         )
@@ -481,7 +485,7 @@ def test_fails_if_too_many_windows_open():
 
 
 def test_raises_exception_if_no_selection():
-    layout = layouts.Layout(
+    layout = layouts.LayoutManager(
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
         SpyWindowManager(),
     )

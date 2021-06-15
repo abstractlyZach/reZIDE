@@ -10,7 +10,7 @@ from magic_tiler.utils import tree
 # space for its other siblings.
 
 
-class Layout(object):
+class LayoutManager(object):
     def __init__(
         self,
         config_reader: interfaces.ConfigReader,
