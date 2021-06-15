@@ -1,6 +1,6 @@
 import collections
 import logging
-from typing import List, Set
+from typing import Dict, Set
 
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import tree
@@ -28,8 +28,8 @@ class LayoutManager(object):
         if "size" in self._root_node:
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
         self._layout_has_been_selected = True
+        self._selected_layout = Layout(self._window_manager, self._root_node)
         self._root_node["size"] = 100
-        self._leaf_nodes: List[tree.TreeNode] = []
         # TODO: should parse and validate tree here in the future
 
     def spawn_windows(self) -> None:
@@ -43,8 +43,19 @@ class LayoutManager(object):
             raise RuntimeError(
                 "There are multiple windows open in the current workspace."
             )
-        tree_root = tree.create_tree(self._root_node)
-        self._parse_tree(tree_root)
+        self._selected_layout.spawn_windows()
+
+
+class Layout(object):
+    # todo: extract window manager from layout's responsibilities
+    def __init__(
+        self, window_manager: interfaces.TilingWindowManager, root_node: Dict
+    ) -> None:
+        self._tree = tree.create_tree(root_node)
+        self._window_manager = window_manager
+
+    def spawn_windows(self) -> None:
+        self._parse_tree(self._tree)
 
     def _parse_tree(self, root_node: tree.TreeNode) -> None:
         """Recursively parse the tree, creating, splitting, and focusing windows as
@@ -71,4 +82,3 @@ class LayoutManager(object):
         else:
             self._window_manager.make_window(leftmost_descendant.data)
             self._created_windows.add(leftmost_descendant.data.mark)
-            self._leaf_nodes.append(leftmost_descendant)

@@ -392,14 +392,13 @@ def test_size_shouldnt_be_defined_in_root_node():
         layout.select("a")
 
 
-def test_no_invalid_split_orientation():
+def test_fails_if_invalid_split_orientation():
     layout = layouts.LayoutManager(
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
         SpyWindowManager(),
     )
-    layout.select("a")
     with pytest.raises(RuntimeError):
-        layout.spawn_windows()
+        layout.select("a")
 
 
 def test_throws_error_if_not_enough_children():
@@ -442,9 +441,8 @@ def test_throws_error_if_not_enough_children():
         )
     )
     for layout in failing_layouts:
-        layout.select("a")
         with pytest.raises(RuntimeError):
-            layout.spawn_windows()
+            layout.select("a")
 
     # no exception raised with same config but 2 children
     layout_5 = layouts.LayoutManager(
@@ -476,10 +474,17 @@ def test_throws_error_if_not_enough_children():
 def test_fails_if_too_many_windows_open():
     for i in [2, 20, 100]:
         layout = layouts.LayoutManager(
-            fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+            fakes.FakeConfig(
+                {
+                    "screen": {
+                        "mark": "mymark",
+                        "command": "alacritty",
+                    },
+                }
+            ),
             SpyWindowManager(num_workspace_windows=i),
         )
-        layout.select("a")
+        layout.select("screen")
         with pytest.raises(RuntimeError):
             layout.spawn_windows()
 
