@@ -401,51 +401,9 @@ def test_fails_if_invalid_split_orientation():
         layout.select("a")
 
 
-def test_throws_error_if_not_enough_children():
-    failing_layout_managers = []
-    failing_layout_managers.append(
-        layouts.LayoutManager(
-            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
-            SpyWindowManager(),
-        )
-    )
-    failing_layout_managers.append(
-        layouts.LayoutManager(
-            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
-            SpyWindowManager(),
-        )
-    )
-    failing_layout_managers.append(
-        layouts.LayoutManager(
-            fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
-            SpyWindowManager(),
-        )
-    )
-    failing_layout_managers.append(
-        layouts.LayoutManager(
-            fakes.FakeConfig(
-                {
-                    "a": {
-                        "split": "horizontal",
-                        "children": [
-                            {
-                                "mark": "hi",
-                                "size": 10,
-                                "command": "echo hi",
-                            }
-                        ],
-                    }
-                }
-            ),
-            SpyWindowManager(),
-        )
-    )
-    for layout in failing_layout_managers:
-        with pytest.raises(RuntimeError):
-            layout.select("a")
-
-    # no exception raised with same config but 2 children
-    successful_layout_manager = layouts.LayoutManager(
+@pytest.mark.parametrize("num_children", [0, 1])
+def test_throws_error_if_not_enough_children(num_children):
+    layout_manager = layouts.LayoutManager(
         fakes.FakeConfig(
             {
                 "a": {
@@ -455,43 +413,64 @@ def test_throws_error_if_not_enough_children():
                             "mark": "hi",
                             "size": 10,
                             "command": "echo hi",
-                        },
-                        {
-                            "mark": "hi",
-                            "size": 10,
-                            "command": "echo hi",
-                        },
+                        }
+                        for i in range(num_children)
                     ],
                 }
             }
         ),
         SpyWindowManager(),
     )
-    successful_layout_manager.select("a")
-    successful_layout_manager.spawn_windows()
+    with pytest.raises(RuntimeError):
+        layout_manager.select("a")
 
 
-def test_fails_if_too_many_windows_open():
-    for i in [2, 20, 100]:
-        layout = layouts.LayoutManager(
-            fakes.FakeConfig(
-                {
-                    "screen": {
-                        "mark": "mymark",
-                        "command": "alacritty",
-                    },
+@pytest.mark.parametrize("num_children", [2, 5, 20])
+def test_doesnt_raise_exception_when_2_or_more_children(num_children):
+    """no exception raised with same config as above, but multiple children"""
+    layout_manager = layouts.LayoutManager(
+        fakes.FakeConfig(
+            {
+                "a": {
+                    "split": "horizontal",
+                    "children": [
+                        {
+                            "mark": "hi",
+                            "size": 10,
+                            "command": "echo hi",
+                        }
+                        for i in range(num_children)
+                    ],
                 }
-            ),
-            SpyWindowManager(num_workspace_windows=i),
-        )
-        layout.select("screen")
-        with pytest.raises(RuntimeError):
-            layout.spawn_windows()
+            }
+        ),
+        SpyWindowManager(),
+    )
+    layout_manager.select("a")
+    layout_manager.spawn_windows()
+
+
+@pytest.mark.parametrize("num_open_windows", [2, 20, 100])
+def test_fails_if_too_many_windows_open(num_open_windows):
+    layout = layouts.LayoutManager(
+        fakes.FakeConfig(
+            {
+                "screen": {
+                    "mark": "mymark",
+                    "command": "alacritty",
+                },
+            }
+        ),
+        SpyWindowManager(num_workspace_windows=num_open_windows),
+    )
+    layout.select("screen")
+    with pytest.raises(RuntimeError):
+        layout.spawn_windows()
 
 
 def test_raises_exception_if_no_selection():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+        fakes.FakeConfig({}),
         SpyWindowManager(),
     )
     with pytest.raises(RuntimeError):
