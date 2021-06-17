@@ -30,7 +30,6 @@ class LayoutManager(object):
         self._layout_has_been_selected = True
         self._selected_layout = Layout(self._root_node)
         self._root_node["size"] = 100
-        # TODO: should parse and validate tree here in the future
 
     def spawn_windows(self) -> None:
         if not self._layout_has_been_selected:
