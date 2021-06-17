@@ -15,7 +15,7 @@ class WindowManagerCall(NamedTuple):
 
 class SpyWindowManager(interfaces.TilingWindowManager):
     """Gets passed into LayoutManagers using dependency injection
-    and spys on their calls so we can make sure that we're handling
+    and spies on their calls so we can make sure that we're handling
     window creation correctly
     """
 
