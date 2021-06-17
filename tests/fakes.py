@@ -106,15 +106,15 @@ class SpyWindowManager(FakeWindowManager):
         self._calls: List[dtos.WindowManagerCall] = []
         super().__init__(**kwargs)
 
+    @property
+    def calls(self):
+        return self._calls
+
     def make_window(
         self,
         window_details: dtos.WindowDetails,
     ) -> None:
         self._calls.append(dtos.WindowManagerCall(command="make", arg=window_details))
-
-    @property
-    def calls(self):
-        return self._calls
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
