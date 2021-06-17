@@ -53,7 +53,7 @@ def main(
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
     config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     window_manager = sway.Sway()
-    layout = layouts.Layout(config, window_manager)
+    layout = layouts.LayoutManager(config, window_manager)
     application = MagicTiler(env, layout, verbosity_level)
     application.run(layout_name)
 
@@ -64,7 +64,7 @@ class MagicTiler(object):
     def __init__(
         self,
         env: dtos.Env,
-        layout: layouts.Layout,
+        layout: layouts.LayoutManager,
         verbosity_level: int,
     ) -> None:
         self._layout = layout

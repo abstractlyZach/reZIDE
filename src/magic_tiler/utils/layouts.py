@@ -1,6 +1,6 @@
 import collections
 import logging
-from typing import List, Set
+from typing import Dict, Iterable, Set
 
 from magic_tiler.utils import interfaces
 from magic_tiler.utils import tree
@@ -10,7 +10,7 @@ from magic_tiler.utils import tree
 # space for its other siblings.
 
 
-class Layout(object):
+class LayoutManager(object):
     def __init__(
         self,
         config_reader: interfaces.ConfigReader,
@@ -28,9 +28,8 @@ class Layout(object):
         if "size" in self._root_node:
             raise RuntimeError("root node shouldn't have a size. size is implied 100")
         self._layout_has_been_selected = True
+        self._selected_layout = Layout(self._root_node)
         self._root_node["size"] = 100
-        self._leaf_nodes: List[tree.TreeNode] = []
-        # TODO: should parse and validate tree here in the future
 
     def spawn_windows(self) -> None:
         if not self._layout_has_been_selected:
@@ -43,32 +42,30 @@ class Layout(object):
             raise RuntimeError(
                 "There are multiple windows open in the current workspace."
             )
-        tree_root = tree.create_tree(self._root_node)
-        self._parse_tree(tree_root)
-
-    def _parse_tree(self, root_node: tree.TreeNode) -> None:
-        """Recursively parse the tree, creating, splitting, and focusing windows as
-        appropriate
-        """
-        node_queue = collections.deque([root_node])
         self._created_windows: Set[str] = set()
+        for window in self._selected_layout.zachstras_traversal():
+            if window.is_parent:
+                self._window_manager.split(window.data)
+            elif window.data.mark in self._created_windows:
+                self._window_manager.focus(window.data)
+            else:
+                self._window_manager.make_window(window.data)
+                self._created_windows.add(window.data.mark)
+
+
+class Layout(object):
+    def __init__(self, root_node: Dict) -> None:
+        self._tree = tree.create_tree(root_node)
+
+    def zachstras_traversal(self) -> Iterable[tree.TreeNode]:
+        node_queue = collections.deque([self._tree])
         while len(node_queue) >= 1:
             current_node = node_queue.popleft()
             logging.debug(f"dequeuing {current_node}")
             if current_node.is_parent:
-                self._attempt_to_create_leftmost_descendant(current_node.children[0])
-                self._window_manager.split(current_node.data)
+                yield current_node.children[0].get_leftmost_descendant()
+                yield current_node
                 for child in current_node.children[1:]:
-                    self._attempt_to_create_leftmost_descendant(child)
+                    yield child.get_leftmost_descendant()
                 for child in current_node.children:
                     node_queue.append(child)
-
-    def _attempt_to_create_leftmost_descendant(self, node: tree.TreeNode) -> None:
-        logging.debug(f"getting leftmost descendant of {node}")
-        leftmost_descendant = node.get_leftmost_descendant()
-        if leftmost_descendant.data.mark in self._created_windows:
-            self._window_manager.focus(leftmost_descendant.data)
-        else:
-            self._window_manager.make_window(leftmost_descendant.data)
-            self._created_windows.add(leftmost_descendant.data.mark)
-            self._leaf_nodes.append(leftmost_descendant)

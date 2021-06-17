@@ -95,3 +95,39 @@ class FakeWindowManager(interfaces.TilingWindowManager):
 
     def get_window_sizes(self):
         return self._window_sizes
+
+
+class SpyWindowManager(FakeWindowManager):
+    """Gets passed into LayoutManagers using dependency injection and spies on their
+    calls so we can make sure that we're making the right window commands
+    """
+
+    def __init__(self, **kwargs):
+        self._calls: List[dtos.WindowManagerCall] = []
+        super().__init__(**kwargs)
+
+    @property
+    def calls(self):
+        return self._calls
+
+    def make_window(
+        self,
+        window_details: dtos.WindowDetails,
+    ) -> None:
+        self._calls.append(dtos.WindowManagerCall(command="make", arg=window_details))
+
+    def resize_width(
+        self, target_window: dtos.WindowDetails, container_percentage: int
+    ) -> None:
+        pass
+
+    def resize_height(
+        self, target_window: dtos.WindowDetails, container_percentage: int
+    ) -> None:
+        pass
+
+    def focus(self, target_window: dtos.WindowDetails) -> None:
+        self._calls.append(dtos.WindowManagerCall("focus", arg=target_window))
+
+    def split(self, split_type: str) -> None:
+        self._calls.append(dtos.WindowManagerCall("split", arg=split_type))
