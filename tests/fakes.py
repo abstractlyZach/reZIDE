@@ -97,15 +97,14 @@ class FakeWindowManager(interfaces.TilingWindowManager):
         return self._window_sizes
 
 
-class SpyWindowManager(interfaces.TilingWindowManager):
-    """Gets passed into LayoutManagers using dependency injection
-    and spies on their calls so we can make sure that we're handling
-    window creation correctly
+class SpyWindowManager(FakeWindowManager):
+    """Gets passed into LayoutManagers using dependency injection and spies on their
+    calls so we can make sure that we're making the right window commands
     """
 
-    def __init__(self, num_workspace_windows: int = 0):
+    def __init__(self, **kwargs):
         self._calls: List[dtos.WindowManagerCall] = []
-        self._num_workspace_windows = num_workspace_windows
+        super().__init__(**kwargs)
 
     def make_window(
         self,
@@ -116,10 +115,6 @@ class SpyWindowManager(interfaces.TilingWindowManager):
     @property
     def calls(self):
         return self._calls
-
-    @property
-    def num_workspace_windows(self):
-        return self._num_workspace_windows
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
@@ -136,9 +131,3 @@ class SpyWindowManager(interfaces.TilingWindowManager):
 
     def split(self, split_type: str) -> None:
         self._calls.append(dtos.WindowManagerCall("split", arg=split_type))
-
-    def get_tree(self):
-        pass
-
-    def get_window_sizes(self) -> Dict:
-        pass
