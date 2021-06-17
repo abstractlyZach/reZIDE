@@ -402,26 +402,26 @@ def test_fails_if_invalid_split_orientation():
 
 
 def test_throws_error_if_not_enough_children():
-    failing_layouts = []
-    failing_layouts.append(
+    failing_layout_managers = []
+    failing_layout_managers.append(
         layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
-    failing_layouts.append(
+    failing_layout_managers.append(
         layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
-    failing_layouts.append(
+    failing_layout_managers.append(
         layouts.LayoutManager(
             fakes.FakeConfig({"a": {"split": "horizontal", "children": []}}),
             SpyWindowManager(),
         )
     )
-    failing_layouts.append(
+    failing_layout_managers.append(
         layouts.LayoutManager(
             fakes.FakeConfig(
                 {
@@ -440,12 +440,12 @@ def test_throws_error_if_not_enough_children():
             SpyWindowManager(),
         )
     )
-    for layout in failing_layouts:
+    for layout in failing_layout_managers:
         with pytest.raises(RuntimeError):
             layout.select("a")
 
     # no exception raised with same config but 2 children
-    layout_5 = layouts.LayoutManager(
+    successful_layout_manager = layouts.LayoutManager(
         fakes.FakeConfig(
             {
                 "a": {
@@ -467,8 +467,8 @@ def test_throws_error_if_not_enough_children():
         ),
         SpyWindowManager(),
     )
-    layout_5.select("a")
-    layout_5.spawn_windows()
+    successful_layout_manager.select("a")
+    successful_layout_manager.spawn_windows()
 
 
 def test_fails_if_too_many_windows_open():
