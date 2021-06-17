@@ -325,7 +325,7 @@ def test_layout_calls_window_manager(test_case):
 def test_cant_find_layout():
     layout = layouts.LayoutManager(
         fakes.FakeConfig(layout_test_cases[0].config),
-        fakes.SpyWindowManager(),
+        fakes.FakeWindowManager(),
     )
     with pytest.raises(KeyError):
         layout.select("doesn't exist abcdefg")
@@ -333,7 +333,7 @@ def test_cant_find_layout():
 
 def test_size_shouldnt_be_defined_in_root_node():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig({"a": {"size": 9000}}), fakes.SpyWindowManager()
+        fakes.FakeConfig({"a": {"size": 9000}}), fakes.FakeWindowManager()
     )
     with pytest.raises(RuntimeError):
         layout.select("a")
@@ -342,7 +342,7 @@ def test_size_shouldnt_be_defined_in_root_node():
 def test_fails_if_invalid_split_orientation():
     layout = layouts.LayoutManager(
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
-        fakes.SpyWindowManager(),
+        fakes.FakeWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout.select("a")
@@ -366,7 +366,7 @@ def test_throws_error_if_not_enough_children(num_children):
                 }
             }
         ),
-        fakes.SpyWindowManager(),
+        fakes.FakeWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout_manager.select("a")
@@ -391,7 +391,7 @@ def test_doesnt_raise_exception_when_2_or_more_children(num_children):
                 }
             }
         ),
-        fakes.SpyWindowManager(),
+        fakes.FakeWindowManager(),
     )
     layout_manager.select("a")
     layout_manager.spawn_windows()
@@ -408,7 +408,7 @@ def test_fails_if_too_many_windows_open(num_open_windows):
                 },
             }
         ),
-        fakes.SpyWindowManager(num_workspace_windows=num_open_windows),
+        fakes.FakeWindowManager(num_workspace_windows=num_open_windows),
     )
     layout.select("screen")
     with pytest.raises(RuntimeError):
@@ -418,7 +418,7 @@ def test_fails_if_too_many_windows_open(num_open_windows):
 def test_raises_exception_if_no_selection():
     layout = layouts.LayoutManager(
         fakes.FakeConfig({}),
-        fakes.SpyWindowManager(),
+        fakes.FakeWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout.spawn_windows()
