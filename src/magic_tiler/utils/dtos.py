@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
 # data-transfer objects (DTOs)
 # objects that don't have much functionality besides storing
@@ -41,3 +41,10 @@ class Env(NamedTuple):
 
     home: str
     xdg_config_home: str
+
+
+class WindowManagerCall(NamedTuple):
+    """Used for verifying calls to a window manager"""
+
+    command: str
+    arg: Any

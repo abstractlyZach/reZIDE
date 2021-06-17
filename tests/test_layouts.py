@@ -1,68 +1,15 @@
-from typing import Any, Dict, List, NamedTuple
+from typing import Dict, List, NamedTuple
 
 import pytest
 
 from magic_tiler.utils import dtos
-from magic_tiler.utils import interfaces
 from magic_tiler.utils import layouts
 from tests import fakes
 
 
-class WindowManagerCall(NamedTuple):
-    command: str
-    arg: Any
-
-
-class SpyWindowManager(interfaces.TilingWindowManager):
-    """Gets passed into LayoutManagers using dependency injection
-    and spies on their calls so we can make sure that we're handling
-    window creation correctly
-    """
-
-    def __init__(self, num_workspace_windows: int = 0):
-        self._calls: List[WindowManagerCall] = []
-        self._num_workspace_windows = num_workspace_windows
-
-    def make_window(
-        self,
-        window_details: dtos.WindowDetails,
-    ) -> None:
-        self._calls.append(WindowManagerCall(command="make", arg=window_details))
-
-    @property
-    def calls(self):
-        return self._calls
-
-    @property
-    def num_workspace_windows(self):
-        return self._num_workspace_windows
-
-    def resize_width(
-        self, target_window: dtos.WindowDetails, container_percentage: int
-    ) -> None:
-        pass
-
-    def resize_height(
-        self, target_window: dtos.WindowDetails, container_percentage: int
-    ) -> None:
-        pass
-
-    def focus(self, target_window: dtos.WindowDetails) -> None:
-        self._calls.append(WindowManagerCall("focus", arg=target_window))
-
-    def split(self, split_type: str) -> None:
-        self._calls.append(WindowManagerCall("split", arg=split_type))
-
-    def get_tree(self):
-        pass
-
-    def get_window_sizes(self) -> Dict:
-        pass
-
-
 class LayoutManagerTestCase(NamedTuple):
     config: Dict
-    expected_call_args: List[WindowManagerCall]
+    expected_call_args: List[dtos.WindowManagerCall]
     layout_name: str
 
 
@@ -102,24 +49,24 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="medium", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="big", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="right", command="alacritty"),
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="medium", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="vertical"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="vertical"),
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="small", command="alacritty"),
             ),
@@ -150,15 +97,15 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="left", command="alacritty")
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="center", command="alacritty"),
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="right", command="alacritty"),
             ),
@@ -206,21 +153,21 @@ layout_test_cases = [
             },
         },
         expected_call_args=[
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="linter", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="jumbo", command="alacritty"),
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="linter", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="vertical"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="vertical"),
+            dtos.WindowManagerCall(
                 command="make",
                 arg=dtos.WindowDetails(mark="terminal", command="alacritty"),
             ),
@@ -299,62 +246,62 @@ layout_test_cases = [
             }
         },
         expected_call_args=[
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="A", command="alacritty")
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="C", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="A", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="vertical"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="vertical"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="F", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="I", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="C", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="vertical"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="vertical"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="H", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="A", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="B", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="F", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="G", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="C", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="horizontal"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="horizontal"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="D", command="alacritty")
             ),
-            WindowManagerCall(
+            dtos.WindowManagerCall(
                 command="focus",
                 arg=dtos.WindowDetails(mark="D", command="alacritty"),
             ),
-            WindowManagerCall(command="split", arg="vertical"),
-            WindowManagerCall(
+            dtos.WindowManagerCall(command="split", arg="vertical"),
+            dtos.WindowManagerCall(
                 command="make", arg=dtos.WindowDetails(mark="E", command="alacritty")
             ),
         ],
@@ -366,7 +313,7 @@ layout_test_cases = [
 @pytest.mark.parametrize("test_case", layout_test_cases)
 def test_layout_calls_window_manager(test_case):
     """Make sure we're calling the window manager correctly"""
-    spy_window_manager = SpyWindowManager()
+    spy_window_manager = fakes.SpyWindowManager()
     layout = layouts.LayoutManager(
         fakes.FakeConfig(test_case.config), spy_window_manager
     )
@@ -378,7 +325,7 @@ def test_layout_calls_window_manager(test_case):
 def test_cant_find_layout():
     layout = layouts.LayoutManager(
         fakes.FakeConfig(layout_test_cases[0].config),
-        SpyWindowManager(),
+        fakes.SpyWindowManager(),
     )
     with pytest.raises(KeyError):
         layout.select("doesn't exist abcdefg")
@@ -386,7 +333,7 @@ def test_cant_find_layout():
 
 def test_size_shouldnt_be_defined_in_root_node():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig({"a": {"size": 9000}}), SpyWindowManager()
+        fakes.FakeConfig({"a": {"size": 9000}}), fakes.SpyWindowManager()
     )
     with pytest.raises(RuntimeError):
         layout.select("a")
@@ -395,7 +342,7 @@ def test_size_shouldnt_be_defined_in_root_node():
 def test_fails_if_invalid_split_orientation():
     layout = layouts.LayoutManager(
         fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
-        SpyWindowManager(),
+        fakes.SpyWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout.select("a")
@@ -419,7 +366,7 @@ def test_throws_error_if_not_enough_children(num_children):
                 }
             }
         ),
-        SpyWindowManager(),
+        fakes.SpyWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout_manager.select("a")
@@ -444,7 +391,7 @@ def test_doesnt_raise_exception_when_2_or_more_children(num_children):
                 }
             }
         ),
-        SpyWindowManager(),
+        fakes.SpyWindowManager(),
     )
     layout_manager.select("a")
     layout_manager.spawn_windows()
@@ -461,7 +408,7 @@ def test_fails_if_too_many_windows_open(num_open_windows):
                 },
             }
         ),
-        SpyWindowManager(num_workspace_windows=num_open_windows),
+        fakes.SpyWindowManager(num_workspace_windows=num_open_windows),
     )
     layout.select("screen")
     with pytest.raises(RuntimeError):
@@ -471,7 +418,7 @@ def test_fails_if_too_many_windows_open(num_open_windows):
 def test_raises_exception_if_no_selection():
     layout = layouts.LayoutManager(
         fakes.FakeConfig({}),
-        SpyWindowManager(),
+        fakes.SpyWindowManager(),
     )
     with pytest.raises(RuntimeError):
         layout.spawn_windows()
