@@ -381,7 +381,7 @@ def test_cant_find_layout():
         SpyWindowManager(),
     )
     with pytest.raises(KeyError):
-        layout.select("a")
+        layout.select("doesn't exist abcdefg")
 
 
 def test_size_shouldnt_be_defined_in_root_node():
