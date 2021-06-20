@@ -4,10 +4,11 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from magic_tiler.utils import dtos
+from magic_tiler.utils import interfaces
 
 
-class TreeFactory:
-    def create_tree(self, tree_dict: Dict) -> TreeNode:
+class TreeFactory(interfaces.TreeFactoryInterface):
+    def create_tree(self, tree_dict: Dict) -> interfaces.TreeNodeInterface:
         return self._create_subtree(tree_dict)
 
     def _create_subtree(
@@ -30,17 +31,17 @@ class TreeFactory:
         return current_node
 
 
-class TreeNode(object):
-    def __init__(self, data: Any, parent: TreeNode = None) -> None:
+class TreeNode(interfaces.TreeNodeInterface):
+    def __init__(self, data: Any, parent: interfaces.TreeNodeInterface = None) -> None:
         self._data = data
-        self._children: List[TreeNode] = []
+        self._children: List[interfaces.TreeNodeInterface] = []
         if parent:
             parent.add_child(self)
 
-    def add_child(self, node: TreeNode) -> None:
+    def add_child(self, node: interfaces.TreeNodeInterface) -> None:
         self._children.append(node)
 
-    def get_leftmost_descendant(self) -> TreeNode:
+    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
         if self.is_parent:
             return self.children[0].get_leftmost_descendant()
         else:
@@ -51,7 +52,7 @@ class TreeNode(object):
         return len(self._children) > 0
 
     @property
-    def children(self) -> List[TreeNode]:
+    def children(self) -> List[interfaces.TreeNodeInterface]:
         return self._children
 
     @property

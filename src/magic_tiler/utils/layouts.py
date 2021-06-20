@@ -57,7 +57,7 @@ class Layout(object):
     def __init__(self, root_node: Dict) -> None:
         self._tree = tree.TreeFactory().create_tree(root_node)
 
-    def zachstras_traversal(self) -> Iterable[tree.TreeNode]:
+    def zachstras_traversal(self) -> Iterable[interfaces.TreeNodeInterface]:
         node_queue = collections.deque([self._tree])
         while len(node_queue) >= 1:
             current_node = node_queue.popleft()
