@@ -55,7 +55,7 @@ class LayoutManager(object):
 
 class Layout(object):
     def __init__(self, root_node: Dict) -> None:
-        self._tree = tree.create_tree(root_node)
+        self._tree = tree.TreeFactory().create_tree(root_node)
 
     def zachstras_traversal(self) -> Iterable[tree.TreeNode]:
         node_queue = collections.deque([self._tree])
