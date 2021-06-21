@@ -113,3 +113,6 @@ def test_run():
     application.run("my_ide")
     layout.select.assert_called_once_with("my_ide")
     layout.spawn_windows.assert_called_once_with()
+
+
+# TODO: add integration tests where we fail due to invalid config files

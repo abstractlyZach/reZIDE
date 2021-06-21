@@ -359,6 +359,7 @@ def test_parser_validation(test_case):
 
 
 def test_parser_validation_happy_path():
+    # perfectly good config
     config_reader = fakes.FakeConfig(
         {
             "ide": {
