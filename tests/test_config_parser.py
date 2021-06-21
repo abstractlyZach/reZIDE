@@ -6,6 +6,8 @@ import pytest
 from magic_tiler.utils import config_parser
 from tests import fakes
 
+# TODO: pick better/more-specific errors than RuntimeError lol
+
 
 def test_returns_result_from_tree_factory():
     config_reader = fakes.FakeConfig(
@@ -165,6 +167,44 @@ exception_test_cases = [
         expected_error_class=KeyError,
         layout_name="abc",
     ),
+]
+
+
+@pytest.mark.parametrize("test_case", exception_test_cases)
+def test_config_parser_exceptions(test_case):
+    config_reader = fakes.FakeConfig(test_case.config_dict)
+    parser = config_parser.ConfigParser(
+        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+    )
+    with pytest.raises(test_case.expected_error_class):
+        parser.get_tree(test_case.layout_name)
+
+
+validation_test_cases = [
+    # missing fields
+    ConfigParserExceptionTestCase(
+        config_dict={"ide": {"split": "horizontal"}},
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left window", "right window"],
+                "sizes": [50, 50],
+            },
+            "left window": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+            },
+            "right window": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
     # children are not defined
     ConfigParserExceptionTestCase(
         config_dict={
@@ -204,7 +244,7 @@ exception_test_cases = [
         config_dict={
             "ide": {
                 "split": "horizontal",
-                "children": ["left window"],
+                "children": ["left window", "right window", "abc"],
                 "sizes": [50, 50],
             },
             "left window": {
@@ -215,6 +255,94 @@ exception_test_cases = [
                 "command": 'alacritty -e sh -c "echo right window!"',
                 "mark": "right window",
             },
+            "abc": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+            },
+            "def": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    # less than 2 children
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": [],
+                "sizes": [],
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left"],
+                "sizes": [100],
+            },
+            "left": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "left window",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    # extra junk in container
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left", "right"],
+                "sizes": [45, 55],
+                "woops": "abc",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    # extra junk in window
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left window", "right window"],
+                "sizes": [50, 50],
+            },
+            "left window": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "left window",
+            },
+            "right window": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+                "extra": "nice",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left window", "left window"],
+                "sizes": [50, 50],
+            },
+            "right window": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "right window",
+            },
+            "left window": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+            },
         },
         expected_error_class=RuntimeError,
         layout_name="ide",
@@ -222,11 +350,37 @@ exception_test_cases = [
 ]
 
 
-@pytest.mark.parametrize("test_case", exception_test_cases)
-def test_config_parser_exceptions(test_case):
+@pytest.mark.parametrize("test_case", validation_test_cases)
+def test_parser_validation(test_case):
     config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
         config_reader, fakes.FakeTreeFactory(mock.MagicMock())
     )
     with pytest.raises(test_case.expected_error_class):
-        parser.get_tree(test_case.layout_name)
+        parser.validate()
+
+
+def test_parser_validation_happy_path():
+    # perfectly good config
+    config_reader = fakes.FakeConfig(
+        {
+            "ide": {
+                "split": "horizontal",
+                "children": ["left window", "right window"],
+                "sizes": [50, 50],
+            },
+            "left window": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "left window",
+            },
+            "right window": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "right window",
+            },
+        }
+    )
+    parser = config_parser.ConfigParser(
+        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+    )
+    # no exception raised
+    parser.validate()

@@ -109,5 +109,9 @@ class TreeFactoryInterface(object):
 
 class ConfigParserInterface(object):
     @abc.abstractmethod
+    def validate(self) -> None:
+        pass
+
+    @abc.abstractmethod
     def get_tree(self, layout_name: str) -> TreeNodeInterface:
         pass
