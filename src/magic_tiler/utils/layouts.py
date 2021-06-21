@@ -17,6 +17,7 @@ class LayoutManager(object):
     ) -> None:
         self._window_manager = window_manager
         self._config_parser = config_parser
+        # TODO: validate the config
         self._layout_has_been_selected = False
 
     def select(self, layout_name: str) -> None:
