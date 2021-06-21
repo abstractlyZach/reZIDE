@@ -6,6 +6,8 @@ import pytest
 from magic_tiler.utils import config_parser
 from tests import fakes
 
+# TODO: pick better/more-specific errors than RuntimeError lol
+
 
 def test_returns_result_from_tree_factory():
     config_reader = fakes.FakeConfig(
