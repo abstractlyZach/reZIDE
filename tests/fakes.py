@@ -1,4 +1,4 @@
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional, Type
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
@@ -40,9 +40,16 @@ class FakeConfig(interfaces.ConfigReader):
 
 
 class FakeConfigParser(interfaces.ConfigParserInterface):
-    def __init__(self, config_dict: Dict) -> None:
+    def __init__(
+        self, config_dict: Dict, validation_error: Optional[Type[Exception]] = None
+    ) -> None:
         self._tree_factory = tree.TreeFactory()
         self._config_dict = config_dict
+        self._validation_error = validation_error
+
+    def validate(self) -> None:
+        if self._validation_error is not None:
+            raise self._validation_error
 
     def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
         return self._tree_factory.create_tree(self._config_dict[layout_name])
