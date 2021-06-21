@@ -39,6 +39,15 @@ class FakeConfig(interfaces.ConfigReader):
         return self._config_dict
 
 
+class FakeConfigParser(interfaces.ConfigParserInterface):
+    def __init__(self, config_dict: Dict) -> None:
+        self._tree_factory = tree.TreeFactory()
+        self._config_dict = config_dict
+
+    def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
+        return self._tree_factory.create_tree(self._config_dict[layout_name])
+
+
 class FakeRect(NamedTuple):
     x: int
     y: int
