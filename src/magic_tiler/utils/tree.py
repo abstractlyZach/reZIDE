@@ -1,6 +1,7 @@
 # https://stackoverflow.com/questions/36286894/name-not-defined-in-type-annotation
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict, List, Optional
 
 from magic_tiler.utils import dtos
@@ -27,6 +28,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
             for child in node["children"]:
                 self._create_subtree(child, current_node)
         else:
+            logging.error(node)
             raise RuntimeError("invalid config file")
         return current_node
 

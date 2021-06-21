@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 from magic_tiler.utils import interfaces
@@ -45,4 +46,5 @@ class ConfigParser(interfaces.ConfigParserInterface):
             subtree["children"] = child_subtrees
             return subtree
         else:
+            logging.error(subtree_dict)
             raise RuntimeError("Definition is neither a parent or leaf")
