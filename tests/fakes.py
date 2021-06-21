@@ -27,7 +27,7 @@ class FakeTreeFactory(interfaces.TreeFactoryInterface):
     def __init__(self, tree_root: tree.TreeNode):
         self._tree = tree_root
 
-    def build_tree(self, root_node: Dict) -> tree.TreeNode:
+    def create_tree(self, root_node: Dict) -> tree.TreeNode:
         return self._tree
 
 
