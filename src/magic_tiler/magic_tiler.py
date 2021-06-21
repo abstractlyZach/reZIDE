@@ -3,11 +3,13 @@ import logging
 import click
 
 import magic_tiler
+from magic_tiler.utils import config_parser
 from magic_tiler.utils import configs
 from magic_tiler.utils import dtos
 from magic_tiler.utils import filestore
 from magic_tiler.utils import layouts
 from magic_tiler.utils import sway
+from magic_tiler.utils import tree
 
 # maps from verbosity level to log levels
 VERBOSITY_LOG_LEVELS = {
@@ -51,9 +53,10 @@ def main(
 ) -> None:
     """Create the IDE registered at LAYOUT_NAME in the configuration file."""
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
-    config = configs.TomlConfig(filestore.LocalFilestore(), env=env)
+    config_reader = configs.TomlConfig(filestore.LocalFilestore(), env=env)
+    parser = config_parser.ConfigParser(config_reader, tree.TreeFactory())
     window_manager = sway.Sway()
-    layout = layouts.LayoutManager(config, window_manager)
+    layout = layouts.LayoutManager(parser, window_manager)
     application = MagicTiler(env, layout, verbosity_level)
     application.run(layout_name)
 

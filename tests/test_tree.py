@@ -2,8 +2,8 @@ from magic_tiler.utils import dtos
 from magic_tiler.utils import tree
 
 
-def test_tree():
-    config = {
+def test_tree_creation():
+    tree_dict = {
         "split": "horizontal",
         "children": [
             {
@@ -18,7 +18,7 @@ def test_tree():
             },
         ],
     }
-    actual_tree = tree.create_tree(config)
+    actual_tree = tree.TreeFactory().create_tree(tree_dict)
     expected_tree = tree.TreeNode("horizontal")
     tree.TreeNode(
         dtos.WindowDetails(mark="hi", command="echo hi"), parent=expected_tree
@@ -29,7 +29,7 @@ def test_tree():
     assert actual_tree == expected_tree
 
 
-def test_complicated_tree():
+def test_complicated_tree_creation():
     """It's a lot of code, but I figure we need one complex test, and we can't
     do much besides handwrite it.
     """
@@ -101,7 +101,7 @@ def test_complicated_tree():
             },
         ],
     }
-    actual_tree = tree.create_tree(config)
+    actual_tree = tree.TreeFactory().create_tree(config)
     expected_tree = tree.TreeNode("horizontal")
     left_side = tree.TreeNode("vertical", parent=expected_tree)
     top_left = tree.TreeNode("horizontal", parent=left_side)

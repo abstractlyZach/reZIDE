@@ -33,19 +33,3 @@ class TomlConfig(interfaces.ConfigReader):
 
     def to_dict(self) -> Dict:
         return self._dict
-
-
-# class Config(object):
-#     def __init__(
-#         self,
-#         config_reader: interfaces.ConfigReader,
-#         tree_factory: interfaces.TreeFactoryInterface,
-#         xdg_base_dir: Optional[str] = None,
-#     ) -> None:
-#         self._tree_factory = tree_factory
-#         self._config_reader = config_reader
-
-#     def get_tree(self, layout_name: str) -> tree.TreeNode:
-#         config = self._config_reader.to_dict()
-#         layout = config[layout_name]
-#         return self._tree_factory.build_tree(layout)

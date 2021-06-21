@@ -27,7 +27,7 @@ class FakeTreeFactory(interfaces.TreeFactoryInterface):
     def __init__(self, tree_root: tree.TreeNode):
         self._tree = tree_root
 
-    def build_tree(self, root_node: Dict) -> tree.TreeNode:
+    def create_tree(self, root_node: Dict) -> tree.TreeNode:
         return self._tree
 
 
@@ -37,6 +37,15 @@ class FakeConfig(interfaces.ConfigReader):
 
     def to_dict(self) -> Dict:
         return self._config_dict
+
+
+class FakeConfigParser(interfaces.ConfigParserInterface):
+    def __init__(self, config_dict: Dict) -> None:
+        self._tree_factory = tree.TreeFactory()
+        self._config_dict = config_dict
+
+    def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
+        return self._tree_factory.create_tree(self._config_dict[layout_name])
 
 
 class FakeRect(NamedTuple):

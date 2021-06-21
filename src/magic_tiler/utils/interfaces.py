@@ -1,8 +1,10 @@
+# https://stackoverflow.com/questions/36286894/name-not-defined-in-type-annotation
+from __future__ import annotations
+
 import abc
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from magic_tiler.utils import dtos
-from magic_tiler.utils import tree
 
 
 class TilingWindowManager(object):
@@ -74,6 +76,38 @@ class FileStore(object):
         pass
 
 
+class TreeNodeInterface(object):
+    @abc.abstractmethod
+    def add_child(self, node: TreeNodeInterface) -> None:
+        pass
+
+    @abc.abstractmethod
+    def get_leftmost_descendant(self) -> TreeNodeInterface:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def is_parent(self) -> bool:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def children(self) -> List[TreeNodeInterface]:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def data(self) -> Any:
+        pass
+
+
 class TreeFactoryInterface(object):
-    def build_tree(self, root_node: Dict) -> tree.TreeNode:
+    @abc.abstractmethod
+    def create_tree(self, root_node: Dict) -> TreeNodeInterface:
+        pass
+
+
+class ConfigParserInterface(object):
+    @abc.abstractmethod
+    def get_tree(self, layout_name: str) -> TreeNodeInterface:
         pass

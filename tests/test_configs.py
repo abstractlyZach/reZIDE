@@ -16,65 +16,58 @@ example_trees.append(simple_tree)
 toml_contents = """
 [screen]
 split = "horizontal"
+children = ['left', 'middle', 'right']
+sizes = [25, 50, 25]
 
-[[screen.children]]
-size = 25
+[left]
 split = "vertical"
+children = ['medium window', 'tiny window']
+sizes = [60, 40]
 
-[[screen.children.children]]
+['medium window']
 command = "alacritty --title medium-window -e sh -c 'cowsay $(fortune); zsh -i'"
-size = 60
 mark = "medium-window"
 
-[[screen.children.children]]
+['tiny window']
 command = "alacritty --title tiny-window -e sh -c 'neofetch; zsh'"
-size = 40
 mark = "tiny-window"
 
-[[screen.children]]
+[middle]
 command = "alacritty --title middle-panel -e sh -c 'kak ~/internet.txt'"
-size = 50
 mark = "middle-panel"
 
-[[screen.children]]
+[right]
 command = "alacritty --title right-panel -e sh -c 'broot'"
-size = 25
 mark = "right-panel"
 """
 
 expected_toml_dict = {
     "screen": {
-        "children": [
-            {
-                "children": [
-                    {
-                        "size": 60,
-                        "command": "alacritty --title medium-window -e sh "
-                        + "-c 'cowsay $(fortune); zsh -i'",
-                        "mark": "medium-window",
-                    },
-                    {
-                        "size": 40,
-                        "command": "alacritty --title tiny-window -e sh -c 'neofetch; zsh'",
-                        "mark": "tiny-window",
-                    },
-                ],
-                "split": "vertical",
-                "size": 25,
-            },
-            {
-                "size": 50,
-                "command": "alacritty --title middle-panel -e sh -c 'kak ~/internet.txt'",
-                "mark": "middle-panel",
-            },
-            {
-                "size": 25,
-                "command": "alacritty --title right-panel -e sh -c 'broot'",
-                "mark": "right-panel",
-            },
-        ],
+        "children": ["left", "middle", "right"],
         "split": "horizontal",
-    }
+        "sizes": [25, 50, 25],
+    },
+    "left": {
+        "children": ["medium window", "tiny window"],
+        "split": "vertical",
+        "sizes": [60, 40],
+    },
+    "tiny window": {
+        "command": "alacritty --title tiny-window -e sh -c 'neofetch; zsh'",
+        "mark": "tiny-window",
+    },
+    "medium window": {
+        "command": "alacritty --title medium-window -e sh -c 'cowsay $(fortune); zsh -i'",
+        "mark": "medium-window",
+    },
+    "middle": {
+        "command": "alacritty --title middle-panel -e sh -c 'kak ~/internet.txt'",
+        "mark": "middle-panel",
+    },
+    "right": {
+        "command": "alacritty --title right-panel -e sh -c 'broot'",
+        "mark": "right-panel",
+    },
 }
 
 
@@ -107,6 +100,9 @@ def test_reader_uses_home_dir_if_no_xdg():
     env = dtos.Env(home=home_dir, xdg_config_home="")
     config = configs.TomlConfig(filestore, env)
     assert config.to_dict() == expected_toml_dict
+
+
+# TODO: add test to make sure that we check both paths even if xdg is defined
 
 
 def test_throws_error_if_cant_find_config_in_home():

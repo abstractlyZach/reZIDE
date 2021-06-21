@@ -17,31 +17,28 @@ layout_test_cases = [
     LayoutManagerTestCase(
         config={
             "screen": {
+                "sizes": [25, 50, 25],
                 "children": [
                     {
+                        "sizes": [60, 40],
                         "children": [
                             {
                                 "mark": "medium",
-                                "size": 60,
                                 "command": "alacritty",
                             },
                             {
                                 "mark": "small",
-                                "size": 40,
                                 "command": "alacritty",
                             },
                         ],
                         "split": "vertical",
-                        "size": 25,
                     },
                     {
                         "mark": "big",
-                        "size": 50,
                         "command": "alacritty",
                     },
                     {
                         "mark": "right",
-                        "size": 25,
                         "command": "alacritty",
                     },
                 ],
@@ -76,20 +73,18 @@ layout_test_cases = [
     LayoutManagerTestCase(
         config={
             "screen": {
+                "sizes": [25, 50, 25],
                 "children": [
                     {
                         "mark": "left",
-                        "size": 25,
                         "command": "alacritty",
                     },
                     {
                         "mark": "center",
-                        "size": 50,
                         "command": "alacritty",
                     },
                     {
                         "mark": "right",
-                        "size": 25,
                         "command": "alacritty",
                     },
                 ],
@@ -116,36 +111,34 @@ layout_test_cases = [
     LayoutManagerTestCase(
         config={
             "screen": {
+                "sizes": [100],
                 "children": [
                     {
                         "mark": "mymark",
-                        "size": 100,
                         "command": "alacritty",
                     },
                 ],
                 "split": "horizontal",
             },
             "dev-ide": {
+                "sizes": [25, 75],
                 "children": [
                     {
+                        "sizes": [60, 40],
                         "children": [
                             {
                                 "mark": "linter",
-                                "size": 60,
                                 "command": "alacritty",
                             },
                             {
                                 "mark": "terminal",
-                                "size": 40,
                                 "command": "alacritty",
                             },
                         ],
                         "split": "vertical",
-                        "size": 25,
                     },
                     {
                         "mark": "jumbo",
-                        "size": 75,
                         "command": "alacritty",
                     },
                 ],
@@ -315,7 +308,7 @@ def test_layout_calls_window_manager(test_case):
     """Make sure we're calling the window manager correctly"""
     spy_window_manager = fakes.SpyWindowManager()
     layout = layouts.LayoutManager(
-        fakes.FakeConfig(test_case.config), spy_window_manager
+        fakes.FakeConfigParser(test_case.config), spy_window_manager
     )
     layout.select(test_case.layout_name)
     layout.spawn_windows()
@@ -324,24 +317,16 @@ def test_layout_calls_window_manager(test_case):
 
 def test_cant_find_layout():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig(layout_test_cases[0].config),
+        fakes.FakeConfigParser(layout_test_cases[0].config),
         fakes.FakeWindowManager(),
     )
     with pytest.raises(KeyError):
         layout.select("doesn't exist abcdefg")
 
 
-def test_size_shouldnt_be_defined_in_root_node():
-    layout = layouts.LayoutManager(
-        fakes.FakeConfig({"a": {"size": 9000}}), fakes.FakeWindowManager()
-    )
-    with pytest.raises(RuntimeError):
-        layout.select("a")
-
-
 def test_fails_if_invalid_split_orientation():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig({"a": {"split": "laskdjflaskdjf"}}),
+        fakes.FakeConfigParser({"a": {"split": "laskdjflaskdjf"}}),
         fakes.FakeWindowManager(),
     )
     with pytest.raises(RuntimeError):
@@ -351,7 +336,7 @@ def test_fails_if_invalid_split_orientation():
 @pytest.mark.parametrize("num_children", [0, 1])
 def test_throws_error_if_not_enough_children(num_children):
     layout_manager = layouts.LayoutManager(
-        fakes.FakeConfig(
+        fakes.FakeConfigParser(
             {
                 "a": {
                     "split": "horizontal",
@@ -376,7 +361,7 @@ def test_throws_error_if_not_enough_children(num_children):
 def test_doesnt_raise_exception_when_2_or_more_children(num_children):
     """no exception raised with same config as above, but multiple children"""
     layout_manager = layouts.LayoutManager(
-        fakes.FakeConfig(
+        fakes.FakeConfigParser(
             {
                 "a": {
                     "split": "horizontal",
@@ -400,7 +385,7 @@ def test_doesnt_raise_exception_when_2_or_more_children(num_children):
 @pytest.mark.parametrize("num_open_windows", [2, 20, 100])
 def test_fails_if_too_many_windows_open(num_open_windows):
     layout = layouts.LayoutManager(
-        fakes.FakeConfig(
+        fakes.FakeConfigParser(
             {
                 "screen": {
                     "mark": "mymark",
@@ -417,7 +402,7 @@ def test_fails_if_too_many_windows_open(num_open_windows):
 
 def test_raises_exception_if_no_selection():
     layout = layouts.LayoutManager(
-        fakes.FakeConfig({}),
+        fakes.FakeConfigParser({}),
         fakes.FakeWindowManager(),
     )
     with pytest.raises(RuntimeError):
