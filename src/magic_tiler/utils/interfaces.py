@@ -105,3 +105,9 @@ class TreeFactoryInterface(object):
     @abc.abstractmethod
     def create_tree(self, root_node: Dict) -> TreeNodeInterface:
         pass
+
+
+class ConfigParserInterface(object):
+    @abc.abstractmethod
+    def get_tree(self, layout_name: str) -> TreeNodeInterface:
+        pass

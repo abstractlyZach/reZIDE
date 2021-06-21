@@ -3,7 +3,7 @@ from typing import Dict
 from magic_tiler.utils import interfaces
 
 
-class ConfigParser(object):
+class ConfigParser(interfaces.ConfigParserInterface):
     """Parses a config file and creates a Tree out of it."""
 
     def __init__(
