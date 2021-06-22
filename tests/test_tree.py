@@ -1,3 +1,5 @@
+import pytest
+
 from magic_tiler.utils import dtos
 from magic_tiler.utils import tree
 
@@ -167,3 +169,10 @@ def test_windows_can_have_different_parents_and_still_be_equal():
         dtos.WindowDetails(mark="hi", command="echo hi"), parent=tree_2
     )
     assert window_1 == window_2
+
+
+def test_window_cant_add_child():
+    window_1 = tree.Window(dtos.WindowDetails(mark="hi", command="echo hi"))
+    window_2 = tree.Window(dtos.WindowDetails(mark="hi", command="echo hi"))
+    with pytest.raises(RuntimeError):
+        window_2.add_child(window_1)

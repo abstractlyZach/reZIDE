@@ -13,7 +13,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
         return self._create_subtree(tree_dict)
 
     def _create_subtree(
-        self, node: Dict, parent: Optional[TreeNode] = None
+        self, node: Dict, parent: Optional[Container] = None
     ) -> TreeNode:
         """Recursively create the subtree of the current node and everything below it"""
         current_node: TreeNode
@@ -35,20 +35,22 @@ class TreeFactory(interfaces.TreeFactoryInterface):
 
 
 class TreeNode(interfaces.TreeNodeInterface):
-    def __init__(self, data: Any, parent: interfaces.TreeNodeInterface = None) -> None:
+    def __eq__(self, other: object) -> bool:  # pragma: nocover
+        raise NotImplementedError("Can't compare base TreeNodes!")
+
+
+class Container(TreeNode):
+    def __init__(self, data: Any, parent: Optional[Container] = None) -> None:
         self._data = data
         self._children: List[interfaces.TreeNodeInterface] = []
         if parent:
             parent.add_child(self)
 
+    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
+        return self.children[0].get_leftmost_descendant()
+
     def add_child(self, node: interfaces.TreeNodeInterface) -> None:
         self._children.append(node)
-
-    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
-        if self.is_parent:
-            return self.children[0].get_leftmost_descendant()
-        else:
-            return self
 
     @property
     def is_parent(self) -> bool:
@@ -62,14 +64,6 @@ class TreeNode(interfaces.TreeNodeInterface):
     def data(self) -> Any:
         return self._data
 
-    def __eq__(self, other: object) -> bool:  # pragma: nocover
-        raise NotImplementedError("Can't compare base TreeNodes!")
-
-    def __repr__(self) -> str:  # pragma: nocover
-        return f"TreeNode<{len(self.children)}>"
-
-
-class Container(TreeNode):
     def __str__(self) -> str:
         return f"Container({self._children})"
 
@@ -88,6 +82,25 @@ class Container(TreeNode):
 
 
 class Window(TreeNode):
+    def __init__(self, data: Any, parent: Optional[Container] = None) -> None:
+        self._data = data
+        if parent:
+            parent.add_child(self)
+
+    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
+        return self
+
+    @property
+    def is_parent(self) -> bool:
+        return False
+
+    @property
+    def data(self) -> Any:
+        return self._data
+
+    def add_child(self, node: interfaces.TreeNodeInterface) -> None:
+        raise RuntimeError(f"{self} is a Window. It should not have any children")
+
     def __str__(self) -> str:
         return f'Window("{self.data.mark}")'
 
