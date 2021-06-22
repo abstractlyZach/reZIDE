@@ -2,16 +2,7 @@ import pytest
 
 from magic_tiler.utils import configs
 from magic_tiler.utils import dtos
-from magic_tiler.utils import tree
 from tests import fakes
-
-example_trees = []
-single_node = tree.TreeNode("A")
-example_trees.append(single_node)
-simple_tree = tree.TreeNode("horizontal")
-tree.TreeNode(dtos.WindowDetails(command="hi", mark="hi"), parent=simple_tree)
-tree.TreeNode(dtos.WindowDetails(command="bye", mark="bye"), parent=simple_tree)
-example_trees.append(simple_tree)
 
 toml_contents = """
 [screen]

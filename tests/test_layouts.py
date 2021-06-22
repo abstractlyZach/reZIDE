@@ -171,12 +171,15 @@ layout_test_cases = [
         config={
             "complicated": {
                 "split": "horizontal",
+                "sizes": [50, 50],
                 "children": [
                     {
                         "split": "vertical",
+                        "sizes": [33, 33, 34],
                         "children": [
                             {
                                 "split": "horizontal",
+                                "sizes": [50, 50],
                                 "children": [
                                     {
                                         "mark": "A",
@@ -190,6 +193,7 @@ layout_test_cases = [
                             },
                             {
                                 "split": "horizontal",
+                                "sizes": [20, 80],
                                 "children": [
                                     {
                                         "mark": "F",
@@ -209,9 +213,11 @@ layout_test_cases = [
                     },
                     {
                         "split": "vertical",
+                        "sizes": [50, 50],
                         "children": [
                             {
                                 "split": "horizontal",
+                                "sizes": [70, 30],
                                 "children": [
                                     {
                                         "mark": "C",
@@ -219,6 +225,7 @@ layout_test_cases = [
                                     },
                                     {
                                         "split": "vertical",
+                                        "sizes": [50, 50],
                                         "children": [
                                             {
                                                 "mark": "D",
@@ -340,10 +347,10 @@ def test_throws_error_if_not_enough_children(num_children):
             {
                 "a": {
                     "split": "horizontal",
+                    "sizes": [10 for i in range(num_children)],
                     "children": [
                         {
                             "mark": "hi",
-                            "size": 10,
                             "command": "echo hi",
                         }
                         for i in range(num_children)
@@ -365,10 +372,10 @@ def test_doesnt_raise_exception_when_2_or_more_children(num_children):
             {
                 "a": {
                     "split": "horizontal",
+                    "sizes": [10 for i in range(num_children)],
                     "children": [
                         {
                             "mark": "hi",
-                            "size": 10,
                             "command": "echo hi",
                         }
                         for i in range(num_children)

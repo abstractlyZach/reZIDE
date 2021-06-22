@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
@@ -13,16 +13,17 @@ class TreeFactory(interfaces.TreeFactoryInterface):
         return self._create_subtree(tree_dict)
 
     def _create_subtree(
-        self, node: Dict, parent: Optional[TreeNode] = None
+        self, node: Dict, parent: Optional[Container] = None
     ) -> TreeNode:
         """Recursively create the subtree of the current node and everything below it"""
+        current_node: TreeNode
         if "mark" in node:
-            current_node = TreeNode(
+            current_node = Window(
                 dtos.WindowDetails(mark=node["mark"], command=node["command"]),
                 parent=parent,
             )
         elif "children" in node:
-            current_node = TreeNode(node["split"], parent=parent)
+            current_node = Container(node["split"], node["sizes"], parent=parent)
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
@@ -34,20 +35,28 @@ class TreeFactory(interfaces.TreeFactoryInterface):
 
 
 class TreeNode(interfaces.TreeNodeInterface):
-    def __init__(self, data: Any, parent: interfaces.TreeNodeInterface = None) -> None:
-        self._data = data
+    def __eq__(self, other: object) -> bool:  # pragma: nocover
+        raise NotImplementedError("Can't compare base TreeNodes!")
+
+
+class Container(TreeNode):
+    def __init__(
+        self,
+        split_orientation: str,
+        child_sizes: List[int],
+        parent: Optional[Container] = None,
+    ) -> None:
+        self._split_orientation = split_orientation
+        self._child_sizes = child_sizes
         self._children: List[interfaces.TreeNodeInterface] = []
         if parent:
             parent.add_child(self)
 
+    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
+        return self.children[0].get_leftmost_descendant()
+
     def add_child(self, node: interfaces.TreeNodeInterface) -> None:
         self._children.append(node)
-
-    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
-        if self.is_parent:
-            return self.children[0].get_leftmost_descendant()
-        else:
-            return self
 
     @property
     def is_parent(self) -> bool:
@@ -57,22 +66,65 @@ class TreeNode(interfaces.TreeNodeInterface):
     def children(self) -> List[interfaces.TreeNodeInterface]:
         return self._children
 
+    # probably should add coverage here eventually
     @property
-    def data(self) -> Any:
-        return self._data
+    def child_sizes(self) -> List[int]:  # pragma: nocover
+        return self._child_sizes
+
+    @property
+    def data(self) -> str:
+        return self._split_orientation
 
     def __str__(self) -> str:
-        return f"{self.data}: {self._children}"
+        return f"Container({self._children})"
 
     def __repr__(self) -> str:
-        return f"TreeNode<{len(self.children)}>"
+        return str(self)
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, TreeNode):
+        if not isinstance(other, Container):
             return False
         if len(self.children) != len(other.children):
             return False
         for my_child, other_child in zip(self.children, other.children):
             if my_child != other_child:
                 return False
+        return self.data == other.data
+
+
+class Window(TreeNode):
+    def __init__(
+        self, window_details: dtos.WindowDetails, parent: Optional[Container] = None
+    ) -> None:
+        self._window_details = window_details
+        if parent:
+            parent.add_child(self)
+
+    def get_leftmost_descendant(self) -> interfaces.TreeNodeInterface:
+        return self
+
+    @property
+    def children(self) -> List[interfaces.TreeNodeInterface]:  # pragma: no cover
+        return []
+
+    @property
+    def is_parent(self) -> bool:
+        return False
+
+    @property
+    def data(self) -> dtos.WindowDetails:
+        return self._window_details
+
+    def add_child(self, node: interfaces.TreeNodeInterface) -> None:
+        raise RuntimeError(f"{self} is a Window. It should not have any children")
+
+    def __str__(self) -> str:
+        return f'Window("{self.data.mark}")'
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Window):
+            return False
         return self.data == other.data
