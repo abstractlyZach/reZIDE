@@ -3,7 +3,6 @@ import logging
 from typing import Iterable, Set
 
 from magic_tiler.utils import interfaces
-from magic_tiler.utils import tree
 
 # We use depth-first traversal to create each leaf node in the tree. We
 # create the leftmost descendant of each parent first so that it can reserve
@@ -58,7 +57,7 @@ class Layout(object):
         while len(node_queue) >= 1:
             current_node = node_queue.popleft()
             logging.debug(f"dequeuing {current_node}")
-            if isinstance(current_node, tree.Container):
+            if current_node.is_parent:
                 yield current_node.children[0].get_leftmost_descendant()
                 yield current_node
                 for child in current_node.children[1:]:
