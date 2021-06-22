@@ -152,3 +152,18 @@ def test_window_not_equal_to_non_window():
     my_tree = tree.Window(dtos.WindowDetails(mark="hi", command="echo hi"))
     assert my_tree != "hi"
     assert my_tree != 1
+
+
+def test_windows_can_have_different_parents_and_still_be_equal():
+    """A window should be characterized by its mark and command, not its position
+    in the tree
+    """
+    tree_1 = tree.Container("a")
+    tree_2 = tree.Container("b")
+    window_1 = tree.Window(
+        dtos.WindowDetails(mark="hi", command="echo hi"), parent=tree_1
+    )
+    window_2 = tree.Window(
+        dtos.WindowDetails(mark="hi", command="echo hi"), parent=tree_2
+    )
+    assert window_1 == window_2
