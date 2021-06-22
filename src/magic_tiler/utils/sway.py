@@ -14,6 +14,8 @@ split.
 """
 SLEEP_TIME = 0.30
 
+# TODO: add logging for commands
+
 
 class Sway(interfaces.TilingWindowManager):
     def __init__(self) -> None:
