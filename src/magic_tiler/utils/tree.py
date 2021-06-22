@@ -23,7 +23,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
                 parent=parent,
             )
         elif "children" in node:
-            current_node = Container(node["split"], parent=parent)
+            current_node = Container(node["split"], node["sizes"], parent=parent)
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
@@ -40,8 +40,14 @@ class TreeNode(interfaces.TreeNodeInterface):
 
 
 class Container(TreeNode):
-    def __init__(self, data: Any, parent: Optional[Container] = None) -> None:
-        self._data = data
+    def __init__(
+        self,
+        split_orientation: str,
+        child_sizes: List[int],
+        parent: Optional[Container] = None,
+    ) -> None:
+        self._split_orientation = split_orientation
+        self._child_sizes = child_sizes
         self._children: List[interfaces.TreeNodeInterface] = []
         if parent:
             parent.add_child(self)
@@ -62,7 +68,7 @@ class Container(TreeNode):
 
     @property
     def data(self) -> Any:
-        return self._data
+        return self._split_orientation
 
     def __str__(self) -> str:
         return f"Container({self._children})"
@@ -82,8 +88,10 @@ class Container(TreeNode):
 
 
 class Window(TreeNode):
-    def __init__(self, data: Any, parent: Optional[Container] = None) -> None:
-        self._data = data
+    def __init__(
+        self, window_details: dtos.WindowDetails, parent: Optional[Container] = None
+    ) -> None:
+        self._window_details = window_details
         if parent:
             parent.add_child(self)
 
@@ -96,7 +104,7 @@ class Window(TreeNode):
 
     @property
     def data(self) -> Any:
-        return self._data
+        return self._window_details
 
     def add_child(self, node: interfaces.TreeNodeInterface) -> None:
         raise RuntimeError(f"{self} is a Window. It should not have any children")
