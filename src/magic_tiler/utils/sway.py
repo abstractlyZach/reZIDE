@@ -43,6 +43,8 @@ class Sway(interfaces.TilingWindowManager):
         focused.command("focus parent")
         parent = self._get_focused_window()
         parent.command("mark {window_details.mark}")
+        # need to give focus back to the window that we just focused
+        focused.command("focus")
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
