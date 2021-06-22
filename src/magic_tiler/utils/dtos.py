@@ -22,6 +22,7 @@ class WindowDetails(NamedTuple):
     command: str
 
 
+# todo: remove tiles now that we don't use them anymore
 class Tile(NamedTuple):
     """A class that represents the area covered by a window and its gaps.
 
