@@ -40,7 +40,7 @@ class LayoutManager(object):
         self._created_windows: Set[str] = set()
         for window in self._selected_layout.zachstras_traversal():
             if window.is_parent:
-                self._window_manager.split(window.data)
+                self._window_manager.split_and_mark_parent(window.data, "abc")
             elif window.data.mark in self._created_windows:
                 self._window_manager.focus(window.data)
             else:

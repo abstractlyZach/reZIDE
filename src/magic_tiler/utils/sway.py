@@ -30,7 +30,7 @@ class Sway(interfaces.TilingWindowManager):
         window.command("focus")
         return window
 
-    def split(self, split_type: str) -> None:
+    def split_and_mark_parent(self, split_type: str, mark: str) -> None:
         focused = self._get_focused_window()
         if split_type == "vertical":
             focused.command("split vertical")
@@ -38,6 +38,9 @@ class Sway(interfaces.TilingWindowManager):
             focused.command("split horizontal")
         else:
             raise RuntimeError(f"invalid split type: {split_type}")
+        focused.command("focus parent")
+        parent = self._get_focused_window()
+        parent.command("mark {window_details.mark}")
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int

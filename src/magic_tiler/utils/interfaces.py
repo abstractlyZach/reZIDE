@@ -29,7 +29,7 @@ class TilingWindowManager(object):
         pass
 
     @abc.abstractmethod
-    def split(self, split_type: str) -> None:
+    def split_and_mark_parent(self, split_type: str, mark: str) -> None:
         pass
 
     @property
