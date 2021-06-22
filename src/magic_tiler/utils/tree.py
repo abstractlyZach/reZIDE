@@ -15,14 +15,15 @@ class TreeFactory(interfaces.TreeFactoryInterface):
     def _create_subtree(
         self, node: Dict, parent: Optional[TreeNode] = None
     ) -> TreeNode:
+        current_node: TreeNode
         """Recursively create the subtree of the current node and everything below it"""
         if "mark" in node:
-            current_node = TreeNode(
+            current_node = Window(
                 dtos.WindowDetails(mark=node["mark"], command=node["command"]),
                 parent=parent,
             )
         elif "children" in node:
-            current_node = TreeNode(node["split"], parent=parent)
+            current_node = Container(node["split"], parent=parent)
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
@@ -61,18 +62,39 @@ class TreeNode(interfaces.TreeNodeInterface):
     def data(self) -> Any:
         return self._data
 
-    def __str__(self) -> str:
-        return f"{self.data}: {self._children}"
+    def __eq__(self, other: object) -> bool:  # pragma: nocover
+        raise NotImplementedError("Can't compare base TreeNodes!")
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: nocover
         return f"TreeNode<{len(self.children)}>"
 
+
+class Container(TreeNode):
+    def __str__(self) -> str:
+        return f"Container({self._children})"
+
+    def __repr__(self) -> str:
+        return str(self)
+
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, TreeNode):
+        if not isinstance(other, Container):
             return False
         if len(self.children) != len(other.children):
             return False
         for my_child, other_child in zip(self.children, other.children):
             if my_child != other_child:
                 return False
+        return self.data == other.data
+
+
+class Window(TreeNode):
+    def __str__(self) -> str:
+        return f'Window("{self.data.mark}")'
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Window):
+            return False
         return self.data == other.data
