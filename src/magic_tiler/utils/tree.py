@@ -15,8 +15,8 @@ class TreeFactory(interfaces.TreeFactoryInterface):
     def _create_subtree(
         self, node: Dict, parent: Optional[TreeNode] = None
     ) -> TreeNode:
-        current_node: TreeNode
         """Recursively create the subtree of the current node and everything below it"""
+        current_node: TreeNode
         if "mark" in node:
             current_node = Window(
                 dtos.WindowDetails(mark=node["mark"], command=node["command"]),
