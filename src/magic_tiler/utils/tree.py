@@ -104,6 +104,10 @@ class Window(TreeNode):
         return self
 
     @property
+    def children(self) -> List[interfaces.TreeNodeInterface]:  # pragma: no cover
+        return []
+
+    @property
     def is_parent(self) -> bool:
         return False
 

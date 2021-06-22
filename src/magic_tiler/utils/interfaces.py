@@ -78,12 +78,21 @@ class FileStore(object):
 
 class TreeNodeInterface(object):
     @abc.abstractmethod
+    def add_child(self, node: TreeNodeInterface) -> None:
+        pass
+
+    @abc.abstractmethod
     def get_leftmost_descendant(self) -> TreeNodeInterface:
         pass
 
     @property
     @abc.abstractmethod
     def is_parent(self) -> bool:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def children(self) -> List[TreeNodeInterface]:
         pass
 
     @property
