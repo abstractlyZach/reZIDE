@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from magic_tiler.utils import dtos
 from magic_tiler.utils import interfaces
@@ -66,8 +66,13 @@ class Container(TreeNode):
     def children(self) -> List[interfaces.TreeNodeInterface]:
         return self._children
 
+    # probably should add coverage here eventually
     @property
-    def data(self) -> Any:
+    def child_sizes(self) -> List[int]:  # pragma: nocover
+        return self._child_sizes
+
+    @property
+    def data(self) -> str:
         return self._split_orientation
 
     def __str__(self) -> str:
@@ -103,7 +108,7 @@ class Window(TreeNode):
         return False
 
     @property
-    def data(self) -> Any:
+    def data(self) -> dtos.WindowDetails:
         return self._window_details
 
     def add_child(self, node: interfaces.TreeNodeInterface) -> None:
