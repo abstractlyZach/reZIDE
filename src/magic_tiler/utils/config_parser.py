@@ -60,17 +60,20 @@ class ConfigParser(interfaces.ConfigParserInterface):
         create a tree out of them.
         """
         layout_top_definition = self._layout_definitions[layout_name]
+        layout_top_definition["mark"] = layout_name
         root_node = self._construct_subtree(layout_top_definition)
         return self._tree_factory.create_tree(root_node)
 
     def _construct_subtree(self, subtree_dict: Dict) -> Dict:
-        if "mark" in subtree_dict:
+        if "command" in subtree_dict:
             return subtree_dict.copy()
         else:
             subtree = subtree_dict.copy()
             child_subtrees = []
             for child in subtree["children"]:
                 child_definition = self._layout_definitions[child]
+                if "mark" not in child_definition:
+                    child_definition["mark"] = child
                 child_subtrees.append(self._construct_subtree(child_definition))
             subtree["children"] = child_subtrees
             return subtree
