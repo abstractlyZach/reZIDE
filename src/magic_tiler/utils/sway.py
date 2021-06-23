@@ -45,7 +45,7 @@ class Sway(interfaces.TilingWindowManager):
         focused.command("focus parent")
         time.sleep(SLEEP_TIME)
         parent = self._get_focused_window()
-        parent.command("mark {window_details.mark}")
+        parent.command(f"mark {mark}")
         time.sleep(SLEEP_TIME)
         # need to give focus back to the window that we just focused
         focused.command("focus")
