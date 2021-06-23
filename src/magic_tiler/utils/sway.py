@@ -26,6 +26,7 @@ class Sway(interfaces.TilingWindowManager):
         self._sway.command(f"exec {window_details.command}")
         time.sleep(SLEEP_TIME)
         self._get_focused_window().command(f"mark {window_details.mark}")
+        time.sleep(SLEEP_TIME)
 
     def focus(self, target_window: dtos.WindowDetails) -> i3ipc.Con:
         window = self._get_window(target_window.mark)
@@ -40,11 +41,15 @@ class Sway(interfaces.TilingWindowManager):
             focused.command("split horizontal")
         else:
             raise RuntimeError(f"invalid split type: {split_type}")
+        time.sleep(SLEEP_TIME)
         focused.command("focus parent")
+        time.sleep(SLEEP_TIME)
         parent = self._get_focused_window()
         parent.command("mark {window_details.mark}")
+        time.sleep(SLEEP_TIME)
         # need to give focus back to the window that we just focused
         focused.command("focus")
+        time.sleep(SLEEP_TIME)
 
     def resize_width(
         self, target_window: dtos.WindowDetails, container_percentage: int
