@@ -30,18 +30,18 @@ class ConfigParser(interfaces.ConfigParserInterface):
                 and "children" in definition_body
                 and "sizes" in definition_body
             ):
-                self._validate_container(definition_name, definition_body)
+                self._validate_section(definition_name, definition_body)
             else:
                 logging.error(definition_body)
-                raise RuntimeError("This definition is not a Window or Container")
+                raise RuntimeError("This definition is not a Window or Section")
 
     def _validate_window(self, definition_name: str, definition_body: Dict) -> None:
         if len(definition_body) != 2:
             raise RuntimeError("Window must only define command and mark")
 
-    def _validate_container(self, definition_name: str, definition_body: Dict) -> None:
+    def _validate_section(self, definition_name: str, definition_body: Dict) -> None:
         if len(definition_body) != 3:
-            raise RuntimeError("Container must only define split, children, and sizes")
+            raise RuntimeError("Section must only define split, children, and sizes")
         for child in definition_body["children"]:
             if child not in self._layout_definitions:
                 raise RuntimeError(

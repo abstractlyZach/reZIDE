@@ -1,7 +1,7 @@
 # The config file
 ## Rules
-* the number of sizes in a container must match the number of children
-* a container must have > 1 child
+* the number of sizes in a section must match the number of children
+* a section must have > 1 child
 * these fields and only these fields must be defined
 * each child that is named must exist
 * marks must be unique
@@ -23,13 +23,13 @@ command = "alacritty -e sh -c 'neofetch; zsh'"
 mark = "tiny-window"
 ```
 
-## Container
-A container is an object that contains other Containers or Windows.
+## Section
+A section is an object that contains other Sections or Windows.
 * split: its split orientation (horizontal or vertical)
 * children: a list of its children's names
 * sizes: a list of its children's sizes
 
-Here are two Container definitions in TOML:
+Here are two Section definitions in TOML:
 ```toml
 [screen]
 split = "horizontal"

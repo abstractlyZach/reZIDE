@@ -86,12 +86,12 @@ class FakeWindowManager(interfaces.TilingWindowManager):
         pass
 
     def resize_width(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 
     def resize_height(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 
@@ -133,12 +133,12 @@ class SpyWindowManager(FakeWindowManager):
         self._calls.append(dtos.WindowManagerCall(command="make", arg=window_details))
 
     def resize_width(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 
     def resize_height(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 
