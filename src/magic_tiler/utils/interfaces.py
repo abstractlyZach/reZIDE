@@ -14,13 +14,13 @@ class TilingWindowManager(object):
 
     @abc.abstractmethod
     def resize_width(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 
     @abc.abstractmethod
     def resize_height(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         pass
 

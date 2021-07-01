@@ -52,16 +52,16 @@ class Sway(interfaces.TilingWindowManager):
         time.sleep(SLEEP_TIME)
 
     def resize_width(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         window = self.focus(target_window)
-        window.command(f"resize set width {container_percentage} ppt")
+        window.command(f"resize set width {section_percentage} ppt")
 
     def resize_height(
-        self, target_window: dtos.WindowDetails, container_percentage: int
+        self, target_window: dtos.WindowDetails, section_percentage: int
     ) -> None:
         window = self.focus(target_window)
-        window.command(f"resize set height {container_percentage} ppt")
+        window.command(f"resize set height {section_percentage} ppt")
 
     def get_window_sizes(self) -> Dict[Tuple, Dict[str, float]]:
         return {
@@ -99,13 +99,13 @@ class Sway(interfaces.TilingWindowManager):
     def _get_windows_in_current_workspace(self) -> List[i3ipc.Con]:
         current_workspace_num = self._get_current_workspace_num()
         windows_in_current_workspace = []
-        for container in self._sway.get_tree().leaves():
+        for section in self._sway.get_tree().leaves():
             logging.debug(
-                f'"{container.name}" is in workspace {container.workspace().num} with '
-                + f'marks "{container.marks}"'
+                f'"{section.name}" is in workspace {section.workspace().num} with '
+                + f'marks "{section.marks}"'
             )
-            if container.workspace().num == current_workspace_num:
-                windows_in_current_workspace.append(container)
+            if section.workspace().num == current_workspace_num:
+                windows_in_current_workspace.append(section)
         return windows_in_current_workspace
 
     def _get_current_workspace_num(self) -> i3ipc.Con:

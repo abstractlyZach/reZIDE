@@ -12,9 +12,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
     def create_tree(self, tree_dict: Dict) -> interfaces.TreeNodeInterface:
         return self._create_subtree(tree_dict)
 
-    def _create_subtree(
-        self, node: Dict, parent: Optional[Container] = None
-    ) -> TreeNode:
+    def _create_subtree(self, node: Dict, parent: Optional[Section] = None) -> TreeNode:
         """Recursively create the subtree of the current node and everything below it"""
         current_node: TreeNode
         if "command" in node:
@@ -23,7 +21,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
                 parent=parent,
             )
         elif "children" in node:
-            current_node = Container(node["split"], node["sizes"], parent=parent)
+            current_node = Section(node["split"], node["sizes"], parent=parent)
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
@@ -39,12 +37,12 @@ class TreeNode(interfaces.TreeNodeInterface):
         raise NotImplementedError("Can't compare base TreeNodes!")
 
 
-class Container(TreeNode):
+class Section(TreeNode):
     def __init__(
         self,
         split_orientation: str,
         child_sizes: List[int],
-        parent: Optional[Container] = None,
+        parent: Optional[Section] = None,
     ) -> None:
         self._split_orientation = split_orientation
         self._child_sizes = child_sizes
@@ -76,13 +74,13 @@ class Container(TreeNode):
         return self._split_orientation
 
     def __str__(self) -> str:
-        return f"Container({self._children})"
+        return f"Section({self._children})"
 
     def __repr__(self) -> str:
         return str(self)
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Container):
+        if not isinstance(other, Section):
             return False
         if len(self.children) != len(other.children):
             return False
@@ -94,7 +92,7 @@ class Container(TreeNode):
 
 class Window(TreeNode):
     def __init__(
-        self, window_details: dtos.WindowDetails, parent: Optional[Container] = None
+        self, window_details: dtos.WindowDetails, parent: Optional[Section] = None
     ) -> None:
         self._window_details = window_details
         if parent:

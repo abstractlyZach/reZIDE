@@ -297,7 +297,7 @@ validation_test_cases = [
         expected_error_class=RuntimeError,
         layout_name="ide",
     ),
-    # extra junk in container
+    # extra junk in section
     ConfigParserExceptionTestCase(
         config_dict={
             "ide": {
