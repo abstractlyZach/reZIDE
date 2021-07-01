@@ -58,6 +58,7 @@ test_cases = [
         expected_tree={
             "split": "horizontal",
             "sizes": [50, 50],
+            "mark": "ide",
             "children": [
                 {
                     "command": 'alacritty -e sh -c "echo left window!"',
@@ -99,10 +100,12 @@ test_cases = [
         expected_tree={
             "split": "horizontal",
             "sizes": [50, 50],
+            "mark": "3 windows",
             "children": [
                 {
                     "split": "vertical",
                     "sizes": [40, 60],
+                    "mark": "left side",
                     "children": [
                         {
                             "command": 'alacritty -e sh -c "echo I\'m in the top left!"',

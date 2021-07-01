@@ -17,7 +17,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
     ) -> TreeNode:
         """Recursively create the subtree of the current node and everything below it"""
         current_node: TreeNode
-        if "mark" in node:
+        if "command" in node:
             current_node = Window(
                 dtos.WindowDetails(mark=node["mark"], command=node["command"]),
                 parent=parent,
@@ -27,7 +27,7 @@ class TreeFactory(interfaces.TreeFactoryInterface):
             if len(node["children"]) <= 1:
                 raise RuntimeError("each parent needs at least 2 children")
             for child in node["children"]:
-                self._create_subtree(child, current_node)
+                self._create_subtree(child, parent=current_node)
         else:
             logging.error(node)
             raise RuntimeError("invalid config file")

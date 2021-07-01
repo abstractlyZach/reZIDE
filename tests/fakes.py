@@ -98,7 +98,7 @@ class FakeWindowManager(interfaces.TilingWindowManager):
     def focus(self, target_window: dtos.WindowDetails) -> None:
         pass
 
-    def split(self, split_type: str) -> None:
+    def split_and_mark_parent(self, split_type: str, mark: str) -> None:
         pass
 
     @property
@@ -145,5 +145,6 @@ class SpyWindowManager(FakeWindowManager):
     def focus(self, target_window: dtos.WindowDetails) -> None:
         self._calls.append(dtos.WindowManagerCall("focus", arg=target_window))
 
-    def split(self, split_type: str) -> None:
+    # todo: add the mark to the call
+    def split_and_mark_parent(self, split_type: str, mark: str) -> None:
         self._calls.append(dtos.WindowManagerCall("split", arg=split_type))
