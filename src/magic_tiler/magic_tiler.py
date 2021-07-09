@@ -52,6 +52,9 @@ def main(
     verbosity_level: int, xdg_config_home_dir: str, user_home_dir: str, layout_name: str
 ) -> None:
     """Create the IDE registered at LAYOUT_NAME in the configuration file."""
+    log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
+    logging.basicConfig(level=log_level)
+    logging.info(f"Log level set to {log_level}")
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
     config_reader = configs.TomlConfig(filestore.LocalFilestore(), env=env)
     parser = config_parser.ConfigParser(config_reader, tree.TreeFactory())
@@ -71,9 +74,6 @@ class MagicTiler(object):
         verbosity_level: int,
     ) -> None:
         self._layout = layout
-        log_level = VERBOSITY_LOG_LEVELS[verbosity_level]
-        logging.basicConfig(level=log_level)
-        logging.info(f"Log level set to {log_level}")
         logging.debug(f"Env is {env}")
 
     def run(self, layout_name: str) -> None:
