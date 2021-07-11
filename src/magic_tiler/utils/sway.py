@@ -54,19 +54,24 @@ class Sway(interfaces.TilingWindowManager):
 
     def make_window(self, window_details: dtos.WindowDetails) -> None:
         """Create a window then mark it"""
+        logging.debug(f"creating window with command {window_details.command}")
         self._sway.command(f"exec {window_details.command}")
         self.sleep_until_event(NEW_WINDOW_EVENT)
-        logging.debug("marking window")
+        logging.debug(f"marking window with mark {window_details.mark}")
         self._get_focused_window().command(f"mark {window_details.mark}")
         time.sleep(MARK_SLEEP_TIME)
 
     def focus(self, target_window: dtos.WindowDetails) -> i3ipc.Con:
+        logging.debug(f"focusing window with mark {target_window.mark}")
         window = self._get_window(target_window.mark)
         window.command("focus")
         time.sleep(FOCUS_SLEEP_TIME)
         return window
 
     def split_and_mark_parent(self, split_type: str, mark: str) -> None:
+        logging.debug(
+            f"splitting the parent of the focused node and marking the container with {mark}"
+        )
         focused = self._get_focused_window()
         if split_type == "vertical":
             focused.command("split vertical")
