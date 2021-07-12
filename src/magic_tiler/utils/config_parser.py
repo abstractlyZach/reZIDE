@@ -25,11 +25,7 @@ class ConfigParser(interfaces.ConfigParserInterface):
                     )
                 self._validate_window(definition_name, definition_body)
                 seen_marks.add(definition_body["mark"])
-            elif (
-                "split" in definition_body
-                and "children" in definition_body
-                and "sizes" in definition_body
-            ):
+            elif "children" in definition_body:
                 self._validate_section(definition_name, definition_body)
             else:
                 logging.error(definition_body)
@@ -40,8 +36,18 @@ class ConfigParser(interfaces.ConfigParserInterface):
             raise RuntimeError("Window must only define command and mark")
 
     def _validate_section(self, definition_name: str, definition_body: Dict) -> None:
-        if len(definition_body) != 3:
-            raise RuntimeError("Section must only define split, children, and sizes")
+        keys = set(definition_body.keys())
+        if not {"split", "children", "sizes"}.issubset(keys):
+            raise RuntimeError(
+                f"Section must define split, children, and sizes. keys defined: {keys}"
+            )
+        allowed_keys = {"split", "children", "sizes", "is_layout"}
+        extra_keys = keys - allowed_keys
+        if len(extra_keys) > 0:
+            raise RuntimeError(
+                f"Section must only define these keys: {allowed_keys}. extra keys"
+                + f" defined: {extra_keys}"
+            )
         for child in definition_body["children"]:
             if child not in self._layout_definitions:
                 raise RuntimeError(
