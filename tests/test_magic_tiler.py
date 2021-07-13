@@ -41,42 +41,38 @@ class ClickTestParams(NamedTuple):
     cli_args: List[str]
     shell_env: Dict
     expected_parsed_env: dtos.Env
-    expected_verbosity: int
 
 
 test_params = [
     ClickTestParams(
-        cli_args=["my_ide"],
+        cli_args=["open", "my_ide"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
-        expected_verbosity=0,
     ),
     # can we override CLI env variables?
     ClickTestParams(
         cli_args=[
-            "my_ide",
             "--user-home-dir",
             "different_home",
             "--xdg-config-home-dir",
             "different_xdg",
+            "open",
+            "my_ide",
         ],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(
             home="different_home", xdg_config_home="different_xdg"
         ),
-        expected_verbosity=0,
     ),
     ClickTestParams(
-        cli_args=["test_ide", "-v"],
+        cli_args=["-v", "open", "test_ide"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
-        expected_verbosity=1,
     ),
     ClickTestParams(
-        cli_args=["super-verbose", "-vv"],
+        cli_args=["-vv", "open", "super-verbose"],
         shell_env={"HOME": "abc", "XDG_CONFIG_HOME": "def"},
         expected_parsed_env=dtos.Env(home="abc", xdg_config_home="def"),
-        expected_verbosity=2,
     ),
 ]
 
@@ -94,29 +90,31 @@ def test_successful_script(
 ):
     """Verify that we're setting up dependencies and calling MagicTiler correctly"""
     result = click_runner.invoke(
-        magic_tiler.main, test_parameters.cli_args, env=test_parameters.shell_env
+        magic_tiler.main,
+        test_parameters.cli_args,
+        env=test_parameters.shell_env,
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
     MockMagicTiler.assert_called_once_with(
-        test_parameters.expected_parsed_env,
-        MockLayoutManager(),
-        test_parameters.expected_verbosity,
+        test_parameters.expected_parsed_env, MockLayoutManager()
     )
-    MockMagicTiler.return_value.run.assert_called_once_with(test_parameters.cli_args[0])
+    MockMagicTiler.return_value.run.assert_called_once_with(
+        test_parameters.cli_args[-1]
+    )
 
 
 def test_run():
     env = dtos.Env(home="abc", xdg_config_home="def")
     layout = mock.MagicMock()
-    application = magic_tiler.MagicTiler(env, layout, 0)
+    application = magic_tiler.MagicTiler(env, layout)
     application.run("my_ide")
     layout.select.assert_called_once_with("my_ide")
     layout.spawn_windows.assert_called_once_with()
 
 
 def test_list_layouts(click_runner):
-    result = click_runner.invoke(magic_tiler.main, ["-l"])
+    result = click_runner.invoke(magic_tiler.main, ["list-layouts"])
     assert "these are your layouts" in result.output
 
 
