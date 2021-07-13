@@ -27,6 +27,11 @@ def MockLayoutManager(mocker):
     return mocker.patch("magic_tiler.utils.layouts.LayoutManager")
 
 
+@pytest.fixture
+def MockFilestore(mocker):
+    return mocker.patch("magic_tiler.utils.filestore.LocalFilestore")
+
+
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
 @pytest.mark.skip
 @pytest.mark.e2e
@@ -86,6 +91,7 @@ def test_successful_script(
     MockMagicTiler,
     MockConfig,
     MockLayoutManager,
+    MockFilestore,
     test_parameters,
 ):
     """Verify that we're setting up dependencies and calling MagicTiler correctly"""
@@ -96,6 +102,9 @@ def test_successful_script(
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
+    MockConfig.assert_called_once_with(
+        MockFilestore(), env=test_parameters.expected_parsed_env
+    )
     MockMagicTiler.assert_called_once_with(
         test_parameters.expected_parsed_env, MockLayoutManager()
     )
