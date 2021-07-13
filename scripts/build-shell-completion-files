@@ -1,0 +1,9 @@
+#!zsh
+
+# make sure to run `poetry shell` to get inside the virtualenv before running this script
+
+set -e
+
+_MAGIC_TILER_COMPLETE=zsh_source magic-tiler > completions/magic-tiler.zsh
+_MAGIC_TILER_COMPLETE=fish_source magic-tiler > completions/magic-tiler.fish
+_MAGIC_TILER_COMPLETE=bash_source magic-tiler > completions/magic-tiler.bash
