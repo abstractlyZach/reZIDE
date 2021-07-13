@@ -190,6 +190,19 @@ validation_test_cases = [
         expected_error_class=RuntimeError,
         layout_name="ide",
     ),
+    # invalid field in section
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["a", "b"],
+                "sizes": [1, 1],
+                "woops": "idk",
+            }
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
     ConfigParserExceptionTestCase(
         config_dict={
             "ide": {
@@ -371,6 +384,7 @@ def test_parser_validation_happy_path():
                 "split": "horizontal",
                 "children": ["left window", "right window"],
                 "sizes": [50, 50],
+                "is_layout": True,
             },
             "left window": {
                 "command": 'alacritty -e sh -c "echo left window!"',
