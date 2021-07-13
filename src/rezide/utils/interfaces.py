@@ -4,7 +4,7 @@ from __future__ import annotations
 import abc
 from typing import Any, Dict, List
 
-from magic_tiler.utils import dtos
+from rezide.utils import dtos
 
 
 class TilingWindowManager(object):

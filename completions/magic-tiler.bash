@@ -1,4 +1,4 @@
-_magic_tiler_completion() {
+_rezide_completion() {
     local IFS=$'\n'
     local response
 
@@ -21,8 +21,8 @@ _magic_tiler_completion() {
     return 0
 }
 
-_magic_tiler_completion_setup() {
-    complete -o nosort -F _magic_tiler_completion magic-tiler
+_rezide_completion_setup() {
+    complete -o nosort -F _rezide_completion magic-tiler
 }
 
-_magic_tiler_completion_setup;
+_rezide_completion_setup;

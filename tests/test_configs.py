@@ -1,7 +1,7 @@
 import pytest
 
-from magic_tiler.utils import configs
-from magic_tiler.utils import dtos
+from rezide.utils import configs
+from rezide.utils import dtos
 from tests import fakes
 
 toml_contents = """
@@ -75,7 +75,7 @@ def test_reader_uses_xdg_config_first():
     config_dir = "/home/abc/.config"
     filestore = fakes.FakeFilestore(
         {
-            config_dir + "/magic_tiler/config.toml": toml_contents,
+            config_dir + "/rezide/config.toml": toml_contents,
             "abc": "def",
             "hjk": "lmno",
         }
@@ -87,7 +87,7 @@ def test_reader_uses_xdg_config_first():
 
 def test_reader_uses_home_dir_if_no_xdg():
     home_dir = "/home/def"
-    filestore = fakes.FakeFilestore({home_dir + "/.magic_tiler.toml": toml_contents})
+    filestore = fakes.FakeFilestore({home_dir + "/.rezide.toml": toml_contents})
     env = dtos.Env(home=home_dir, xdg_config_home="")
     config = configs.TomlConfig(filestore, env)
     assert config.to_dict() == expected_toml_dict

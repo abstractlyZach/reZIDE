@@ -1,4 +1,4 @@
-function _magic_tiler_completion;
+function _rezide_completion;
     set -l response;
 
     for value in (env _MAGIC_TILER_COMPLETE=fish_complete COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) magic-tiler);
@@ -18,4 +18,4 @@ function _magic_tiler_completion;
     end;
 end;
 
-complete --no-files --command magic-tiler --arguments "(_magic_tiler_completion)";
+complete --no-files --command magic-tiler --arguments "(_rezide_completion)";

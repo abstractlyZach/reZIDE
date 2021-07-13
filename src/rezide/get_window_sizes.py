@@ -2,8 +2,8 @@ import pprint
 
 import click
 
-from magic_tiler.utils import interfaces
-from magic_tiler.utils import sway
+from rezide.utils import interfaces
+from rezide.utils import sway
 
 
 @click.command()

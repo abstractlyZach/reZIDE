@@ -3,40 +3,40 @@ from unittest import mock
 
 import pytest
 
-from magic_tiler import magic_tiler
-from magic_tiler.utils import dtos
+from rezide import rezide
+from rezide.utils import dtos
 
 
 @pytest.fixture
 def MockWindowManager(mocker):
-    return mocker.patch("magic_tiler.utils.sway.Sway")
+    return mocker.patch("rezide.utils.sway.Sway")
 
 
 @pytest.fixture
 def MockMagicTiler(mocker):
-    return mocker.patch("magic_tiler.magic_tiler.MagicTiler")
+    return mocker.patch("rezide.rezide.MagicTiler")
 
 
 @pytest.fixture
 def MockConfig(mocker):
-    return mocker.patch("magic_tiler.utils.configs.TomlConfig")
+    return mocker.patch("rezide.utils.configs.TomlConfig")
 
 
 @pytest.fixture
 def MockLayoutManager(mocker):
-    return mocker.patch("magic_tiler.utils.layouts.LayoutManager")
+    return mocker.patch("rezide.utils.layouts.LayoutManager")
 
 
 @pytest.fixture
 def MockFilestore(mocker):
-    return mocker.patch("magic_tiler.utils.filestore.LocalFilestore")
+    return mocker.patch("rezide.utils.filestore.LocalFilestore")
 
 
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
 @pytest.mark.skip
 @pytest.mark.e2e
-def test_magic_tiler_script(click_runner):
-    result = click_runner.invoke(magic_tiler.main)
+def test_rezide_script(click_runner):
+    result = click_runner.invoke(rezide.main)
     assert result.exit_code == 0
 
 
@@ -96,7 +96,7 @@ def test_successful_script(
 ):
     """Verify that we're setting up dependencies and calling MagicTiler correctly"""
     result = click_runner.invoke(
-        magic_tiler.main,
+        rezide.main,
         test_parameters.cli_args,
         env=test_parameters.shell_env,
     )
@@ -116,7 +116,7 @@ def test_successful_script(
 def test_run():
     env = dtos.Env(home="abc", xdg_config_home="def")
     layout = mock.MagicMock()
-    application = magic_tiler.MagicTiler(env, layout)
+    application = rezide.MagicTiler(env, layout)
     application.run("my_ide")
     layout.select.assert_called_once_with("my_ide")
     layout.spawn_windows.assert_called_once_with()
@@ -144,7 +144,7 @@ def test_list_layouts(
         },
     }
     result = click_runner.invoke(
-        magic_tiler.main, ["-c", "abc", "--user-home-dir", "def", "list-layouts"]
+        rezide.main, ["-c", "abc", "--user-home-dir", "def", "list-layouts"]
     )
     MockConfig.assert_called_once_with(
         MockFilestore(),

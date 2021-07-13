@@ -1,6 +1,6 @@
 #compdef magic-tiler
 
-_magic_tiler_completion() {
+_rezide_completion() {
     local -a completions
     local -a completions_with_descriptions
     local -a response
@@ -31,4 +31,4 @@ _magic_tiler_completion() {
     fi
 }
 
-compdef _magic_tiler_completion magic-tiler;
+compdef _rezide_completion magic-tiler;

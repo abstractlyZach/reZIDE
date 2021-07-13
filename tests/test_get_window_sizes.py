@@ -2,17 +2,17 @@ from unittest import mock
 
 import pytest
 
-from magic_tiler import get_window_sizes
+from rezide import get_window_sizes
 
 
 @pytest.fixture
 def mock_window_manager(mocker):
-    return mocker.patch("magic_tiler.utils.sway.Sway")
+    return mocker.patch("rezide.utils.sway.Sway")
 
 
 @pytest.fixture
 def mock_print_window_sizes(mocker):
-    return mocker.patch("magic_tiler.get_window_sizes.print_window_sizes")
+    return mocker.patch("rezide.get_window_sizes.print_window_sizes")
 
 
 @pytest.mark.e2e

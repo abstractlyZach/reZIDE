@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "magic-tiler"
+name = "rezide"
 version = "0.7.0"
 description = ""
 authors = ["abstractlyZach <zach3lee@gmail.com>"]
@@ -35,13 +35,13 @@ source = ["src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["magic_tiler"]
+source = ["rezide"]
 omit = [
     # abstract functions so we never actually call their code
-    "src/magic_tiler/utils/interfaces.py",
+    "src/rezide/utils/interfaces.py",
     # external apis
-    "src/magic_tiler/utils/sway.py",
-    "src/magic_tiler/utils/filestore.py",
+    "src/rezide/utils/sway.py",
+    "src/rezide/utils/filestore.py",
 ]
 
 [tool.coverage.report]
@@ -52,9 +52,9 @@ fail_under = 100
 profile = "google"
 
 [tool.poetry.scripts]
-magic-tiler = "magic_tiler.magic_tiler:main"
-get-window-sizes = "magic_tiler.get_window_sizes:main"
-get-tree = "magic_tiler.get_tree:main"
+rzd = "rezide.rezide:main"
+get-window-sizes = "rezide.get_window_sizes:main"
+get-tree = "rezide.get_tree:main"
 
 [tool.pytest.ini_options]
 addopts = "--exitfirst --verbosity=2"

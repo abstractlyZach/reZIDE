@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from magic_tiler.utils import config_parser
+from rezide.utils import config_parser
 from tests import fakes
 
 # TODO: pick better/more-specific errors than RuntimeError lol

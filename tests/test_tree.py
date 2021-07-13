@@ -1,7 +1,7 @@
 import pytest
 
-from magic_tiler.utils import dtos
-from magic_tiler.utils import tree
+from rezide.utils import dtos
+from rezide.utils import tree
 
 
 def test_tree_creation():

@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, Set
 
-from magic_tiler.utils import interfaces
+from rezide.utils import interfaces
 
 
 class ConfigParser(interfaces.ConfigParserInterface):

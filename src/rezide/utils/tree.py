@@ -4,8 +4,8 @@ from __future__ import annotations
 import logging
 from typing import Dict, List, Optional
 
-from magic_tiler.utils import dtos
-from magic_tiler.utils import interfaces
+from rezide.utils import dtos
+from rezide.utils import interfaces
 
 
 class TreeFactory(interfaces.TreeFactoryInterface):
