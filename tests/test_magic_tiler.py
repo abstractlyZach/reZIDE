@@ -115,4 +115,9 @@ def test_run():
     layout.spawn_windows.assert_called_once_with()
 
 
+def test_list_layouts(click_runner):
+    result = click_runner.invoke(magic_tiler.main, ["-l"])
+    assert "these are your layouts" in result.output
+
+
 # TODO: add integration tests where we fail due to invalid config files

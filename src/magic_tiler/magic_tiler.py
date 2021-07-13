@@ -1,5 +1,6 @@
 import logging
 import sys
+from typing import Any
 
 import click
 
@@ -24,6 +25,15 @@ VERBOSITY_LOG_LEVELS = {
 # open windows or run commands? maybe a fake supbrocess runner?
 
 
+# these types can be Any because this function declaration was lifted from the docs
+def list_layouts(context: Any, param: Any, value: Any) -> None:
+    """Callback function which lists all available layouts"""
+    if not value or context.resilient_parsing:
+        return
+    click.echo("these are your layouts")
+    context.exit()
+
+
 @click.command()
 @click.option(
     "-v",
@@ -46,6 +56,16 @@ VERBOSITY_LOG_LEVELS = {
     envvar="HOME",
     help="The current user's home directory. Reads from the HOME environment variable"
     + " by default.",
+)
+# https://click.palletsprojects.com/en/8.0.x/options/#callbacks-and-eager-options
+@click.option(
+    "-l",
+    "--list-layouts",
+    is_flag=True,
+    callback=list_layouts,
+    expose_value=False,
+    is_eager=True,
+    help="List available layouts and exit.",
 )
 @click.argument("layout_name")
 @click.version_option(version=magic_tiler.__version__)
