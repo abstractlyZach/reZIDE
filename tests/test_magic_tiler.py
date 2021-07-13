@@ -122,9 +122,36 @@ def test_run():
     layout.spawn_windows.assert_called_once_with()
 
 
-def test_list_layouts(click_runner):
-    result = click_runner.invoke(magic_tiler.main, ["list-layouts"])
-    assert "these are your layouts" in result.output
+def test_list_layouts(
+    click_runner,
+    MockConfig,
+    MockFilestore,
+):
+    MockConfig.return_value.to_dict.return_value = {
+        "layout 0": {"is_layout": True},
+        "not a layout 0 ": {"size": 9999},
+        "layout 1": {"is_layout": True, "children": [1, 2, 3]},
+        "not a layout 1": {
+            "layout": "horizontal",
+            "children": ["a", "b", "c"],
+            "sizes": [50, 25, 25],
+        },
+        "layout 2": {
+            "is_layout": True,
+            "layout": "horizontal",
+            "children": ["a", "b", "c"],
+            "sizes": [50, 25, 25],
+        },
+    }
+    result = click_runner.invoke(
+        magic_tiler.main, ["-c", "abc", "--user-home-dir", "def", "list-layouts"]
+    )
+    MockConfig.assert_called_once_with(
+        MockFilestore(),
+        env=dtos.Env(home="def", xdg_config_home="abc"),
+    )
+    for number in range(3):
+        assert f"layout {number}" in result.output
 
 
 # TODO: add integration tests where we fail due to invalid config files

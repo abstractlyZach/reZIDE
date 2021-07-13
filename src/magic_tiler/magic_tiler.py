@@ -103,7 +103,9 @@ def list_layouts(context: click.Context) -> None:
     """List all available layouts"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
     logging.debug(f'env: {context.obj["env"]}')
-    click.echo("these are your layouts")
+    for entry, details in context.obj["config_reader"].to_dict().items():
+        if "is_layout" in details:
+            click.secho(entry, fg="blue")
 
 
 class MagicTiler(object):
