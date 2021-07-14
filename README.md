@@ -88,7 +88,7 @@ size = 25
 [screenshot](screenshots/early_magic_tile.png)
 
 ## Shell Completion
-[Setting up completion for your shell](completions/README.md)
+[Setting up completion for your shell](completions)
 
 
 ## Alternatives
