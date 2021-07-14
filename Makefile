@@ -11,10 +11,7 @@ format:
 lint:
 	poetry run flake8
 
-ci-typecheck:
-	# installs type stubs before running the type checker
-	poetry run mypy --install-types
-	make typecheck
-
 typecheck:
-	poetry run mypy .
+	# install type stubs for 3rd party libraries if they're missing
+	# https://mypy.readthedocs.io/en/stable/running_mypy.html#library-stubs-not-installed
+	poetry run mypy --install-types --non-interactive .
