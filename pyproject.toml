@@ -68,11 +68,3 @@ markers = [
 check_untyped_defs = true
 pretty = true
 show_error_codes = true
-
-[[tool.mypy.overrides]]
-module = [
-    "i3ipc",
-    "pytest",
-    "toml",
-]
-ignore_missing_imports = true
