@@ -88,7 +88,7 @@ def open(context: click.Context, layout_name: str) -> None:
     )
     window_manager = sway.Sway()
     layout = layouts.LayoutManager(parser, window_manager)
-    application = MagicTiler(context.obj["env"], layout)
+    application = Rezide(context.obj["env"], layout)
     application.run(layout_name)
 
 
@@ -108,7 +108,7 @@ def list_layouts(context: click.Context) -> None:
             click.secho(entry, fg="blue")
 
 
-class MagicTiler(object):
+class Rezide(object):
     """Manages the application's state and calls the appropriate functions"""
 
     def __init__(

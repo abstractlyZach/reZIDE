@@ -13,8 +13,8 @@ def MockWindowManager(mocker):
 
 
 @pytest.fixture
-def MockMagicTiler(mocker):
-    return mocker.patch("rezide.rezide.MagicTiler")
+def MockRezide(mocker):
+    return mocker.patch("rezide.rezide.Rezide")
 
 
 @pytest.fixture
@@ -88,13 +88,13 @@ test_params = [
 def test_successful_script(
     click_runner,
     MockWindowManager,
-    MockMagicTiler,
+    MockRezide,
     MockConfig,
     MockLayoutManager,
     MockFilestore,
     test_parameters,
 ):
-    """Verify that we're setting up dependencies and calling MagicTiler correctly"""
+    """Verify that we're setting up dependencies and calling Rezide correctly"""
     result = click_runner.invoke(
         rezide.main,
         test_parameters.cli_args,
@@ -105,18 +105,16 @@ def test_successful_script(
     MockConfig.assert_called_once_with(
         MockFilestore(), env=test_parameters.expected_parsed_env
     )
-    MockMagicTiler.assert_called_once_with(
+    MockRezide.assert_called_once_with(
         test_parameters.expected_parsed_env, MockLayoutManager()
     )
-    MockMagicTiler.return_value.run.assert_called_once_with(
-        test_parameters.cli_args[-1]
-    )
+    MockRezide.return_value.run.assert_called_once_with(test_parameters.cli_args[-1])
 
 
 def test_run():
     env = dtos.Env(home="abc", xdg_config_home="def")
     layout = mock.MagicMock()
-    application = rezide.MagicTiler(env, layout)
+    application = rezide.Rezide(env, layout)
     application.run("my_ide")
     layout.select.assert_called_once_with("my_ide")
     layout.spawn_windows.assert_called_once_with()
