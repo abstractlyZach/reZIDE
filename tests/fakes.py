@@ -1,8 +1,8 @@
 from typing import Dict, List, NamedTuple, Optional, Type
 
-from magic_tiler.utils import dtos
-from magic_tiler.utils import interfaces
-from magic_tiler.utils import tree
+from rezide.utils import dtos
+from rezide.utils import interfaces
+from rezide.utils import tree
 
 
 class FakeFilestore(interfaces.FileStore):

@@ -4,14 +4,14 @@ from typing import Any, Dict
 
 import click
 
-import magic_tiler
-from magic_tiler.utils import config_parser
-from magic_tiler.utils import configs
-from magic_tiler.utils import dtos
-from magic_tiler.utils import filestore
-from magic_tiler.utils import layouts
-from magic_tiler.utils import sway
-from magic_tiler.utils import tree
+import rezide
+from rezide.utils import config_parser
+from rezide.utils import configs
+from rezide.utils import dtos
+from rezide.utils import filestore
+from rezide.utils import layouts
+from rezide.utils import sway
+from rezide.utils import tree
 
 # maps from verbosity level to log levels
 VERBOSITY_LOG_LEVELS = {
@@ -49,7 +49,7 @@ VERBOSITY_LOG_LEVELS = {
     + " by default.",
 )
 @click.pass_context
-@click.version_option(version=magic_tiler.__version__)
+@click.version_option(version=rezide.__version__)
 def main(
     context: click.Context,
     verbosity_level: int,
@@ -88,7 +88,7 @@ def open(context: click.Context, layout_name: str) -> None:
     )
     window_manager = sway.Sway()
     layout = layouts.LayoutManager(parser, window_manager)
-    application = MagicTiler(context.obj["env"], layout)
+    application = Rezide(context.obj["env"], layout)
     application.run(layout_name)
 
 
@@ -108,7 +108,7 @@ def list_layouts(context: click.Context) -> None:
             click.secho(entry, fg="blue")
 
 
-class MagicTiler(object):
+class Rezide(object):
     """Manages the application's state and calls the appropriate functions"""
 
     def __init__(

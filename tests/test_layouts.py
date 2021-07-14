@@ -2,8 +2,8 @@ from typing import Dict, List, NamedTuple
 
 import pytest
 
-from magic_tiler.utils import dtos
-from magic_tiler.utils import layouts
+from rezide.utils import dtos
+from rezide.utils import layouts
 from tests import fakes
 
 

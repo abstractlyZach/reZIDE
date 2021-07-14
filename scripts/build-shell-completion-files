@@ -4,6 +4,6 @@
 
 set -e
 
-_MAGIC_TILER_COMPLETE=zsh_source magic-tiler > completions/magic-tiler.zsh
-_MAGIC_TILER_COMPLETE=fish_source magic-tiler > completions/magic-tiler.fish
-_MAGIC_TILER_COMPLETE=bash_source magic-tiler > completions/magic-tiler.bash
+_RZD_COMPLETE=zsh_source rzd > completions/rezide.zsh
+_RZD_COMPLETE=fish_source rzd > completions/rezide.fish
+_RZD_COMPLETE=bash_source rzd > completions/rezide.bash

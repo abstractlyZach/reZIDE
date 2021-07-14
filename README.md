@@ -2,8 +2,8 @@
 [![Codecov](https://codecov.io/gh/abstractlyZach/magic-tiler/branch/main/graph/badge.svg)](https://codecov.io/gh/abstractlyZach/magic-tiler)
 [![PyPI](https://img.shields.io/pypi/v/magic-tiler.svg)](https://pypi.org/project/magic-tiler/)
 
-# Magic Tiler
-Magic Tiler will instantly create your own IDE. No need for tmux! Write your own
+# reZIDE
+reZIDE will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
 
 ## Notes

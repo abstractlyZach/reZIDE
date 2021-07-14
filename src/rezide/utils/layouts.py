@@ -2,7 +2,7 @@ import collections
 import logging
 from typing import Iterable, Set
 
-from magic_tiler.utils import interfaces
+from rezide.utils import interfaces
 
 # We use depth-first traversal to create each leaf node in the tree. We
 # create the leftmost descendant of each parent first so that it can reserve

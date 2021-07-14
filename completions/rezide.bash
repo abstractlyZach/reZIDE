@@ -1,8 +1,8 @@
-_magic_tiler_completion() {
+_rzd_completion() {
     local IFS=$'\n'
     local response
 
-    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _MAGIC_TILER_COMPLETE=bash_complete $1)
+    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _RZD_COMPLETE=bash_complete $1)
 
     for completion in $response; do
         IFS=',' read type value <<< "$completion"
@@ -21,8 +21,8 @@ _magic_tiler_completion() {
     return 0
 }
 
-_magic_tiler_completion_setup() {
-    complete -o nosort -F _magic_tiler_completion magic-tiler
+_rzd_completion_setup() {
+    complete -o nosort -F _rzd_completion rzd
 }
 
-_magic_tiler_completion_setup;
+_rzd_completion_setup;

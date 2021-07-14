@@ -1,12 +1,12 @@
-#compdef magic-tiler
+#compdef rzd
 
-_magic_tiler_completion() {
+_rzd_completion() {
     local -a completions
     local -a completions_with_descriptions
     local -a response
-    (( ! $+commands[magic-tiler] )) && return 1
+    (( ! $+commands[rzd] )) && return 1
 
-    response=("${(@f)$(env COMP_WORDS="${words[*]}" COMP_CWORD=$((CURRENT-1)) _MAGIC_TILER_COMPLETE=zsh_complete magic-tiler)}")
+    response=("${(@f)$(env COMP_WORDS="${words[*]}" COMP_CWORD=$((CURRENT-1)) _RZD_COMPLETE=zsh_complete rzd)}")
 
     for type key descr in ${response}; do
         if [[ "$type" == "plain" ]]; then
@@ -31,4 +31,4 @@ _magic_tiler_completion() {
     fi
 }
 
-compdef _magic_tiler_completion magic-tiler;
+compdef _rzd_completion rzd;

@@ -1,17 +1,17 @@
 import pytest
 
-from magic_tiler import get_tree
+from rezide import get_tree
 from tests import fakes
 
 
 @pytest.fixture
 def mock_window_manager(mocker):
-    return mocker.patch("magic_tiler.utils.sway.Sway")
+    return mocker.patch("rezide.utils.sway.Sway")
 
 
 @pytest.fixture
 def mock_print_tree(mocker):
-    mock = mocker.patch("magic_tiler.get_tree.print_tree")
+    mock = mocker.patch("rezide.get_tree.print_tree")
     mock.return_value = """
     Alacritty
     x, y: (803, 294)

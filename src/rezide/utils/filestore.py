@@ -1,6 +1,6 @@
 import os
 
-from magic_tiler.utils import interfaces
+from rezide.utils import interfaces
 
 
 class LocalFilestore(interfaces.FileStore):

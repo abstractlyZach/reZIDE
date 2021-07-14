@@ -1,7 +1,7 @@
-function _magic_tiler_completion;
+function _rzd_completion;
     set -l response;
 
-    for value in (env _MAGIC_TILER_COMPLETE=fish_complete COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) magic-tiler);
+    for value in (env _RZD_COMPLETE=fish_complete COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) rzd);
         set response $response $value;
     end;
 
@@ -18,4 +18,4 @@ function _magic_tiler_completion;
     end;
 end;
 
-complete --no-files --command magic-tiler --arguments "(_magic_tiler_completion)";
+complete --no-files --command rzd --arguments "(_rzd_completion)";
