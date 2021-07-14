@@ -1,4 +1,4 @@
-"""The magic tiler"""
+"""reZIDE"""
 from importlib.metadata import version
 
 # pyproject.toml is the source of truth for versioning
