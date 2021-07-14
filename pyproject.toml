@@ -68,3 +68,10 @@ markers = [
 check_untyped_defs = true
 pretty = true
 show_error_codes = true
+
+[[tool.mypy.overrides]]
+# ignore these modules because there are no type stubs available
+module = [
+    "i3ipc",
+]
+ignore_missing_imports = true
