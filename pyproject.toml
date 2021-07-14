@@ -20,7 +20,7 @@ flake8-import-order = "^0.18.1"
 isort = "^5.8.0"
 flake8-bugbear = "^21.4.3"
 flake8-bandit = "^2.1.2"
-mypy = "^0.812"
+mypy = "^0.910"
 flake8-annotations = "^2.6.2"
 codecov = "^2.1.11"
 pytest = "^6"
@@ -62,3 +62,17 @@ log_file_level = "DEBUG"
 markers = [
     'e2e',
 ]
+
+[tool.mypy]
+# https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml-file
+check_untyped_defs = true
+pretty = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "i3ipc",
+    "pytest",
+    "toml",
+]
+ignore_missing_imports = true
