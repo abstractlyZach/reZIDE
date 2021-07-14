@@ -1,6 +1,6 @@
 [![Tests](https://github.com/abstractlyZach/reZIDE/workflows/Tests/badge.svg)](https://github.com/abstractlyZach/reZIDE/actions?workflow=Tests)
 [![Codecov](https://codecov.io/gh/abstractlyZach/reZIDE/branch/main/graph/badge.svg)](https://codecov.io/gh/abstractlyZach/reZIDE)
-[![PyPI](https://img.shields.io/pypi/v/magic-tiler.svg)](https://pypi.org/project/magic-tiler/)
+[![PyPI](https://img.shields.io/pypi/v/reZIDE.svg)](https://pypi.org/project/reZIDE/)
 
 # reZIDE
 reZIDE will instantly create your own IDE. No need for tmux! Write your own
