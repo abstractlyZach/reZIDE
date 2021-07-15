@@ -1,3 +1,5 @@
+<img src="docs/reZIDE.png" width="200" />
+
 [![Tests](https://github.com/abstractlyZach/reZIDE/workflows/Tests/badge.svg)](https://github.com/abstractlyZach/reZIDE/actions?workflow=Tests)
 [![Codecov](https://codecov.io/gh/abstractlyZach/reZIDE/branch/main/graph/badge.svg)](https://codecov.io/gh/abstractlyZach/reZIDE)
 [![PyPI](https://img.shields.io/pypi/v/reZIDE.svg)](https://pypi.org/project/reZIDE/)
@@ -5,8 +7,6 @@
 # reZIDE
 reZIDE will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
-
-<img src="docs/reZIDE.png" width="200" />
 
 ## Notes
 This project should work for both i3 and sway since it uses `i3ipc`. So whenever "i3" is used in this document, feel
