@@ -46,13 +46,13 @@ Here are some groups of windows (AKA layouts) that I commonly use:
 * small terminal running linter
 * small terminal using a filewatcher to run tests
 * small terminal running the typescript compiler
-* medium terminal to run arbitrary commands
+* medium terminal for running arbitrary commands
 
 ### documentation mode
 * editor for document
 * browser/pager for source material
-* terminal for compiling document
-* browser/viewer for viewing compiled document
+* terminal for compiling document into pdf
+* pdf viewer for viewing compiled pdf
 
 There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
@@ -64,6 +64,7 @@ so it's like a chicken-and-egg problem
 
 
 Sure, I could just use `tmux`, but that came with some issues:
+
 * tmux only handles terminals. it doesn't manage browsers, pdf viewers, or anything else
 * tmux has its own keybindings. Even if I used `tmux` next to a browser, I'd be using different commands to jump between tmux and the windows. I can't do that! My brain is smol and it can't handle that complexity.
 
