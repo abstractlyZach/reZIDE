@@ -217,10 +217,6 @@ mark = "tests"
 
 ```
 
-
-
-![screenshot](screenshots/early_magic_tile.png)
-
 ## Shell Completion
 [Setting up completion for your shell](completions)
 
