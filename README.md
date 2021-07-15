@@ -12,7 +12,7 @@ I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation
 pipx install reZIDE
 ```
 
-You can also do this if you don't mind modifying your system Python environment:
+You can also use [pip](https://pip.pypa.io/en/stable/installing/) if you don't mind modifying your system Python environment:
 ```
 pip install reZIDE
 ```
