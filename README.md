@@ -6,6 +6,20 @@ _a comfy custom IDE where you can feel right at home_ 🏡
 
 Use simple, declarative configuration files to create complex IDEs with a single command.
 
+## Installation
+I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation:
+```
+pipx install reZIDE
+```
+
+You can also use [pip](https://pip.pypa.io/en/stable/installing/) if you don't mind modifying your system Python environment:
+```
+pip install reZIDE
+```
+
+## Screencap
+insert cool screencap here
+
 ## Works with these tiling window managers:
 
 - [x] [sway](https://swaywm.org/)
@@ -13,31 +27,32 @@ Use simple, declarative configuration files to create complex IDEs with a single
 
 
 ## Motivation
-Ever since I started using an ultrawide monitor in favor of 2 separate monitors, I realized
-that it was really annoying to open up a ton of windows and resize them when it was always
-just a few repeatable configurations.
-
 Tiling window managers are powerful and flexible and I love using them. However, I ran into
-one issue: *I'm lazy.* When I open a ton of ... 
+one issue: *I'm lazy.*
+
+Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
+
+Here are some groups of windows (AKA layouts) that I commonly use:
 
 ### python mode
 * editor for source code
 * editor for tests
 * browser for documentation/tickets
-* terminal for arbitrary commands like linting and running tests
+* terminal for arbitrary commands like linting, running tests, and installing packages
 
 ### web dev mode
 * editor for source code
 * editor for tests
 * small terminal running linter
 * small terminal using a filewatcher to run tests
-* small terminal to automatically run typescript compiler
-* medium terminal to run arbitrary commands
+* small terminal running the typescript compiler
+* medium terminal for running arbitrary commands
 
 ### documentation mode
 * editor for document
 * browser/pager for source material
-* window that uses a filewatcher to autocompile the documentation
+* terminal for compiling document into pdf
+* pdf viewer for viewing compiled pdf
 
 There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
@@ -49,6 +64,7 @@ so it's like a chicken-and-egg problem
 
 
 Sure, I could just use `tmux`, but that came with some issues:
+
 * tmux only handles terminals. it doesn't manage browsers, pdf viewers, or anything else
 * tmux has its own keybindings. Even if I used `tmux` next to a browser, I'd be using different commands to jump between tmux and the windows. I can't do that! My brain is smol and it can't handle that complexity.
 
@@ -67,27 +83,49 @@ This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The mid
 a terminal and the left section is split 60-40 into 2 terminals.
 
 ```toml
+[rezide-ide]
+split = "horizontal"
+children = ['linters', 'main', 'tests']
+sizes = [20, 47, 33]
+
+[linters]
+split="vertical"
+sizes = [50, 50]
+children = ['formatting', 'typechecking']
+
+[main]
+split="vertical"
+children = ['editors', 'gutter']
+sizes = [80, 20]
+
+[editors]
+sizes = [50, 50]
+children = ['left-editor', 'right-editor']
 split = "horizontal"
 
-[[screen]]
-size = 25
-split = "vertical"
+[formatting]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'"
+mark = "formatting"
 
-[[screen.children]]
-command = "alacritty --title medium-window"
-size = 60
+[typechecking]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make typecheck; zsh'"
+mark = "typechecking"
 
-[[screen.children]]
-command = "alacritty --title tiny-window"
-size = 40
+[left-editor]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak src/rezide/rezide.py'"
+mark = "left-editor"
 
-[[screen]]
-command = "alacritty --title middle-panel"
-size = 50
+[right-editor]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak README.md'"
+mark = "right-editor"
 
-[[screen]]
-command = "alacritty --title right-panel"
-size = 25
+[gutter]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'neofetch; zsh'"
+mark = "gutter"
+
+[tests]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make test; zsh'"
+mark = "tests"
 ```
 
 [screenshot](screenshots/early_magic_tile.png)
