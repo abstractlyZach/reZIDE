@@ -82,21 +82,63 @@ and then typing each node into a toml file as you do a [depth-first traversal](h
 This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The middle and right sections each have
 a terminal and the left section is split 60-40 into 2 terminals.
 
+![python IDE](docs/python_ide.png)
 ```toml
+# basic python IDE
+[python]
+is_layout = true
+sizes = [50, 50]
+children = ['terminals', 'documentation']
+split = "horizontal"
+
+[terminals]
+is_layout = true
+sizes = [70, 30]
+children = ['python-editor', 'python-gutter']
+split = 'vertical'
+
+[python-gutter]
+command = """
+    alacritty \
+        --working-directory ~/workspace/python-ide/ \
+        -e sh -c 'cat python.logo.colored.asciiart; zsh'
+"""
+mark = 'python-gutter'
+
+
+[python-editor]
+command = """
+    alacritty \
+        --working-directory ~/workspace/python-ide/ \
+        -e sh -c 'cp script_template.py script.py; kak script.py; zsh'
+"""
+mark = 'python-editor'
+
+[documentation]
+command = "brave --new-window https://docs.python.org/3/"
+mark = 'documentation'
+
+```
+
+![rezide_ide](docs/rezide_ide.png)
+
+```toml
+# more-complicated IDE for developing the reZIDE source code
 [rezide-ide]
+is_layout = true
 split = "horizontal"
 children = ['linters', 'main', 'tests']
-sizes = [20, 47, 33]
+sizes = [20, 60, 20]
 
 [linters]
-split="vertical"
+split = "vertical"
 sizes = [50, 50]
 children = ['formatting', 'typechecking']
 
 [main]
-split="vertical"
+split = "vertical"
 children = ['editors', 'gutter']
-sizes = [80, 20]
+sizes = [70, 30]
 
 [editors]
 sizes = [50, 50]
@@ -104,31 +146,59 @@ children = ['left-editor', 'right-editor']
 split = "horizontal"
 
 [formatting]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c \
+            'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'
+"""
 mark = "formatting"
 
 [typechecking]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make typecheck; zsh'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make typecheck; zsh'
+"""
 mark = "typechecking"
 
 [left-editor]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak src/rezide/rezide.py'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak src/rezide/rezide.py'
+"""
 mark = "left-editor"
 
 [right-editor]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak README.md'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak README.md'
+"""
 mark = "right-editor"
 
 [gutter]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'neofetch; zsh'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'neofetch; zsh'
+"""
 mark = "gutter"
 
 [tests]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make test; zsh'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make test; zsh'
+"""
 mark = "tests"
+
 ```
 
-[screenshot](screenshots/early_magic_tile.png)
+
+
+![screenshot](screenshots/early_magic_tile.png)
 
 ## Shell Completion
 [Setting up completion for your shell](completions)
@@ -136,6 +206,7 @@ mark = "tests"
 
 ## Alternatives
 * [tmux](https://github.com/tmux/tmux)
+* anything by jetbrains lul
 
 [pypi-badge]:       https://img.shields.io/pypi/v/reZIDE.svg
 [pypi-link]:        https://pypi.org/project/reZIDE/
