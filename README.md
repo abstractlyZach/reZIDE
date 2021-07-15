@@ -83,27 +83,49 @@ This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The mid
 a terminal and the left section is split 60-40 into 2 terminals.
 
 ```toml
+[rezide-ide]
+split = "horizontal"
+children = ['linters', 'main', 'tests']
+sizes = [20, 47, 33]
+
+[linters]
+split="vertical"
+sizes = [50, 50]
+children = ['formatting', 'typechecking']
+
+[main]
+split="vertical"
+children = ['editors', 'gutter']
+sizes = [80, 20]
+
+[editors]
+sizes = [50, 50]
+children = ['left-editor', 'right-editor']
 split = "horizontal"
 
-[[screen]]
-size = 25
-split = "vertical"
+[formatting]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'"
+mark = "formatting"
 
-[[screen.children]]
-command = "alacritty --title medium-window"
-size = 60
+[typechecking]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make typecheck; zsh'"
+mark = "typechecking"
 
-[[screen.children]]
-command = "alacritty --title tiny-window"
-size = 40
+[left-editor]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak src/rezide/rezide.py'"
+mark = "left-editor"
 
-[[screen]]
-command = "alacritty --title middle-panel"
-size = 50
+[right-editor]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak README.md'"
+mark = "right-editor"
 
-[[screen]]
-command = "alacritty --title right-panel"
-size = 25
+[gutter]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'neofetch; zsh'"
+mark = "gutter"
+
+[tests]
+command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make test; zsh'"
+mark = "tests"
 ```
 
 [screenshot](screenshots/early_magic_tile.png)
