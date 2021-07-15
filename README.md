@@ -21,10 +21,13 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 (insert cool screencap here)
 
 ## Requirements
-One of these tiling window managers:
+### One of these tiling window managers:
 
 - [x] [sway](https://swaywm.org/)
 - [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
+
+### At least 1 configuration file
+See [examples](examples/).
 
 ## Installation
 I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation:
@@ -45,7 +48,7 @@ rzd --help
 
 
 ## Motivation
-Tiling window managers are powerful and flexible and I love using them. However, I ran into
+(Tiling window managers](https://youtu.be/GKviflL9XeI) are powerful and flexible and I love using them. However, I ran into
 one issue: *I'm lazy.*
 
 Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
