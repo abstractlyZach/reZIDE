@@ -30,24 +30,29 @@ insert cool screencap here
 Tiling window managers are powerful and flexible and I love using them. However, I ran into
 one issue: *I'm lazy.*
 
+Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
+
+Here are some groups of windows (AKA layouts) that I commonly use:
+
 ### python mode
 * editor for source code
 * editor for tests
 * browser for documentation/tickets
-* terminal for arbitrary commands like linting and running tests
+* terminal for arbitrary commands like linting, running tests, and installing packages
 
 ### web dev mode
 * editor for source code
 * editor for tests
 * small terminal running linter
 * small terminal using a filewatcher to run tests
-* small terminal to automatically run typescript compiler
+* small terminal running the typescript compiler
 * medium terminal to run arbitrary commands
 
 ### documentation mode
 * editor for document
 * browser/pager for source material
-* window that uses a filewatcher to autocompile the documentation
+* terminal for compiling document
+* browser/viewer for viewing compiled document
 
 There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
