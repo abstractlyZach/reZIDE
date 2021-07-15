@@ -6,6 +6,20 @@ _a comfy custom IDE where you can feel right at home_ 🏡
 
 Use simple, declarative configuration files to create complex IDEs with a single command.
 
+## Installation
+I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation:
+```
+pipx install reZIDE
+```
+
+You can also do this if you don't mind modifying your system Python environment:
+```
+pip install reZIDE
+```
+
+## Screencap
+insert cool screencap here
+
 ## Works with these tiling window managers:
 
 - [x] [sway](https://swaywm.org/)
@@ -13,12 +27,8 @@ Use simple, declarative configuration files to create complex IDEs with a single
 
 
 ## Motivation
-Ever since I started using an ultrawide monitor in favor of 2 separate monitors, I realized
-that it was really annoying to open up a ton of windows and resize them when it was always
-just a few repeatable configurations.
-
 Tiling window managers are powerful and flexible and I love using them. However, I ran into
-one issue: *I'm lazy.* When I open a ton of ... 
+one issue: *I'm lazy.*
 
 ### python mode
 * editor for source code
