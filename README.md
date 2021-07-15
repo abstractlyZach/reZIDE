@@ -1,8 +1,7 @@
-[![Tests](https://github.com/abstractlyZach/reZIDE/workflows/Tests/badge.svg)](https://github.com/abstractlyZach/reZIDE/actions?workflow=Tests)
-[![Codecov](https://codecov.io/gh/abstractlyZach/reZIDE/branch/main/graph/badge.svg)](https://codecov.io/gh/abstractlyZach/reZIDE)
-[![PyPI](https://img.shields.io/pypi/v/reZIDE.svg)](https://pypi.org/project/reZIDE/)
+<img src="docs/reZIDE.png" width="200" />
 
-# reZIDE
+# reZIDE [![Tests][tests-badge]][tests-link] [![Codecov][coverage-badge]][coverage-link] [![PyPI][pypi-badge]][pypi-link]
+
 reZIDE will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
 
@@ -93,3 +92,10 @@ size = 25
 
 ## Alternatives
 * [tmux](https://github.com/tmux/tmux)
+
+[pypi-badge]:       https://img.shields.io/pypi/v/reZIDE.svg
+[pypi-link]:        https://pypi.org/project/reZIDE/
+[tests-badge]:      https://github.com/abstractlyZach/reZIDE/workflows/Tests/badge.svg
+[tests-link]:       https://github.com/abstractlyZach/reZIDE/actions?workflow=Tests
+[coverage-badge]:   https://codecov.io/gh/abstractlyZach/reZIDE/branch/main/graph/badge.svg
+[coverage-link]:    https://codecov.io/gh/abstractlyZach/reZIDE
