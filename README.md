@@ -1,5 +1,5 @@
 <img src="docs/reZIDE.png" width="200" />
-# reZIDE [![Tests](tests-badge)](tests-link) [![Codecov](coverage-badge)](coverage-link) [![PyPI](pypi-badge)](pypi-link)
+# reZIDE [![Tests][tests-badge]][tests-link] [![Codecov][coverage-badge]][coverage-link] [![PyPI][pypi-badge]][pypi-link]
 
 reZIDE will instantly create your own IDE. No need for tmux! Write your own
 configurations easily or look to others' for inspiration: `link to configs`
