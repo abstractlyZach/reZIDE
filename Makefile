@@ -23,3 +23,9 @@ poetry.lock: pyproject.toml
 	poetry install
 	# update the modification time in case the file doesn't get updated
 	touch poetry.lock
+
+dev-setup: ci-setup
+	pre-commit install
+
+ci-setup:
+	poetry install

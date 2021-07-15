@@ -10,5 +10,5 @@ jobs:
               python-version: 3.9
               architecture: x64
         - run: pip install poetry
-        - run: poetry install
+        - run: make ci-setup
         - run: make typecheck
