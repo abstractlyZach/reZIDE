@@ -2,17 +2,23 @@
 
 # reZIDE [![Tests][tests-badge]][tests-link] [![Codecov][coverage-badge]][coverage-link] [![PyPI][pypi-badge]][pypi-link]
 
-reZIDE will instantly create your own IDE. No need for tmux! Write your own
-configurations easily or look to others' for inspiration: `link to configs`
+_a comfy custom IDE where you can feel right at home_ 🏡
 
-## Notes
-This project should work for both i3 and sway since it uses `i3ipc`. So whenever "i3" is used in this document, feel
-free to replace it with "Sway" in your head if that's what you use.
+Use simple, declarative configuration files to create complex IDEs with a single command.
+
+## Works with these tiling window managers:
+
+- [x] [sway](https://swaywm.org/)
+- [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
+
 
 ## Motivation
 Ever since I started using an ultrawide monitor in favor of 2 separate monitors, I realized
 that it was really annoying to open up a ton of windows and resize them when it was always
 just a few repeatable configurations.
+
+Tiling window managers are powerful and flexible and I love using them. However, I ran into
+one issue: *I'm lazy.* When I open a ton of ... 
 
 ### python mode
 * editor for source code
