@@ -53,7 +53,7 @@ one issue: *I'm lazy.*
 
 Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
 
-Here are some groups of windows (AKA layouts) that I commonly use:
+Here are some groups of windows (AKA **layouts**) that I commonly use:
 
 ### python mode
 * editor for source code
