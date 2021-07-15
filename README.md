@@ -4,7 +4,27 @@
 
 _a comfy custom IDE where you can feel right at home_ 🏡
 
-Use simple, declarative configuration files to create complex IDEs with a single command.
+Use simple, declarative configuration files to create complex IDEs with a single command!
+
+Think of it like any [IDE](https://www.jetbrains.com/pycharm/), except:
+
+* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in reZIDE
+* You can read and write your configurations easily
+* You can share your configurations with others and copy/learn from others' configurations
+
+Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
+
+* You don't need to learn new movement commands (use the commands that you already use for your window manager)
+* You aren't restricted to applications with a Terminal User Interface (you can open web browsers, pdf previews, video players, etc.)
+
+## Screencap
+(insert cool screencap here)
+
+## Requirements
+One of these tiling window managers:
+
+- [x] [sway](https://swaywm.org/)
+- [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
 
 ## Installation
 I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation:
@@ -17,13 +37,11 @@ You can also use [pip](https://pip.pypa.io/en/stable/installing/) if you don't m
 pip install reZIDE
 ```
 
-## Screencap
-insert cool screencap here
-
-## Works with these tiling window managers:
-
-- [x] [sway](https://swaywm.org/)
-- [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
+## How to use
+Run this command for documentation on how to use `reZIDE`:
+```
+rzd --help
+```
 
 
 ## Motivation
