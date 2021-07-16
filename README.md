@@ -77,23 +77,26 @@ Here are some groups of windows (AKA **layouts**) that I commonly use:
 It usually takes at least 10 keystrokes to run a command (even with tab-completion and fuzzy-finding) and then another 5-15 keystrokes to resize the window so that it's as big or small as I want. Here's an example:
 
 ### Spawning and resizing a single window
-* `super-enter` to open a terminal
+* `<super-enter>` to open a terminal
 * [cdd](https://github.com/abstractlyZach/dotfiles/blob/master/shell_functions#L3-L13) to `cd` but with fuzzy-finding
 * type `rez` to get `~/workspace/abstractlyZach/reZIDE/` to show up as the first result
-* `enter`
-* `fd | entr make typecheck` to automatically run my typechecker whenever files change
-* `super-r` to enter "resize" mode
-* `left 5x` to make the window smaller
+* `<enter>`
+* `fd | entr make typecheck<enter>` to automatically run my typechecker whenever files change
+* `<super-r>` to enter "resize" mode
+* `left x5` to make the window smaller
+* `<esc>` to exit "resize" mode
 
 And then I have to do that like 5 more times; that's too much work! 📅 I'm losing seconds of productivity every day just opening, commanding, and resizing windows!
 
-There were also a lot of consistent configurations that I wanted to use that just wouldn't
+<!-- TODO: create a Motivation Part 2 document and move this there -->
+<!-- There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
 that requires a lot of manual resizing. I could also set up elaborate rules in Sway and
 then make sure each window fits into those rules, but I don't even know how that would work
 since Sway can resize floating windows or existing windows, but an IDE that creates itself
 in an instant wouldn't have any existing windows. And rules affect windows at window creation
 so it's like a chicken-and-egg problem
+-->
 
 
 ## Goals
@@ -103,34 +106,51 @@ so it's like a chicken-and-egg problem
 * run arbitrary commands (not just shells and TUIs!)
 
 ## Defining an IDE in TOML
-This toml config defines a complex IDE in a simple and consistent way. Read the [TOML spec](https://toml.io/en/v1.0.0#array-of-tables)
-for more details on how to write a TOML file. I recommend drawing out the [i3 tree structure](https://i3wm.org/docs/userguide.html#_tree)
-and then typing each node into a toml file as you do a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
-This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The middle and right sections each have
-a terminal and the left section is split 60-40 into 2 terminals.
+### Basic Python IDE
+This [Python](https://www.python.org/) IDE has a relatively basic TOML file. Here's what the final product looks like:
 
 ![python IDE](docs/python_ide.png)
 ```toml
-# basic python IDE
+# python IDE
 [python]
+
+# tells reZIDE that this is a layout and it should construct a tree out of it and its ancestors
 is_layout = true
+
+# this is what % of the screen each child should take up
+# in this case, it's a 50-50 split
 sizes = [50, 50]
+
+# tells reZIDE the names of the Windows and Sections that belong in the "python" Section
+# reZIDE will look up these Window and Section definitions elsewhere in this file and
+#   build them appropriately
 children = ['terminals', 'documentation']
+
+# the screen should be split horizontally so that the children are to the left and right of each other
 split = "horizontal"
 
+
 [terminals]
-is_layout = true
-sizes = [70, 30]
+sizes = [50, 50]
 children = ['python-editor', 'python-gutter']
 split = 'vertical'
 
+# our first Window definition
 [python-gutter]
+
+# run this command to:
+# * spawn an alacritty window
+# * set the working directory to ~/workspace/python-ide/
+# * print some ascii art onto the terminal
+# * start a zsh interactive shell
 command = """
     alacritty \
         --working-directory ~/workspace/python-ide/ \
         -e sh -c 'cat python.logo.colored.asciiart; zsh'
 """
+
+# mark this window in the window manager as 'python-gutter'
 mark = 'python-gutter'
 
 
@@ -147,6 +167,9 @@ command = "brave --new-window https://docs.python.org/3/"
 mark = 'documentation'
 
 ```
+
+### A complexer IDE
+This IDE gives us everything we need to have a smooth development session when working on the `reZIDE` project. Try opening the screenshot in another tab/window and see if you can match all of the Window/Section definitions in the TOML file to their corresponding areas on the screenshot!
 
 ![rezide_ide](docs/rezide_ide.png)
 
