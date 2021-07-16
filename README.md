@@ -127,6 +127,7 @@ sizes = [50, 50]
 # tells reZIDE the names of the Windows and Sections that belong in the "python" Section
 # reZIDE will look up these Window and Section definitions elsewhere in this file and
 #   build them appropriately
+# so here, we have terminals on the left side and documentation on the right side
 children = ['terminals', 'documentation']
 
 # the screen should be split horizontally so that the children are to the left and right
