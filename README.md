@@ -8,9 +8,10 @@ Use simple, declarative configuration files to create complex IDEs with a single
 
 Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
 
-* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in `reZIDE`! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
 * You can read and write your configurations easily in [TOML format](https://toml.io/en/)
-* You can share your configurations with others and copy/learn from others' configurations
+* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in `reZIDE`! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
+* You can share your configurations with others
+* You can copy/learn from others' configurations
 
 Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 
