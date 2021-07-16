@@ -19,6 +19,20 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 * You don't need to learn new movement commands (use the commands that you already use for your window manager)
 * You aren't restricted to applications with a Terminal User Interface (you can open web browsers, pdf previews, video players, etc.)
 
+## What's it stand for?
+```
+⬅️⬅️(Zach's)
+⬇️   really
+⬇️   enjoyable
+➡️➡️ Z
+     Integrated
+     Development
+     Environment
+```
+
+Because that's how acronyms work.
+
+Credits to [@hyangda](https://github.com/hyangda) for brainstorming this great name with me 😄
 ## Screencap
 (insert cool screencap here)
 
