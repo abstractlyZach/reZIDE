@@ -13,7 +13,7 @@ class ConfigParser(interfaces.ConfigParserInterface):
         tree_factory: interfaces.TreeFactoryInterface,
     ) -> None:
         self._tree_factory = tree_factory
-        self._layout_definitions = config_reader.to_dict()
+        self._layout_definitions = config_reader.read()
 
     def validate(self) -> None:
         seen_marks: Set[str] = set()

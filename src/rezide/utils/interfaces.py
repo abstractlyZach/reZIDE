@@ -49,7 +49,7 @@ class TilingWindowManager(object):
 
 class ConfigReader(object):
     @abc.abstractmethod
-    def to_dict(self) -> Dict:
+    def read(self) -> Dict:
         pass
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from rezide.utils import configs
+from rezide.utils import config_readers
 from rezide.utils import dtos
 from tests import fakes
 
@@ -63,12 +63,12 @@ expected_toml_dict = {
 
 
 def test_toml_reading():
-    config_reader = configs.TomlConfig(
+    config_reader = config_readers.TomlReader(
         # ignore the env logic by using the "any" feature of our Fake :)
         fakes.FakeFilestore(files={"any": toml_contents}),
         dtos.Env(home="/home/myhomedir", xdg_config_home="/xdg"),
     )
-    assert config_reader.to_dict() == expected_toml_dict
+    assert config_reader.read() == expected_toml_dict
 
 
 def test_reader_uses_xdg_config_first():
@@ -81,16 +81,16 @@ def test_reader_uses_xdg_config_first():
         }
     )
     env = dtos.Env(home="/home/magic", xdg_config_home=config_dir)
-    config = configs.TomlConfig(filestore, env)
-    assert config.to_dict() == expected_toml_dict
+    config = config_readers.TomlReader(filestore, env)
+    assert config.read() == expected_toml_dict
 
 
 def test_reader_uses_home_dir_if_no_xdg():
     home_dir = "/home/def"
     filestore = fakes.FakeFilestore({home_dir + "/.rezide.toml": toml_contents})
     env = dtos.Env(home=home_dir, xdg_config_home="")
-    config = configs.TomlConfig(filestore, env)
-    assert config.to_dict() == expected_toml_dict
+    config = config_readers.TomlReader(filestore, env)
+    assert config.read() == expected_toml_dict
 
 
 # TODO: add test to make sure that we check both paths even if xdg is defined
@@ -100,7 +100,7 @@ def test_throws_error_if_cant_find_config_in_home():
     filestore = fakes.FakeFilestore(dict())
     env = dtos.Env(home="/home/jkl", xdg_config_home="")
     with pytest.raises(RuntimeError):
-        configs.TomlConfig(filestore, env)
+        config_readers.TomlReader(filestore, env)
 
 
 def test_throws_error_if_cant_find_config_anywhere():
@@ -108,4 +108,4 @@ def test_throws_error_if_cant_find_config_anywhere():
     filestore = fakes.FakeFilestore(dict())
     env = dtos.Env(home="/home/abc", xdg_config_home="/home/abc/.config")
     with pytest.raises(RuntimeError):
-        configs.TomlConfig(filestore, env)
+        config_readers.TomlReader(filestore, env)

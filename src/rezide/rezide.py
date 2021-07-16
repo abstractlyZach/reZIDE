@@ -6,7 +6,7 @@ import click
 
 import rezide
 from rezide.utils import config_parser
-from rezide.utils import configs
+from rezide.utils import config_readers
 from rezide.utils import dtos
 from rezide.utils import filestore
 from rezide.utils import layouts
@@ -71,7 +71,7 @@ def main(
     logging.info(f"Log level set to {log_level}")
     sys.tracebacklimit = verbosity_level
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
-    context.obj["config_reader"] = configs.TomlConfig(
+    context.obj["config_reader"] = config_readers.TomlReader(
         filestore.LocalFilestore(), env=env
     )
     context.obj["env"] = env
@@ -103,7 +103,7 @@ def list_layouts(context: click.Context) -> None:
     """List all available layouts"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
     logging.debug(f'env: {context.obj["env"]}')
-    for entry, details in context.obj["config_reader"].to_dict().items():
+    for entry, details in context.obj["config_reader"].read().items():
         if "is_layout" in details:
             click.secho(entry, fg="blue")
 
