@@ -22,6 +22,12 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 ## Screencap
 (insert cool screencap here)
 
+(this one's just a placeholder)
+
+Click to go to Youtube!
+
+[![early-screencap](https://img.youtube.com/vi/g_AgwusS9m8/hqdefault.jpg)](https://youtu.be/g_AgwusS9m8)
+
 ## Requirements
 ### One of these tiling window managers:
 
