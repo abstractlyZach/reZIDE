@@ -30,4 +30,5 @@ repos:
     -   id: prettier
         types: [toml]
         additional_dependencies:
+        -   prettier@2.3.2
         -   'prettier-plugin-toml'

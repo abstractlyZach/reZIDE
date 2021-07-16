@@ -1,0 +1,75 @@
+[rezide-ide]
+split = "horizontal"
+children = ['linters', 'main', 'tests']
+sizes = [20, 60, 20]
+
+# 1st level
+# ---------------------------------------------------------------------------------------
+[linters]
+split = "vertical"
+children = ['formatting', 'typechecking']
+sizes = [50, 50]
+
+[main]
+split = "vertical"
+children = ['editors', 'gutter']
+sizes = [70, 30]
+
+[tests]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make test; zsh'
+"""
+mark = "tests"
+
+# 2nd level
+# ---------------------------------------------------------------------------------------
+
+[formatting]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c \
+            'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'
+"""
+mark = "formatting"
+
+[typechecking]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make typecheck; zsh'
+"""
+mark = "typechecking"
+
+[editors]
+split = "horizontal"
+children = ['left-editor', 'right-editor']
+sizes = [50, 50]
+
+[gutter]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'neofetch; zsh'
+"""
+mark = "gutter"
+
+# 3rd level
+# ---------------------------------------------------------------------------------------
+[left-editor]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak src/rezide/rezide.py'
+"""
+mark = "left-editor"
+
+[right-editor]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak README.md'
+"""
+mark = "right-editor"
