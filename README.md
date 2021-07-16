@@ -32,7 +32,7 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 
 Because that's how acronyms work.
 
-Credits to @hyangda for brainstorming this great name with me 😄
+Credits to [@hyangda](https://github.com/hyangda) for brainstorming this great name with me 😄
 ## Screencap
 (insert cool screencap here)
 
