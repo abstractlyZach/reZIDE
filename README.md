@@ -6,6 +6,7 @@ _a comfy custom IDE where you can feel right at home_ 🏡
 
 Use simple, declarative configuration files to create complex IDEs with a single command!
 
+## What's it like?
 Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
 
 * You can read and write your configurations easily in [TOML format](https://toml.io/en/)
