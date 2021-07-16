@@ -4,7 +4,32 @@
 
 _a comfy custom IDE where you can feel right at home_ 🏡
 
-Use simple, declarative configuration files to create complex IDEs with a single command.
+Use simple, declarative configuration files to create complex IDEs with a single command!
+
+## What's it like?
+Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
+
+* You can read and write your configurations easily in [TOML format](https://toml.io/en/)
+* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in `reZIDE`! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
+* You can share your configurations with others
+* You can copy/learn from others' configurations
+
+Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
+
+* You don't need to learn new movement commands (use the commands that you already use for your window manager)
+* You aren't restricted to applications with a Terminal User Interface (you can open web browsers, pdf previews, video players, etc.)
+
+## Screencap
+(insert cool screencap here)
+
+## Requirements
+### One of these tiling window managers:
+
+- [x] [sway](https://swaywm.org/)
+- [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
+
+### At least 1 configuration file
+See [examples](examples/).
 
 ## Installation
 I recommend using [pipx](https://pypa.github.io/pipx/) for environment isolation:
@@ -17,22 +42,19 @@ You can also use [pip](https://pip.pypa.io/en/stable/installing/) if you don't m
 pip install reZIDE
 ```
 
-## Screencap
-insert cool screencap here
-
-## Works with these tiling window managers:
-
-- [x] [sway](https://swaywm.org/)
-- [ ] [i3](https://i3wm.org/) (it should work out of the box, but I'm too lazy to install i3 just to test this. if you can confirm on my behalf, please check this box and submit a PR!)
+## How to use
+Run this command for documentation on how to use `reZIDE`:
+```
+rzd --help
+```
 
 
 ## Motivation
-Tiling window managers are powerful and flexible and I love using them. However, I ran into
-one issue: *I'm lazy.*
+[Tiling window managers](https://youtu.be/GKviflL9XeI) are powerful and flexible and I love using them. However, I kept finding myself running into one issue: *I'm lazy.*
 
 Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
 
-Here are some groups of windows (AKA layouts) that I commonly use:
+Here are some groups of windows (AKA **layouts**) that I commonly use:
 
 ### python mode
 * editor for source code
@@ -54,19 +76,30 @@ Here are some groups of windows (AKA layouts) that I commonly use:
 * terminal for compiling document into pdf
 * pdf viewer for viewing compiled pdf
 
-There were also a lot of consistent configurations that I wanted to use that just wouldn't
+It usually takes at least 10 keystrokes to run a command (even with tab-completion and fuzzy-finding) and then another 5-15 keystrokes to resize the window so that it's as big or small as I want. Here's an example:
+
+### Spawning and resizing a single window
+* `<super-enter>` to open a terminal
+* [cdd](https://github.com/abstractlyZach/dotfiles/blob/master/shell_functions#L3-L13) to `cd` but with fuzzy-finding
+* type `rez` to get `~/workspace/abstractlyZach/reZIDE/` to show up as the first result
+* `<enter>`
+* `fd | entr make typecheck<enter>` to automatically run my typechecker whenever files change
+* `<super-r>` to enter "resize" mode
+* `left x5` to make the window smaller
+* `<esc>` to exit "resize" mode
+
+And then I have to do that like 5 more times; that's too much work! 😤 I'm losing seconds of productivity every day just opening, commanding, and resizing windows!
+
+<!-- TODO: create a Motivation Part 2 document and move this there -->
+<!-- There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
 that requires a lot of manual resizing. I could also set up elaborate rules in Sway and
 then make sure each window fits into those rules, but I don't even know how that would work
 since Sway can resize floating windows or existing windows, but an IDE that creates itself
 in an instant wouldn't have any existing windows. And rules affect windows at window creation
 so it's like a chicken-and-egg problem
+-->
 
-
-Sure, I could just use `tmux`, but that came with some issues:
-
-* tmux only handles terminals. it doesn't manage browsers, pdf viewers, or anything else
-* tmux has its own keybindings. Even if I used `tmux` next to a browser, I'd be using different commands to jump between tmux and the windows. I can't do that! My brain is smol and it can't handle that complexity.
 
 ## Goals
 * use only i3/sway to manage windows
@@ -75,60 +108,155 @@ Sure, I could just use `tmux`, but that came with some issues:
 * run arbitrary commands (not just shells and TUIs!)
 
 ## Defining an IDE in TOML
-This toml config defines a complex IDE in a simple and consistent way. Read the [TOML spec](https://toml.io/en/v1.0.0#array-of-tables)
-for more details on how to write a TOML file. I recommend drawing out the [i3 tree structure](https://i3wm.org/docs/userguide.html#_tree)
-and then typing each node into a toml file as you do a [depth-first traversal](https://en.wikipedia.org/wiki/Depth-first_search).
 
-This IDE divides the screen into 3 major sections with a 25-50-25 ratio. The middle and right sections each have
-a terminal and the left section is split 60-40 into 2 terminals.
+### Basic Python IDE
+This [Python](https://www.python.org/) IDE has a relatively basic TOML file. Here's what the final product looks like:
+
+![python IDE](docs/python_ide.png)
+```toml
+# python IDE
+[python]
+
+# tells reZIDE that this is a layout and it should construct a tree out of it and its descendants
+is_layout = true
+
+# this is what % of the screen each child should take up
+# in this case, it's a 50-50 split
+sizes = [50, 50]
+
+# tells reZIDE the names of the Windows and Sections that belong in the "python" Section
+# reZIDE will look up these Window and Section definitions elsewhere in this file and
+#   build them appropriately
+children = ['terminals', 'documentation']
+
+# the screen should be split horizontally so that the children are to the left and right
+#   of each other
+split = "horizontal"
+
+
+[terminals]
+sizes = [50, 50]
+children = ['python-editor', 'python-gutter']
+split = 'vertical'
+
+# our first Window definition
+[python-gutter]
+
+# run this command to:
+# * spawn an alacritty window
+# * set the working directory to ~/workspace/python-ide/
+# * print some ascii art onto the terminal
+# * start a zsh interactive shell
+command = """
+    alacritty \
+        --working-directory ~/workspace/python-ide/ \
+        -e sh -c 'cat python.logo.colored.asciiart; zsh'
+"""
+
+# mark this window in the window manager as 'python-gutter'
+mark = 'python-gutter'
+
+
+[python-editor]
+command = """
+    alacritty \
+        --working-directory ~/workspace/python-ide/ \
+        -e sh -c 'cp script_template.py script.py; kak script.py; zsh'
+"""
+mark = 'python-editor'
+
+[documentation]
+command = "brave --new-window https://docs.python.org/3/"
+mark = 'documentation'
+
+```
+
+### A complexer IDE
+This IDE gives us everything we need to have a smooth development session when working on the `reZIDE` project.
+
+Try opening the screenshot in another tab/window and see if you can match all of the Window/Section definitions in the TOML file to their corresponding areas on the screenshot!
+
+![rezide_ide](docs/rezide_ide.png)
 
 ```toml
+# more-complicated IDE for developing the reZIDE source code
 [rezide-ide]
+is_layout = true
 split = "horizontal"
 children = ['linters', 'main', 'tests']
-sizes = [20, 47, 33]
+sizes = [20, 60, 20]
 
+# 1st level
+# ---------------------------------------------------------------------------------------
 [linters]
-split="vertical"
+split = "vertical"
 sizes = [50, 50]
 children = ['formatting', 'typechecking']
 
 [main]
-split="vertical"
+split = "vertical"
 children = ['editors', 'gutter']
-sizes = [80, 20]
+sizes = [70, 30]
+
+[tests]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make test; zsh'
+"""
+mark = "tests"
+
+# 2nd level
+# ---------------------------------------------------------------------------------------
+
+[formatting]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c \
+            'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'
+"""
+mark = "formatting"
+
+[typechecking]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make typecheck; zsh'
+"""
+mark = "typechecking"
 
 [editors]
 sizes = [50, 50]
 children = ['left-editor', 'right-editor']
 split = "horizontal"
 
-[formatting]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'"
-mark = "formatting"
+[gutter]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'neofetch; zsh'
+"""
+mark = "gutter"
 
-[typechecking]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make typecheck; zsh'"
-mark = "typechecking"
-
+# 3rd level
+# ---------------------------------------------------------------------------------------
 [left-editor]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak src/rezide/rezide.py'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak src/rezide/rezide.py'
+"""
 mark = "left-editor"
 
 [right-editor]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'kak README.md'"
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'kak README.md'
+"""
 mark = "right-editor"
-
-[gutter]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'neofetch; zsh'"
-mark = "gutter"
-
-[tests]
-command = "alacritty --working-directory ~/workspace/abstractlyZach/reZIDE/ -e sh -c 'fd | entr make test; zsh'"
-mark = "tests"
 ```
-
-[screenshot](screenshots/early_magic_tile.png)
 
 ## Shell Completion
 [Setting up completion for your shell](completions)
@@ -136,6 +264,7 @@ mark = "tests"
 
 ## Alternatives
 * [tmux](https://github.com/tmux/tmux)
+* anything by jetbrains lul
 
 [pypi-badge]:       https://img.shields.io/pypi/v/reZIDE.svg
 [pypi-link]:        https://pypi.org/project/reZIDE/
