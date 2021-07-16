@@ -6,10 +6,10 @@ _a comfy custom IDE where you can feel right at home_ 🏡
 
 Use simple, declarative configuration files to create complex IDEs with a single command!
 
-Think of it like any [IDE](https://www.jetbrains.com/pycharm/), except:
+Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
 
-* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in reZIDE
-* You can read and write your configurations easily
+* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in reZIDE! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
+* You can read and write your configurations easily in [TOML format](https://toml.io/en/)
 * You can share your configurations with others and copy/learn from others' configurations
 
 Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
@@ -48,8 +48,7 @@ rzd --help
 
 
 ## Motivation
-(Tiling window managers](https://youtu.be/GKviflL9XeI) are powerful and flexible and I love using them. However, I ran into
-one issue: *I'm lazy.*
+[Tiling window managers](https://youtu.be/GKviflL9XeI) are powerful and flexible and I love using them. However, I kept finding myself running into one issue: *I'm lazy.*
 
 Whenever I sit down to work, I usually want to open a group of 2+ windows. Each window takes 5s-30s to get to a useful state. That's way too much effort. I couldn't be bothered.
 
@@ -75,6 +74,19 @@ Here are some groups of windows (AKA **layouts**) that I commonly use:
 * terminal for compiling document into pdf
 * pdf viewer for viewing compiled pdf
 
+It usually takes at least 10 keystrokes to run a command (even with tab-completion and fuzzy-finding) and then another 5-15 keystrokes to resize the window so that it's as big or small as I want. Here's an example:
+
+### Spawning and resizing a single window
+* `super-enter` to open a terminal
+* [cdd](https://github.com/abstractlyZach/dotfiles/blob/master/shell_functions#L3-L13) to `cd` but with fuzzy-finding
+* type `rez` to get `~/workspace/abstractlyZach/reZIDE/` to show up as the first result
+* `enter`
+* `fd | entr make typecheck` to automatically run my typechecker whenever files change
+* `super-r` to enter "resize" mode
+* `left 5x` to make the window smaller
+
+And then I have to do that like 5 more times; that's too much work! 📅 I'm losing seconds of productivity every day just opening, commanding, and resizing windows!
+
 There were also a lot of consistent configurations that I wanted to use that just wouldn't
 work out of the box. I like splitting my monitor up with 25-50-25 or 20-60-20 ratios and
 that requires a lot of manual resizing. I could also set up elaborate rules in Sway and
@@ -83,11 +95,6 @@ since Sway can resize floating windows or existing windows, but an IDE that crea
 in an instant wouldn't have any existing windows. And rules affect windows at window creation
 so it's like a chicken-and-egg problem
 
-
-Sure, I could just use `tmux`, but that came with some issues:
-
-* tmux only handles terminals. it doesn't manage browsers, pdf viewers, or anything else
-* tmux has its own keybindings. Even if I used `tmux` next to a browser, I'd be using different commands to jump between tmux and the windows. I can't do that! My brain is smol and it can't handle that complexity.
 
 ## Goals
 * use only i3/sway to manage windows
