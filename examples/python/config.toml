@@ -14,7 +14,6 @@ command = """
         --working-directory ~/workspace/python-ide/ \
         -e sh -c 'cat python.logo.colored.asciiart; zsh'
 """
-mark = 'python-gutter'
 
 
 [python-editor]
@@ -23,8 +22,6 @@ command = """
         --working-directory ~/workspace/python-ide/ \
         -e sh -c 'cp script_template.py script.py; kak script.py; zsh'
 """
-mark = 'python-editor'
 
 [documentation]
 command = "brave --new-window https://docs.python.org/3/"
-mark = 'documentation'

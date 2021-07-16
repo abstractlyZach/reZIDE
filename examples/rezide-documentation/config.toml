@@ -13,7 +13,6 @@ command = """
                 && pandoc --pdf-engine=xelatex README.md -o README.pdf\"
             '
 """
-mark = 'autocompiler'
 
 [plaintext]
 command = """
@@ -21,8 +20,6 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'kak README.md'
 """
-mark = 'plaintext'
 
 [rendered-pdf]
 command = "sleep 3 && zathura ~/workspace/abstractlyZach/reZIDE/README.pdf"
-mark = 'rendered-pdf'

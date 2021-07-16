@@ -21,7 +21,6 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'fd | entr make test; zsh'
 """
-mark = "tests"
 
 # 2nd level
 # ---------------------------------------------------------------------------------------
@@ -33,7 +32,6 @@ command = """
         -e sh -c \
             'fd | entr sh -c \"echo && make format && make lint && echo_success\"; zsh'
 """
-mark = "formatting"
 
 [typechecking]
 command = """
@@ -41,7 +39,6 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'fd | entr make typecheck; zsh'
 """
-mark = "typechecking"
 
 [editors]
 split = "horizontal"
@@ -54,7 +51,6 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'neofetch; zsh'
 """
-mark = "gutter"
 
 # 3rd level
 # ---------------------------------------------------------------------------------------
@@ -64,7 +60,6 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'kak src/rezide/rezide.py'
 """
-mark = "left-editor"
 
 [right-editor]
 command = """
@@ -72,4 +67,3 @@ command = """
         --working-directory ~/workspace/abstractlyZach/reZIDE/ \
         -e sh -c 'kak README.md'
 """
-mark = "right-editor"
