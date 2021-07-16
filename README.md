@@ -8,7 +8,7 @@ Use simple, declarative configuration files to create complex IDEs with a single
 
 Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
 
-* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in reZIDE! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
+* You can use any program that you prefer without waiting for anyone else to add a plugin/integration. If you can run it on your command line, you can run it in `reZIDE`! Editors, linters, autoformatters, typecheckers, ASCII movies, distracting videos, etc...
 * You can read and write your configurations easily in [TOML format](https://toml.io/en/)
 * You can share your configurations with others and copy/learn from others' configurations
 
@@ -86,7 +86,7 @@ It usually takes at least 10 keystrokes to run a command (even with tab-completi
 * `left x5` to make the window smaller
 * `<esc>` to exit "resize" mode
 
-And then I have to do that like 5 more times; that's too much work! 📅 I'm losing seconds of productivity every day just opening, commanding, and resizing windows!
+And then I have to do that like 5 more times; that's too much work! 😤 I'm losing seconds of productivity every day just opening, commanding, and resizing windows!
 
 <!-- TODO: create a Motivation Part 2 document and move this there -->
 <!-- There were also a lot of consistent configurations that I wanted to use that just wouldn't
@@ -115,7 +115,7 @@ This [Python](https://www.python.org/) IDE has a relatively basic TOML file. Her
 # python IDE
 [python]
 
-# tells reZIDE that this is a layout and it should construct a tree out of it and its ancestors
+# tells reZIDE that this is a layout and it should construct a tree out of it and its descendants
 is_layout = true
 
 # this is what % of the screen each child should take up
@@ -127,7 +127,8 @@ sizes = [50, 50]
 #   build them appropriately
 children = ['terminals', 'documentation']
 
-# the screen should be split horizontally so that the children are to the left and right of each other
+# the screen should be split horizontally so that the children are to the left and right
+#   of each other
 split = "horizontal"
 
 
@@ -169,7 +170,9 @@ mark = 'documentation'
 ```
 
 ### A complexer IDE
-This IDE gives us everything we need to have a smooth development session when working on the `reZIDE` project. Try opening the screenshot in another tab/window and see if you can match all of the Window/Section definitions in the TOML file to their corresponding areas on the screenshot!
+This IDE gives us everything we need to have a smooth development session when working on the `reZIDE` project.
+
+Try opening the screenshot in another tab/window and see if you can match all of the Window/Section definitions in the TOML file to their corresponding areas on the screenshot!
 
 ![rezide_ide](docs/rezide_ide.png)
 
@@ -181,6 +184,8 @@ split = "horizontal"
 children = ['linters', 'main', 'tests']
 sizes = [20, 60, 20]
 
+# 1st level
+# ---------------------------------------------------------------------------------------
 [linters]
 split = "vertical"
 sizes = [50, 50]
@@ -191,10 +196,16 @@ split = "vertical"
 children = ['editors', 'gutter']
 sizes = [70, 30]
 
-[editors]
-sizes = [50, 50]
-children = ['left-editor', 'right-editor']
-split = "horizontal"
+[tests]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'fd | entr make test; zsh'
+"""
+mark = "tests"
+
+# 2nd level
+# ---------------------------------------------------------------------------------------
 
 [formatting]
 command = """
@@ -213,6 +224,21 @@ command = """
 """
 mark = "typechecking"
 
+[editors]
+sizes = [50, 50]
+children = ['left-editor', 'right-editor']
+split = "horizontal"
+
+[gutter]
+command = """
+    alacritty \
+        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
+        -e sh -c 'neofetch; zsh'
+"""
+mark = "gutter"
+
+# 3rd level
+# ---------------------------------------------------------------------------------------
 [left-editor]
 command = """
     alacritty \
@@ -228,23 +254,6 @@ command = """
         -e sh -c 'kak README.md'
 """
 mark = "right-editor"
-
-[gutter]
-command = """
-    alacritty \
-        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
-        -e sh -c 'neofetch; zsh'
-"""
-mark = "gutter"
-
-[tests]
-command = """
-    alacritty \
-        --working-directory ~/workspace/abstractlyZach/reZIDE/ \
-        -e sh -c 'fd | entr make test; zsh'
-"""
-mark = "tests"
-
 ```
 
 ## Shell Completion
