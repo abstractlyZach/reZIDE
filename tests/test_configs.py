@@ -68,7 +68,7 @@ def test_toml_reading():
         fakes.FakeFilestore(files={"any": toml_contents}),
         dtos.Env(home="/home/myhomedir", xdg_config_home="/xdg"),
     )
-    assert config_reader.to_dict() == expected_toml_dict
+    assert config_reader.read() == expected_toml_dict
 
 
 def test_reader_uses_xdg_config_first():
@@ -82,7 +82,7 @@ def test_reader_uses_xdg_config_first():
     )
     env = dtos.Env(home="/home/magic", xdg_config_home=config_dir)
     config = configs.TomlConfig(filestore, env)
-    assert config.to_dict() == expected_toml_dict
+    assert config.read() == expected_toml_dict
 
 
 def test_reader_uses_home_dir_if_no_xdg():
@@ -90,7 +90,7 @@ def test_reader_uses_home_dir_if_no_xdg():
     filestore = fakes.FakeFilestore({home_dir + "/.rezide.toml": toml_contents})
     env = dtos.Env(home=home_dir, xdg_config_home="")
     config = configs.TomlConfig(filestore, env)
-    assert config.to_dict() == expected_toml_dict
+    assert config.read() == expected_toml_dict
 
 
 # TODO: add test to make sure that we check both paths even if xdg is defined

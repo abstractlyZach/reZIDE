@@ -103,7 +103,7 @@ def list_layouts(context: click.Context) -> None:
     """List all available layouts"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
     logging.debug(f'env: {context.obj["env"]}')
-    for entry, details in context.obj["config_reader"].to_dict().items():
+    for entry, details in context.obj["config_reader"].read().items():
         if "is_layout" in details:
             click.secho(entry, fg="blue")
 

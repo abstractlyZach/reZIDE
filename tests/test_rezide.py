@@ -125,7 +125,7 @@ def test_list_layouts(
     MockConfig,
     MockFilestore,
 ):
-    MockConfig.return_value.to_dict.return_value = {
+    MockConfig.return_value.read.return_value = {
         "layout 0": {"is_layout": True},
         "not a layout 0 ": {"size": 9999},
         "layout 1": {"is_layout": True, "children": [1, 2, 3]},

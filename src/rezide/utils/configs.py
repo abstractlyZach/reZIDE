@@ -31,5 +31,5 @@ class TomlConfig(interfaces.ConfigReader):
         toml_str = filestore.read_file(target_path)
         self._dict = dict(toml.loads(toml_str))
 
-    def to_dict(self) -> Dict:
+    def read(self) -> Dict:
         return self._dict
