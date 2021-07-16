@@ -8,7 +8,7 @@ from rezide.utils import dtos
 from rezide.utils import interfaces
 
 
-class TomlConfig(interfaces.ConfigReader):
+class TomlReader(interfaces.ConfigReader):
     def __init__(self, filestore: interfaces.FileStore, env: dtos.Env) -> None:
         paths_to_check = []
         if env.xdg_config_home:

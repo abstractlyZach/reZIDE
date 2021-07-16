@@ -71,7 +71,7 @@ def main(
     logging.info(f"Log level set to {log_level}")
     sys.tracebacklimit = verbosity_level
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
-    context.obj["config_reader"] = configs.TomlConfig(
+    context.obj["config_reader"] = configs.TomlReader(
         filestore.LocalFilestore(), env=env
     )
     context.obj["env"] = env
