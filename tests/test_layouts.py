@@ -107,7 +107,7 @@ layout_test_cases = [
         ],
         layout_name="screen",
     ),
-    # allow configs to define multiple layouts
+    # allow config_readers to define multiple layouts
     LayoutManagerTestCase(
         config={
             "screen": {

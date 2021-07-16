@@ -19,7 +19,7 @@ def MockRezide(mocker):
 
 @pytest.fixture
 def MockConfig(mocker):
-    return mocker.patch("rezide.utils.configs.TomlReader")
+    return mocker.patch("rezide.utils.config_readers.TomlReader")
 
 
 @pytest.fixture
