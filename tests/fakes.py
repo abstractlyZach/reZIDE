@@ -56,7 +56,7 @@ class FakeTreeFactory(interfaces.TreeFactoryInterface):
         return self._tree
 
 
-class FakeConfigReader(interfaces.ConfigReader):
+class FakeConfig(interfaces.ConfigReader):
     def __init__(self, config_dict: Dict) -> None:
         self._config_dict = config_dict
 
