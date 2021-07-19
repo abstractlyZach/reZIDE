@@ -31,11 +31,11 @@ class FakeTreeFactory(interfaces.TreeFactoryInterface):
         return self._tree
 
 
-class FakeConfig(interfaces.ConfigReader):
+class FakeConfigReader(interfaces.ConfigReader):
     def __init__(self, config_dict: Dict) -> None:
         self._config_dict = config_dict
 
-    def read(self) -> Dict:
+    def read(self, name: str) -> Dict:
         return self._config_dict
 
 
