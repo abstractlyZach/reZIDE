@@ -10,7 +10,7 @@ from tests import fakes
 
 
 def test_returns_result_from_tree_factory():
-    config_reader = fakes.FakeConfigReader(
+    config_reader = fakes.FakeConfig(
         {
             "ide": {
                 "split": "horizontal",
@@ -130,7 +130,7 @@ test_cases = [
 
 @pytest.mark.parametrize("test_case", test_cases)
 def test_passes_correct_tree_to_tree_factory(test_case):
-    config_reader = fakes.FakeConfigReader(test_case.config_dict)
+    config_reader = fakes.FakeConfig(test_case.config_dict)
     expected_tree = test_case.expected_tree
     spy_tree_factory = mock.MagicMock()
     parser = config_parser.ConfigParser(config_reader, spy_tree_factory)
@@ -175,7 +175,7 @@ exception_test_cases = [
 
 @pytest.mark.parametrize("test_case", exception_test_cases)
 def test_config_parser_exceptions(test_case):
-    config_reader = fakes.FakeConfigReader(test_case.config_dict)
+    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
         config_reader, fakes.FakeTreeFactory(mock.MagicMock())
     )
@@ -368,7 +368,7 @@ validation_test_cases = [
 
 @pytest.mark.parametrize("test_case", validation_test_cases)
 def test_parser_validation(test_case):
-    config_reader = fakes.FakeConfigReader(test_case.config_dict)
+    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
         config_reader, fakes.FakeTreeFactory(mock.MagicMock())
     )
@@ -378,7 +378,7 @@ def test_parser_validation(test_case):
 
 def test_parser_validation_happy_path():
     # perfectly good config
-    config_reader = fakes.FakeConfigReader(
+    config_reader = fakes.FakeConfig(
         {
             "ide": {
                 "split": "horizontal",
