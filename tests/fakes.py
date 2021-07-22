@@ -22,6 +22,15 @@ class FakeFilestore(interfaces.FileStore):
             return self._files["any"]
         return self._files[path]
 
+    def exists_as_dir(self, path: str) -> bool:
+        pass
+
+    def exists_as_file(self, path: str) -> bool:
+        pass
+
+    def list_directory_contents(self, path: str) -> List[str]:
+        pass
+
 
 class FakeTreeFactory(interfaces.TreeFactoryInterface):
     def __init__(self, tree_root: tree.TreeNode):

@@ -72,7 +72,19 @@ class FileStore(object):
         pass
 
     @abc.abstractmethod
+    def exists_as_dir(self, path: str) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def exists_as_file(self, path: str) -> bool:
+        pass
+
+    @abc.abstractmethod
     def read_file(self, path: str) -> str:
+        pass
+
+    @abc.abstractmethod
+    def list_directory_contents(self, path: str) -> List[str]:
         pass
 
 
