@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Set
 
 from rezide.utils import dtos
 
@@ -84,7 +84,7 @@ class FileStore(object):
         pass
 
     @abc.abstractmethod
-    def list_directory_contents(self, path: str) -> List[str]:
+    def list_directory_contents(self, path: str) -> Set[str]:
         pass
 
 

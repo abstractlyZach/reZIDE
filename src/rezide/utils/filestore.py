@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Set
 
 from rezide.utils import interfaces
 
@@ -18,7 +18,7 @@ class LocalFilestore(interfaces.FileStore):
     def exists_as_file(self, path: str) -> bool:
         return self.path_exists(path) and os.path.isfile(path)
 
-    def list_directory_contents(self, path: str) -> List[str]:
+    def list_directory_contents(self, path: str) -> Set[str]:
         if self.exists_as_dir(path):
-            return os.listdir(path)
+            return set(os.listdir(path))
         raise RuntimeError(f"{path} is not a valid directory")

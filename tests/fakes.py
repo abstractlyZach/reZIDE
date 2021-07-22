@@ -1,4 +1,6 @@
-from typing import Dict, List, NamedTuple, Optional, Type
+import os
+import pathlib
+from typing import Dict, List, NamedTuple, Optional, Set, Type
 
 from rezide.utils import dtos
 from rezide.utils import interfaces
@@ -11,11 +13,16 @@ class FakeFilestore(interfaces.FileStore):
         and just want the file to exist with contents for all inputs
         """
         self._files = files
+        self._directories = set()
+        for file_path in files:
+            path = pathlib.Path(file_path)
+            for parent in path.parents:
+                self._directories.add(parent)
 
     def path_exists(self, path: str) -> bool:
         if "any" in self._files:
             return True
-        return path in self._files
+        return path in self._files or path in self._directories
 
     def read_file(self, path: str) -> str:
         if "any" in self._files:
@@ -23,13 +30,18 @@ class FakeFilestore(interfaces.FileStore):
         return self._files[path]
 
     def exists_as_dir(self, path: str) -> bool:
-        pass
+        return path in self._directories
 
     def exists_as_file(self, path: str) -> bool:
-        pass
+        return path in self._files
 
-    def list_directory_contents(self, path: str) -> List[str]:
-        pass
+    def list_directory_contents(self, path: str) -> Set[str]:
+        files_in_directory = set()
+        for file_ in self._files:
+            directory_name, file_name = os.path.split(file_)
+            if directory_name == path:
+                files_in_directory.add(file_name)
+        return files_in_directory
 
 
 class FakeTreeFactory(interfaces.TreeFactoryInterface):
