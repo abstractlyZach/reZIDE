@@ -9,10 +9,14 @@ from rezide.utils import tree
 
 class FakeFilestore(interfaces.FileStore):
     def __init__(self, files: Dict[str, str]):
-        """Add a key called "any" when you don't care about the specific file path
-        and just want the file to exist with contents for all inputs
+        """Initialize with a mapping from filenames to file contents
+
+        Add a key called "any" when you don't care about the specific file path
+        and just want the file to exist with those contents for all read actions
         """
         self._files = files
+        # track the directory hierarchy.
+        # every directory above each given file path should be considered to exist
         self._directories = set()
         for file_path in files:
             path = pathlib.Path(file_path)
