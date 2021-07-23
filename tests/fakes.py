@@ -40,6 +40,8 @@ class FakeFilestore(interfaces.FileStore):
         return path in self._files
 
     def list_directory_contents(self, path: str) -> Set[str]:
+        # remove a trailing slash
+        path = path.rstrip("/")
         files_in_directory = set()
         for file_ in self._files:
             directory_name, file_name = os.path.split(file_)

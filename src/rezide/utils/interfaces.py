@@ -127,3 +127,13 @@ class ConfigParserInterface(object):
     @abc.abstractmethod
     def get_tree(self, layout_name: str) -> TreeNodeInterface:
         pass
+
+
+class ConfigDir(object):
+    @abc.abstractmethod
+    def list_layouts(self) -> Set[str]:
+        pass
+
+    @abc.abstractmethod
+    def get_layout_file_path(self, layout_name: str) -> str:
+        pass
