@@ -16,3 +16,78 @@ def test_lists_layouts_from_specified_dir(test_case):
     env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
     dir = config_dir.ConfigDir(filestore, env, "/abc/")
     assert dir.list_layouts() == test_case[1]
+
+
+@pytest.mark.parametrize("test_case", specified_dir_tests)
+def test_throws_error_if_specified_dir_doesnt_exist(test_case):
+    filestore = fakes.FakeFilestore(test_case[0])
+    env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
+    with pytest.raises(RuntimeError):
+        config_dir.ConfigDir(filestore, env, "/woopsies/")
+
+
+xdg_dir_tests = [
+    (
+        {
+            "/home/test/.config/rezide/alpha.toml": "",
+            "/home/test/.config/rezide/beta.toml": "",
+        },
+        {"alpha", "beta"},
+    ),
+    (
+        {
+            "/home/test/.config/rezide/hello.toml": "",
+            "/home/test/.config/rezide/world.toml": "",
+        },
+        {"hello", "world"},
+    ),
+]
+
+
+@pytest.mark.parametrize("test_case", xdg_dir_tests)
+def test_lists_layouts_from_xdg_config_home(test_case):
+    filestore = fakes.FakeFilestore(test_case[0])
+    env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
+    dir = config_dir.ConfigDir(filestore, env)
+    assert dir.list_layouts() == test_case[1]
+
+
+home_dir_tests = [
+    (
+        {"/home/test/.rezide/alpha.toml": "", "/home/test/.rezide/beta.toml": ""},
+        {"alpha", "beta"},
+    ),
+    (
+        {"/home/test/.rezide/hello.toml": "", "/home/test/.rezide/world.toml": ""},
+        {"hello", "world"},
+    ),
+]
+
+
+@pytest.mark.parametrize("test_case", home_dir_tests)
+def test_lists_layouts_from_home_when_xdg_config_dir_is_empty(test_case):
+    """Fall back on $HOME/.rezide/ if there's no config dir path specified and
+    xdg_config_dir is specified, but doesn't exist
+    """
+    filestore = fakes.FakeFilestore(test_case[0])
+    env = dtos.Env(home="/home/test/", xdg_config_home="")
+    dir = config_dir.ConfigDir(filestore, env)
+    assert dir.list_layouts() == test_case[1]
+
+
+@pytest.mark.parametrize("test_case", home_dir_tests)
+def test_lists_layouts_from_home_when_xdg_config_dir_doesnt_exist(test_case):
+    """Fall back on $HOME/.rezide/ if there's no config dir path specified and
+    xdg_config_dir is specified, but doesn't exist
+    """
+    filestore = fakes.FakeFilestore(test_case[0])
+    env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
+    dir = config_dir.ConfigDir(filestore, env)
+    assert dir.list_layouts() == test_case[1]
+
+
+def test_throws_error_if_unspecified_and_env_vars_fail():
+    filestore = fakes.FakeFilestore(dict())
+    env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
+    with pytest.raises(RuntimeError):
+        config_dir.ConfigDir(filestore, env)

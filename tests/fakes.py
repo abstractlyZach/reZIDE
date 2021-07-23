@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 from typing import Dict, List, NamedTuple, Optional, Set, Type
@@ -21,22 +22,27 @@ class FakeFilestore(interfaces.FileStore):
         for file_path in files:
             path = pathlib.Path(file_path)
             for parent in path.parents:
-                self._directories.add(parent)
+                self._directories.add(str(parent))
+        logging.debug(self._directories)
 
     def path_exists(self, path: str) -> bool:
+        path = path.rstrip("/")
         if "any" in self._files:
             return True
         return path in self._files or path in self._directories
 
     def read_file(self, path: str) -> str:
+        path = path.rstrip("/")
         if "any" in self._files:
             return self._files["any"]
         return self._files[path]
 
     def exists_as_dir(self, path: str) -> bool:
+        path = path.rstrip("/")
         return path in self._directories
 
     def exists_as_file(self, path: str) -> bool:
+        path = path.rstrip("/")
         return path in self._files
 
     def list_directory_contents(self, path: str) -> Set[str]:
