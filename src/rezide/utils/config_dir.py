@@ -16,6 +16,7 @@ class ConfigDir(interfaces.ConfigDir):
         self._filestore = filestore
         xdg_config_dir = os.path.join(env.xdg_config_home + "rezide")
         home_config_dir = os.path.join(env.home + ".rezide")
+
         if specified_dir:
             if not filestore.exists_as_dir(specified_dir):
                 raise RuntimeError(f"{specified_dir} does not exist")
@@ -38,4 +39,7 @@ class ConfigDir(interfaces.ConfigDir):
         return filenames_without_extensions
 
     def get_layout_file_path(self, layout_name: str) -> str:
-        pass
+        file_path = os.path.join(self._dir, layout_name + ".toml")
+        if not self._filestore.exists_as_file(file_path):
+            raise RuntimeError(f"Layout '{layout_name}' doesn't exist in '{self._dir}'")
+        return file_path

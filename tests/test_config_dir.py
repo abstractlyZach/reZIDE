@@ -67,7 +67,7 @@ home_dir_tests = [
 @pytest.mark.parametrize("test_case", home_dir_tests)
 def test_lists_layouts_from_home_when_xdg_config_dir_is_empty(test_case):
     """Fall back on $HOME/.rezide/ if there's no config dir path specified and
-    xdg_config_dir is specified, but doesn't exist
+    $XDG_CONFIG_DIR is empty
     """
     filestore = fakes.FakeFilestore(test_case[0])
     env = dtos.Env(home="/home/test/", xdg_config_home="")
@@ -91,3 +91,48 @@ def test_throws_error_if_unspecified_and_env_vars_fail():
     env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
     with pytest.raises(RuntimeError):
         config_dir.ConfigDir(filestore, env)
+
+
+layout_file_path_tests = [
+    (
+        {
+            "/home/test/.config/rezide/alpha.toml": "",
+            "/home/test/.config/rezide/beta.toml": "",
+        },
+        dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/"),
+        "alpha",
+        "/home/test/.config/rezide/alpha.toml",
+    ),
+    (
+        {
+            "/home/test/.config/rezide/alpha.toml": "",
+            "/home/test/.config/rezide/beta.toml": "",
+        },
+        dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/"),
+        "beta",
+        "/home/test/.config/rezide/beta.toml",
+    ),
+    (
+        {
+            "/home/test/.rezide/yay.toml": "",
+        },
+        dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/"),
+        "yay",
+        "/home/test/.rezide/yay.toml",
+    ),
+]
+
+
+@pytest.mark.parametrize("test_case", layout_file_path_tests)
+def test_get_layout_file_path(test_case):
+    filestore = fakes.FakeFilestore(test_case[0])
+    dir = config_dir.ConfigDir(filestore, test_case[1])
+    assert dir.get_layout_file_path(test_case[2]) == test_case[3]
+
+
+def test_cant_find_layout():
+    filestore = fakes.FakeFilestore({"/home/test/.config/rezide/abc.toml": ""})
+    env = dtos.Env(home="/home/test/", xdg_config_home="/home/test/.config/")
+    dir = config_dir.ConfigDir(filestore, env)
+    with pytest.raises(RuntimeError):
+        dir.get_layout_file_path("def")
