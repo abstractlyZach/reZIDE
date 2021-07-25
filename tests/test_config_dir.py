@@ -73,7 +73,8 @@ def test_lists_layouts_from_home_when_xdg_config_dir_is_empty(test_case, test_en
     $XDG_CONFIG_DIR is empty
     """
     filestore = fakes.FakeFilestore(test_case[0])
-    dir = config_dir.ConfigDir(filestore, test_env)
+    env = dtos.Env(home="/home/test/", xdg_config_home="")
+    dir = config_dir.ConfigDir(filestore, env)
     assert dir.list_layouts() == test_case[1]
 
 
