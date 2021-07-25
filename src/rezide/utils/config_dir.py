@@ -29,7 +29,8 @@ class ConfigDir(interfaces.ConfigDir):
             self._dir = home_config_dir
         else:
             raise RuntimeError(
-                f"Failed to find config dir at {env.xdg_config_home} and {home_config_dir}"
+                f"Failed to find config dir. looked in '{xdg_config_dir}' and"
+                + f" '{home_config_dir}'"
             )
         logging.info(f"reading from '{self._dir}' as config dir")
 
