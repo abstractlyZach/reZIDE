@@ -16,16 +16,24 @@ class ConfigDir(interfaces.ConfigDir):
         specified_dir: Optional[str] = None,
     ) -> None:
         self._filestore = filestore
+        self._find_dir(env, specified_dir)
+
+    def _find_dir(self, env: dtos.Env, specified_dir: Optional[str]) -> None:
+        """Search through options for configuration directories in this order:
+        1. directory that has been manually specified by the user
+        2. $XDG_CONFIG_HOME/rezide
+        3. $HOME/.rezide
+        """
         xdg_config_dir = os.path.join(env.xdg_config_home + "rezide")
         home_config_dir = os.path.join(env.home + ".rezide")
 
         if specified_dir:
-            if not filestore.exists_as_dir(specified_dir):
+            if not self._filestore.exists_as_dir(specified_dir):
                 raise RuntimeError(f"{specified_dir} does not exist")
             self._dir = specified_dir
-        elif filestore.exists_as_dir(xdg_config_dir):
+        elif self._filestore.exists_as_dir(xdg_config_dir):
             self._dir = xdg_config_dir
-        elif filestore.exists_as_dir(home_config_dir):
+        elif self._filestore.exists_as_dir(home_config_dir):
             self._dir = home_config_dir
         else:
             raise RuntimeError(
