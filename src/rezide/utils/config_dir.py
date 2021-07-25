@@ -24,8 +24,8 @@ class ConfigDir(interfaces.ConfigDir):
         2. $XDG_CONFIG_HOME/rezide
         3. $HOME/.rezide
         """
-        xdg_config_dir = os.path.join(env.xdg_config_home + "rezide")
-        home_config_dir = os.path.join(env.home + ".rezide")
+        xdg_config_dir = os.path.join(env.xdg_config_home, "rezide")
+        home_config_dir = os.path.join(env.home, ".rezide")
 
         if specified_dir:
             if not self._filestore.exists_as_dir(specified_dir):
