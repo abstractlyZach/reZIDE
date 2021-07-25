@@ -7,6 +7,8 @@ from rezide.utils import interfaces
 
 
 class ConfigDir(interfaces.ConfigDir):
+    """Finds and exposes operations for a rezide configuration directory"""
+
     def __init__(
         self,
         filestore: interfaces.FileStore,
@@ -32,6 +34,7 @@ class ConfigDir(interfaces.ConfigDir):
         logging.info(f"reading from '{self._dir}' as config dir")
 
     def list_layouts(self) -> Set[str]:
+        """List all available layouts in the config directory"""
         files_in_directory = self._filestore.list_directory_contents(self._dir)
         filenames_without_extensions = {
             os.path.splitext(filename)[0] for filename in files_in_directory
@@ -39,6 +42,9 @@ class ConfigDir(interfaces.ConfigDir):
         return filenames_without_extensions
 
     def get_layout_file_path(self, layout_name: str) -> str:
+        """Given a name of a layout, check for a matching toml file in the config directory
+        and return its absolute file path if it exists
+        """
         file_path = os.path.join(self._dir, layout_name + ".toml")
         if not self._filestore.exists_as_file(file_path):
             raise RuntimeError(f"Layout '{layout_name}' doesn't exist in '{self._dir}'")
