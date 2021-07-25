@@ -26,6 +26,7 @@ specified_dir_tests = [
         files={"/abc/hello.toml": "", "/abc/world.toml": ""},
         expected_layout_names={"hello", "world"},
     ),
+    # specified dir gets checked even though there's something in XDG_CONFIG_HOME
     DirTestCase(
         files={
             "/abc/hello.toml": "",
@@ -34,6 +35,7 @@ specified_dir_tests = [
         },
         expected_layout_names={"hello", "world"},
     ),
+    # specified dir gets checked even though there's something in HOME/.rezide
     DirTestCase(
         files={
             "/abc/hello.toml": "",
@@ -78,6 +80,16 @@ xdg_dir_tests = [
     ),
     DirTestCase(
         files={
+            "/home/test/.config/rezide/hello.toml": "",
+            "/home/test/.config/rezide/world.toml": "",
+            "/home/test/.rezide/omg.toml": "",
+        },
+        expected_layout_names={"hello", "world"},
+    ),
+    DirTestCase(
+        files={
+            "/abc/hello.toml": "",
+            "/abc/world.toml": "",
             "/home/test/.config/rezide/hello.toml": "",
             "/home/test/.config/rezide/world.toml": "",
             "/home/test/.rezide/omg.toml": "",
@@ -187,10 +199,8 @@ def test_get_layout_file_path(test_case, test_env):
     """Convert layout names into absolute paths within the config dir"""
     filestore = fakes.FakeFilestore(test_case.files)
     dir = config_dir.ConfigDir(filestore, test_env)
-    assert (
-        dir.get_layout_file_path(test_case.layout_name_to_find)
-        == test_case.expected_path
-    )
+    actual_path = dir.get_layout_file_path(test_case.layout_name_to_find)
+    assert actual_path == test_case.expected_path
 
 
 def test_cant_find_layout(test_env):
