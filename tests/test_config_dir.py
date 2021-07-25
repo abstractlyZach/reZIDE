@@ -13,6 +13,22 @@ def test_env():
 specified_dir_tests = [
     ({"/abc/alpha.toml": "", "/abc/beta.toml": ""}, {"alpha", "beta"}),
     ({"/abc/hello.toml": "", "/abc/world.toml": ""}, {"hello", "world"}),
+    (
+        {
+            "/abc/hello.toml": "",
+            "/abc/world.toml": "",
+            "/home/test/.config/rezide/omg.toml": "",
+        },
+        {"hello", "world"},
+    ),
+    (
+        {
+            "/abc/hello.toml": "",
+            "/abc/world.toml": "",
+            "/home/test/.rezide/omg.toml": "",
+        },
+        {"hello", "world"},
+    ),
 ]
 
 
@@ -44,6 +60,14 @@ xdg_dir_tests = [
         {
             "/home/test/.config/rezide/hello.toml": "",
             "/home/test/.config/rezide/world.toml": "",
+        },
+        {"hello", "world"},
+    ),
+    (
+        {
+            "/home/test/.config/rezide/hello.toml": "",
+            "/home/test/.config/rezide/world.toml": "",
+            "/home/test/.rezide/omg.toml": "",
         },
         {"hello", "world"},
     ),
