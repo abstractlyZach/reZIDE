@@ -16,9 +16,9 @@ class ConfigDir(interfaces.ConfigDir):
         specified_dir: Optional[str] = None,
     ) -> None:
         self._filestore = filestore
-        self._find_dir(env, specified_dir)
+        self._select_config_dir(env, specified_dir)
 
-    def _find_dir(self, env: dtos.Env, specified_dir: Optional[str]) -> None:
+    def _select_config_dir(self, env: dtos.Env, specified_dir: Optional[str]) -> None:
         """Search through options for configuration directories in this order:
         1. directory that has been manually specified by the user
         2. $XDG_CONFIG_HOME/rezide
