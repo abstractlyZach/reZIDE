@@ -32,6 +32,11 @@ def MockFilestore(mocker):
     return mocker.patch("rezide.utils.filestore.LocalFilestore")
 
 
+@pytest.fixture
+def MockConfigDir(mocker):
+    return mocker.patch("rezide.utils.config_dir.ConfigDir")
+
+
 # how do we even run an end-to-end test?? a sandboxed vm that runs a window manager?
 @pytest.mark.skip
 @pytest.mark.e2e
@@ -122,32 +127,17 @@ def test_run():
 
 def test_list_layouts(
     click_runner,
-    MockConfig,
+    MockConfigDir,
     MockFilestore,
 ):
-    MockConfig.return_value.read.return_value = {
-        "layout 0": {"is_layout": True},
-        "not a layout 0 ": {"size": 9999},
-        "layout 1": {"is_layout": True, "children": [1, 2, 3]},
-        "not a layout 1": {
-            "layout": "horizontal",
-            "children": ["a", "b", "c"],
-            "sizes": [50, 25, 25],
-        },
-        "layout 2": {
-            "is_layout": True,
-            "layout": "horizontal",
-            "children": ["a", "b", "c"],
-            "sizes": [50, 25, 25],
-        },
+    MockConfigDir.return_value.list_layouts.return_value = {
+        f"layout {number}" for number in range(3)
     }
+    env = dtos.Env(home="def", xdg_config_home="abc")
     result = click_runner.invoke(
         rezide.main, ["-c", "abc", "--user-home-dir", "def", "list-layouts"]
     )
-    MockConfig.assert_called_once_with(
-        MockFilestore(),
-        env=dtos.Env(home="def", xdg_config_home="abc"),
-    )
+    MockConfigDir.assert_called_once_with(MockFilestore(), env)
     for number in range(3):
         assert f"layout {number}" in result.output
 
