@@ -100,6 +100,15 @@ def test_throws_error_if_unspecified_and_env_vars_fail(test_env):
         config_dir.ConfigDir(filestore, test_env)
 
 
+def test_throws_error_if_unspecified_and_env_vars_empty(test_env):
+    """Throw an error if there is no specified dir and the directories in the environment
+    variables are empty strings
+    """
+    filestore = fakes.FakeFilestore(dict())
+    with pytest.raises(RuntimeError):
+        config_dir.ConfigDir(filestore, dtos.Env("", ""))
+
+
 layout_file_path_tests = [
     (
         {
