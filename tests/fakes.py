@@ -23,7 +23,7 @@ class FakeFilestore(interfaces.FileStore):
             path = pathlib.Path(file_path)
             for parent in path.parents:
                 self._directories.add(str(parent))
-        logging.debug(self._directories)
+        logging.debug(f"directories: {self._directories}")
 
     def path_exists(self, path: str) -> bool:
         path = path.rstrip("/")
@@ -49,10 +49,12 @@ class FakeFilestore(interfaces.FileStore):
         # remove a trailing slash
         path = path.rstrip("/")
         files_in_directory = set()
+        logging.debug(f"files in FakeFilestore: {self._files}")
         for file_ in self._files:
             directory_name, file_name = os.path.split(file_)
             if directory_name == path:
                 files_in_directory.add(file_name)
+        logging.debug(f"found in '{path}': {files_in_directory}")
         return files_in_directory
 
 

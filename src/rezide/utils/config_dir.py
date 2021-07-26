@@ -44,11 +44,21 @@ class ConfigDir(interfaces.ConfigDir):
 
     def list_layouts(self) -> Set[str]:
         """List all available layouts in the config directory"""
-        files_in_directory = self._filestore.list_directory_contents(self._dir)
-        filenames_without_extensions = {
-            os.path.splitext(filename)[0] for filename in files_in_directory
-        }
-        return filenames_without_extensions
+        logging.info(f"listing layouts in {self._dir}")
+        layouts = set()
+        for file_or_dir in self._filestore.list_directory_contents(self._dir):
+            logging.debug(f"examining {file_or_dir} to see if it has a config")
+            absolute_path_to_dir = os.path.join(self._dir, file_or_dir)
+            absolute_path_to_config_file = os.path.join(
+                absolute_path_to_dir, "config.toml"
+            )
+            is_dir = self._filestore.exists_as_dir(absolute_path_to_dir)
+            has_config_file = self._filestore.exists_as_file(
+                absolute_path_to_config_file
+            )
+            if is_dir and has_config_file:
+                layouts.add(file_or_dir)
+        return layouts
 
     def get_layout_file_path(self, layout_name: str) -> str:
         """Given a name of a layout, check for a matching toml file in the config directory
