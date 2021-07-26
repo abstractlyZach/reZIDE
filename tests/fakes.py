@@ -68,7 +68,7 @@ class FakeConfig(interfaces.ConfigReader):
     def __init__(self, config_dict: Dict) -> None:
         self._config_dict = config_dict
 
-    def read(self) -> Dict:
+    def read(self, path: str) -> Dict:
         return self._config_dict
 
 

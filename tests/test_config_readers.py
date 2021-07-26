@@ -1,8 +1,13 @@
 import pytest
 
 from rezide.utils import config_readers
-from rezide.utils import dtos
 from tests import fakes
+
+
+@pytest.fixture
+def MockTomlLibrary(mocker):
+    return mocker.patch("rezide.utils.config_readers.toml")
+
 
 toml_contents = """
 [screen]
@@ -62,50 +67,19 @@ expected_toml_dict = {
 }
 
 
-def test_toml_reading():
+def test_toml_integration():
     config_reader = config_readers.TomlReader(
-        # ignore the env logic by using the "any" feature of our Fake :)
         fakes.FakeFilestore(files={"any": toml_contents}),
-        dtos.Env(home="/home/myhomedir", xdg_config_home="/xdg"),
     )
-    assert config_reader.read() == expected_toml_dict
-
-
-def test_reader_uses_xdg_config_first():
-    config_dir = "/home/abc/.config"
-    filestore = fakes.FakeFilestore(
-        {
-            config_dir + "/rezide/config.toml": toml_contents,
-            "abc": "def",
-            "hjk": "lmno",
-        }
+    assert (
+        config_reader.read("/home/test/.config/rezide/abc/config.toml")
+        == expected_toml_dict
     )
-    env = dtos.Env(home="/home/magic", xdg_config_home=config_dir)
-    config = config_readers.TomlReader(filestore, env)
-    assert config.read() == expected_toml_dict
 
 
-def test_reader_uses_home_dir_if_no_xdg():
-    home_dir = "/home/def"
-    filestore = fakes.FakeFilestore({home_dir + "/.rezide.toml": toml_contents})
-    env = dtos.Env(home=home_dir, xdg_config_home="")
-    config = config_readers.TomlReader(filestore, env)
-    assert config.read() == expected_toml_dict
-
-
-# TODO: add test to make sure that we check both paths even if xdg is defined
-
-
-def test_throws_error_if_cant_find_config_in_home():
-    filestore = fakes.FakeFilestore(dict())
-    env = dtos.Env(home="/home/jkl", xdg_config_home="")
-    with pytest.raises(RuntimeError):
-        config_readers.TomlReader(filestore, env)
-
-
-def test_throws_error_if_cant_find_config_anywhere():
-    """Both xdg and home don't have the config"""
-    filestore = fakes.FakeFilestore(dict())
-    env = dtos.Env(home="/home/abc", xdg_config_home="/home/abc/.config")
-    with pytest.raises(RuntimeError):
-        config_readers.TomlReader(filestore, env)
+def test_toml_reader_makes_correct_call(MockTomlLibrary):
+    config_reader = config_readers.TomlReader(
+        fakes.FakeFilestore(files={"any": toml_contents}),
+    )
+    config_reader.read("abclkajsdlfkasjdlfkj")
+    MockTomlLibrary.loads.assert_called_once_with(toml_contents)

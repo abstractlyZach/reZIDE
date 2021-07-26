@@ -9,11 +9,11 @@ class ConfigParser(interfaces.ConfigParserInterface):
 
     def __init__(
         self,
-        config_reader: interfaces.ConfigReader,
+        config_dict: Dict,
         tree_factory: interfaces.TreeFactoryInterface,
     ) -> None:
         self._tree_factory = tree_factory
-        self._layout_definitions = config_reader.read()
+        self._layout_definitions = config_dict
 
     def validate(self) -> None:
         seen_marks: Set[str] = set()

@@ -10,25 +10,23 @@ from tests import fakes
 
 
 def test_returns_result_from_tree_factory():
-    config_reader = fakes.FakeConfig(
-        {
-            "ide": {
-                "split": "horizontal",
-                "children": ["left window", "right window"],
-                "sizes": [50, 50],
-            },
-            "left window": {
-                "command": 'alacritty -e sh -c "echo left window!"',
-                "mark": "left window",
-            },
-            "right window": {
-                "command": 'alacritty -e sh -c "echo right window!"',
-                "mark": "right window",
-            },
-        }
-    )
+    config_dict = {
+        "ide": {
+            "split": "horizontal",
+            "children": ["left window", "right window"],
+            "sizes": [50, 50],
+        },
+        "left window": {
+            "command": 'alacritty -e sh -c "echo left window!"',
+            "mark": "left window",
+        },
+        "right window": {
+            "command": 'alacritty -e sh -c "echo right window!"',
+            "mark": "right window",
+        },
+    }
     tree_stub = mock.MagicMock()
-    parser = config_parser.ConfigParser(config_reader, fakes.FakeTreeFactory(tree_stub))
+    parser = config_parser.ConfigParser(config_dict, fakes.FakeTreeFactory(tree_stub))
     assert parser.get_tree("ide") == tree_stub
 
 
@@ -130,10 +128,9 @@ test_cases = [
 
 @pytest.mark.parametrize("test_case", test_cases)
 def test_passes_correct_tree_to_tree_factory(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     expected_tree = test_case.expected_tree
     spy_tree_factory = mock.MagicMock()
-    parser = config_parser.ConfigParser(config_reader, spy_tree_factory)
+    parser = config_parser.ConfigParser(test_case.config_dict, spy_tree_factory)
     parser.get_tree(test_case.layout_name)
     spy_tree_factory.create_tree.assert_called_once_with(expected_tree)
 
@@ -175,9 +172,8 @@ exception_test_cases = [
 
 @pytest.mark.parametrize("test_case", exception_test_cases)
 def test_config_parser_exceptions(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        test_case.config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     with pytest.raises(test_case.expected_error_class):
         parser.get_tree(test_case.layout_name)
@@ -368,9 +364,8 @@ validation_test_cases = [
 
 @pytest.mark.parametrize("test_case", validation_test_cases)
 def test_parser_validation(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        test_case.config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     with pytest.raises(test_case.expected_error_class):
         parser.validate()
@@ -378,26 +373,24 @@ def test_parser_validation(test_case):
 
 def test_parser_validation_happy_path():
     # perfectly good config
-    config_reader = fakes.FakeConfig(
-        {
-            "ide": {
-                "split": "horizontal",
-                "children": ["left window", "right window"],
-                "sizes": [50, 50],
-                "is_layout": True,
-            },
-            "left window": {
-                "command": 'alacritty -e sh -c "echo left window!"',
-                "mark": "left window",
-            },
-            "right window": {
-                "command": 'alacritty -e sh -c "echo right window!"',
-                "mark": "right window",
-            },
-        }
-    )
+    config_dict = {
+        "ide": {
+            "split": "horizontal",
+            "children": ["left window", "right window"],
+            "sizes": [50, 50],
+            "is_layout": True,
+        },
+        "left window": {
+            "command": 'alacritty -e sh -c "echo left window!"',
+            "mark": "left window",
+        },
+        "right window": {
+            "command": 'alacritty -e sh -c "echo right window!"',
+            "mark": "right window",
+        },
+    }
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     # no exception raised
     parser.validate()
