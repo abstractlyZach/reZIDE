@@ -5,6 +5,7 @@ from typing import Any, Dict
 import click
 
 import rezide
+from rezide.utils import config_dir
 from rezide.utils import config_parser
 from rezide.utils import config_readers
 from rezide.utils import dtos
@@ -71,10 +72,8 @@ def main(
     logging.info(f"Log level set to {log_level}")
     sys.tracebacklimit = verbosity_level
     env = dtos.Env(home=user_home_dir, xdg_config_home=xdg_config_home_dir)
-    context.obj["config_reader"] = config_readers.TomlReader(
-        filestore.LocalFilestore(), env=env
-    )
     context.obj["env"] = env
+    context.obj["config_dir"] = config_dir.ConfigDir(filestore.LocalFilestore(), env)
 
 
 @main.command()
@@ -83,9 +82,10 @@ def main(
 def open(context: click.Context, layout_name: str) -> None:
     """Open the IDE of your choice"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
-    parser = config_parser.ConfigParser(
-        context.obj["config_reader"], tree.TreeFactory()
+    config_reader = config_readers.TomlReader(
+        filestore.LocalFilestore(), env=context.obj["env"]
     )
+    parser = config_parser.ConfigParser(config_reader, tree.TreeFactory())
     window_manager = sway.Sway()
     layout = layouts.LayoutManager(parser, window_manager)
     application = Rezide(context.obj["env"], layout)
@@ -102,10 +102,9 @@ def open(context: click.Context, layout_name: str) -> None:
 def list_layouts(context: click.Context) -> None:
     """List all available layouts"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
-    logging.debug(f'env: {context.obj["env"]}')
-    for entry, details in context.obj["config_reader"].read().items():
-        if "is_layout" in details:
-            click.secho(entry, fg="blue")
+    config_directory: config_dir.ConfigDir = context.obj["config_dir"]
+    for layout in config_directory.list_layouts():
+        click.secho(layout, fg="blue")
 
 
 class Rezide(object):
