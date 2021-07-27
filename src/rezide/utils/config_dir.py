@@ -64,7 +64,7 @@ class ConfigDir(interfaces.ConfigDir):
         """Given a name of a layout, check for a matching toml file in the config directory
         and return its absolute file path if it exists
         """
-        file_path = os.path.join(self._dir, layout_name + ".toml")
+        file_path = os.path.join(self._dir, layout_name, "config.toml")
         if not self._filestore.exists_as_file(file_path):
             raise RuntimeError(f"Layout '{layout_name}' doesn't exist in '{self._dir}'")
         return file_path

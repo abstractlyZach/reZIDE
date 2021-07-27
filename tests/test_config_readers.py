@@ -68,18 +68,16 @@ expected_toml_dict = {
 
 
 def test_toml_integration():
+    file_path = "/home/test/.config/rezide/abc/config.toml"
     config_reader = config_readers.TomlReader(
-        fakes.FakeFilestore(files={"any": toml_contents}),
+        fakes.FakeFilestore(files={file_path: toml_contents}),
     )
-    assert (
-        config_reader.read("/home/test/.config/rezide/abc/config.toml")
-        == expected_toml_dict
-    )
+    assert config_reader.read(file_path) == expected_toml_dict
 
 
 def test_toml_reader_makes_correct_call(MockTomlLibrary):
     config_reader = config_readers.TomlReader(
-        fakes.FakeFilestore(files={"any": toml_contents}),
+        fakes.FakeFilestore(files={"/abc.toml": toml_contents}),
     )
-    config_reader.read("abclkajsdlfkasjdlfkj")
+    config_reader.read("/abc.toml")
     MockTomlLibrary.loads.assert_called_once_with(toml_contents)

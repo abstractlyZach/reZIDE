@@ -92,6 +92,7 @@ xdg_dir_tests = [
             "/abc/world/config.toml": "",
             "/home/test/.config/rezide/hello/config.toml": "",
             "/home/test/.config/rezide/world/config.toml": "",
+            "/home/test/.config/rezide/README.md": "",
             "/home/test/.rezide/omg/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
