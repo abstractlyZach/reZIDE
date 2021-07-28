@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Set
+from typing import Dict
 
 from rezide.utils import interfaces
 
@@ -16,11 +16,9 @@ class ConfigParser(interfaces.ConfigParserInterface):
         self._layout_definitions = config_dict
 
     def validate(self) -> None:
-        seen_marks: Set[str] = set()
         for definition_name, definition_body in self._layout_definitions.items():
             if "command" in definition_body:
                 self._validate_window(definition_name, definition_body)
-                seen_marks.add(definition_name)
             elif "children" in definition_body:
                 self._validate_section(definition_name, definition_body)
             else:
