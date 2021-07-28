@@ -23,7 +23,9 @@ class ConfigParser(interfaces.ConfigParserInterface):
                 self._validate_section(definition_name, definition_body)
             else:
                 logging.error(definition_body)
-                raise RuntimeError("This definition is not a Window or Section")
+                raise RuntimeError(
+                    f"This definition is not a Window or Section: {definition_name}"
+                )
 
     def _validate_window(self, definition_name: str, definition_body: Dict) -> None:
         if len(definition_body) != 1:
