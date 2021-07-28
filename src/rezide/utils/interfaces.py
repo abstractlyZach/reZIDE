@@ -125,7 +125,7 @@ class ConfigParserInterface(object):
         pass
 
     @abc.abstractmethod
-    def get_tree(self, layout_name: str) -> TreeNodeInterface:
+    def get_tree(self) -> TreeNodeInterface:
         pass
 
 

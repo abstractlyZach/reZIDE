@@ -61,8 +61,8 @@ class FakeConfigParser(interfaces.ConfigParserInterface):
         if self._validation_error is not None:
             raise self._validation_error
 
-    def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
-        return self._tree_factory.create_tree(self._config_dict[layout_name])
+    def get_tree(self) -> interfaces.TreeNodeInterface:
+        return self._tree_factory.create_tree(self._config_dict)
 
 
 class FakeRect(NamedTuple):
