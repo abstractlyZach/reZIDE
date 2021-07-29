@@ -29,3 +29,6 @@ dev-setup: ci-setup
 
 ci-setup:
 	poetry install
+
+autoformat:
+	fd | entr -c sh -c "echo && make format && make lint && echo_success"
