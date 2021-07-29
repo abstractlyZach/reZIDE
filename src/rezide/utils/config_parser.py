@@ -44,6 +44,8 @@ class ConfigParser(interfaces.ConfigParserInterface):
                 f"Section must only define these keys: {allowed_keys}. extra keys"
                 + f" defined: {extra_keys}"
             )
+        if sum(definition_body["sizes"]) != 100:
+            raise RuntimeError(f"Sum of sizes is not 100: {definition_name}")
         for child in definition_body["children"]:
             if child not in self._layout_definitions:
                 raise RuntimeError(
