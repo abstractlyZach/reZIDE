@@ -337,6 +337,26 @@ validation_test_cases = [
         },
         expected_error_class=RuntimeError,
     ),
+    # sizes don't add up to 100
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["left window", "left window"],
+                "sizes": [50, 49],
+            },
+            "right window": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "right window",
+            },
+            "left window": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "left window",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
 ]
 
 
