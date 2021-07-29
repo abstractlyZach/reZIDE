@@ -342,7 +342,7 @@ validation_test_cases = [
         config_dict={
             "ide": {
                 "split": "horizontal",
-                "children": ["left window", "left window"],
+                "children": ["left window", "right window"],
                 "sizes": [50, 49],
             },
             "right window": {
@@ -352,6 +352,34 @@ validation_test_cases = [
             "left window": {
                 "command": 'alacritty -e sh -c "echo right window!"',
                 "mark": "left window",
+            },
+        },
+        expected_error_class=RuntimeError,
+        layout_name="ide",
+    ),
+    # sizes don't add up to 100
+    ConfigParserExceptionTestCase(
+        config_dict={
+            "ide": {
+                "split": "horizontal",
+                "children": ["window 0", "window 1", "window 2", "window 3"],
+                "sizes": [25, 25, 50, 25],
+            },
+            "window 0": {
+                "command": 'alacritty -e sh -c "echo right window!"',
+                "mark": "window 0",
+            },
+            "window 1": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "window 1",
+            },
+            "window 2": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "window 2",
+            },
+            "window 3": {
+                "command": 'alacritty -e sh -c "echo left window!"',
+                "mark": "window 3",
             },
         },
         expected_error_class=RuntimeError,
