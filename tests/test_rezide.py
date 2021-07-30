@@ -18,7 +18,7 @@ def MockRezide(mocker):
 
 
 @pytest.fixture
-def MockConfig(mocker):
+def MockConfigReader(mocker):
     return mocker.patch("rezide.utils.config_readers.TomlReader")
 
 
@@ -94,7 +94,7 @@ def test_successful_script(
     click_runner,
     MockWindowManager,
     MockRezide,
-    MockConfig,
+    MockConfigReader,
     MockLayoutManager,
     MockFilestore,
     test_parameters,
@@ -107,9 +107,7 @@ def test_successful_script(
     )
     assert result.exit_code == 0, result.exception
     assert "" == result.output, result.exception
-    MockConfig.assert_called_once_with(
-        MockFilestore(), env=test_parameters.expected_parsed_env
-    )
+    MockConfigReader.assert_called_once_with(MockFilestore())
     MockRezide.assert_called_once_with(
         test_parameters.expected_parsed_env, MockLayoutManager()
     )
@@ -121,7 +119,6 @@ def test_run():
     layout = mock.MagicMock()
     application = rezide.Rezide(env, layout)
     application.run("my_ide")
-    layout.select.assert_called_once_with("my_ide")
     layout.spawn_windows.assert_called_once_with()
 
 

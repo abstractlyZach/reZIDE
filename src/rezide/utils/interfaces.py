@@ -49,7 +49,7 @@ class TilingWindowManager(object):
 
 class ConfigReader(object):
     @abc.abstractmethod
-    def read(self) -> Dict:
+    def read(self, path: str) -> Dict:
         pass
 
 
@@ -125,7 +125,7 @@ class ConfigParserInterface(object):
         pass
 
     @abc.abstractmethod
-    def get_tree(self, layout_name: str) -> TreeNodeInterface:
+    def get_tree(self) -> TreeNodeInterface:
         pass
 
 

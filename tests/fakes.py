@@ -1,7 +1,6 @@
-import logging
-import os
-import pathlib
 from typing import Dict, List, NamedTuple, Optional, Set, Type
+
+from pyfakefs import fake_filesystem
 
 from rezide.utils import dtos
 from rezide.utils import interfaces
@@ -10,50 +9,28 @@ from rezide.utils import tree
 
 class FakeFilestore(interfaces.FileStore):
     def __init__(self, files: Dict[str, str]):
-        """Initialize with a mapping from filenames to file contents
-
-        Add a key called "any" when you don't care about the specific file path
-        and just want the file to exist with those contents for all read actions
-        """
-        self._files = files
-        # track the directory hierarchy.
-        # every directory above each given file path should be considered to exist
-        self._directories = set()
-        for file_path in files:
-            path = pathlib.Path(file_path)
-            for parent in path.parents:
-                self._directories.add(str(parent))
-        logging.debug(self._directories)
+        """Initialize a fake filestore with a mapping from filenames to file contents"""
+        self._filesystem = fake_filesystem.FakeFilesystem()
+        self._os_module = fake_filesystem.FakeOsModule(self._filesystem)
+        self._open = fake_filesystem.FakeFileOpen(self._filesystem)
+        for file_path, contents in files.items():
+            self._filesystem.create_file(file_path, contents=contents)
 
     def path_exists(self, path: str) -> bool:
-        path = path.rstrip("/")
-        if "any" in self._files:
-            return True
-        return path in self._files or path in self._directories
+        return self._os_module.path.exists(path)
 
     def read_file(self, path: str) -> str:
-        path = path.rstrip("/")
-        if "any" in self._files:
-            return self._files["any"]
-        return self._files[path]
+        with self._open(path) as infile:
+            return infile.read()
 
     def exists_as_dir(self, path: str) -> bool:
-        path = path.rstrip("/")
-        return path in self._directories
+        return self.path_exists(path) and self._os_module.path.isdir(path)
 
     def exists_as_file(self, path: str) -> bool:
-        path = path.rstrip("/")
-        return path in self._files
+        return self.path_exists(path) and self._os_module.path.isfile(path)
 
     def list_directory_contents(self, path: str) -> Set[str]:
-        # remove a trailing slash
-        path = path.rstrip("/")
-        files_in_directory = set()
-        for file_ in self._files:
-            directory_name, file_name = os.path.split(file_)
-            if directory_name == path:
-                files_in_directory.add(file_name)
-        return files_in_directory
+        return set(self._os_module.listdir(path))
 
 
 class FakeTreeFactory(interfaces.TreeFactoryInterface):
@@ -68,7 +45,7 @@ class FakeConfig(interfaces.ConfigReader):
     def __init__(self, config_dict: Dict) -> None:
         self._config_dict = config_dict
 
-    def read(self) -> Dict:
+    def read(self, path: str) -> Dict:
         return self._config_dict
 
 
@@ -84,8 +61,8 @@ class FakeConfigParser(interfaces.ConfigParserInterface):
         if self._validation_error is not None:
             raise self._validation_error
 
-    def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
-        return self._tree_factory.create_tree(self._config_dict[layout_name])
+    def get_tree(self) -> interfaces.TreeNodeInterface:
+        return self._tree_factory.create_tree(self._config_dict)
 
 
 class FakeRect(NamedTuple):

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Set
+from typing import Dict
 
 from rezide.utils import interfaces
 
@@ -9,31 +9,27 @@ class ConfigParser(interfaces.ConfigParserInterface):
 
     def __init__(
         self,
-        config_reader: interfaces.ConfigReader,
+        config_dict: Dict,
         tree_factory: interfaces.TreeFactoryInterface,
     ) -> None:
         self._tree_factory = tree_factory
-        self._layout_definitions = config_reader.read()
+        self._layout_definitions = config_dict
 
     def validate(self) -> None:
-        seen_marks: Set[str] = set()
         for definition_name, definition_body in self._layout_definitions.items():
-            if "command" in definition_body and "mark" in definition_body:
-                if definition_body["mark"] in seen_marks:
-                    raise RuntimeError(
-                        f"There are multiple windows with mark \"{definition_body['mark']}\""
-                    )
+            if "command" in definition_body:
                 self._validate_window(definition_name, definition_body)
-                seen_marks.add(definition_body["mark"])
             elif "children" in definition_body:
                 self._validate_section(definition_name, definition_body)
             else:
                 logging.error(definition_body)
-                raise RuntimeError("This definition is not a Window or Section")
+                raise RuntimeError(
+                    f"This definition is not a Window or Section: {definition_name}"
+                )
 
     def _validate_window(self, definition_name: str, definition_body: Dict) -> None:
-        if len(definition_body) != 2:
-            raise RuntimeError("Window must only define command and mark")
+        if len(definition_body) != 1:
+            raise RuntimeError(f"Window must only define command: {definition_name}")
 
     def _validate_section(self, definition_name: str, definition_body: Dict) -> None:
         keys = set(definition_body.keys())
@@ -61,12 +57,11 @@ class ConfigParser(interfaces.ConfigParserInterface):
                 + f" {definition_name}"
             )
 
-    def get_tree(self, layout_name: str) -> interfaces.TreeNodeInterface:
+    def get_tree(self) -> interfaces.TreeNodeInterface:
         """Parse and validate the layout, stitch together the node definitions, and
         create a tree out of them.
         """
-        layout_top_definition = self._layout_definitions[layout_name]
-        layout_top_definition["mark"] = layout_name
+        layout_top_definition = self._layout_definitions["root"]
         root_node = self._construct_subtree(layout_top_definition)
         return self._tree_factory.create_tree(root_node)
 

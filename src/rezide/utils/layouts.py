@@ -16,19 +16,12 @@ class LayoutManager(object):
         window_manager: interfaces.TilingWindowManager,
     ) -> None:
         self._window_manager = window_manager
-        self._config_parser = config_parser
         # make sure that our configuration is valid
-        self._config_parser.validate()
-        self._layout_has_been_selected = False
-
-    def select(self, layout_name: str) -> None:
-        selected_tree = self._config_parser.get_tree(layout_name)
-        self._layout_has_been_selected = True
-        self._selected_layout = Layout(selected_tree)
+        config_parser.validate()
+        tree = config_parser.get_tree()
+        self._layout = Layout(tree)
 
     def spawn_windows(self) -> None:
-        if not self._layout_has_been_selected:
-            raise RuntimeError("No layout selected")
         logging.debug(
             f"{self._window_manager.num_workspace_windows} windows"
             + " are open in the current workspace"
@@ -38,7 +31,7 @@ class LayoutManager(object):
                 "There are multiple windows open in the current workspace."
             )
         self._created_windows: Set[str] = set()
-        for window in self._selected_layout.zachstras_traversal():
+        for window in self._layout.zachstras_traversal():
             if window.is_parent:
                 self._window_manager.split_and_mark_parent(window.data, "abc")
             elif window.data.mark in self._created_windows:

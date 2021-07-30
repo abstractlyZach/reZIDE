@@ -19,28 +19,28 @@ class DirTestCase(NamedTuple):
 
 specified_dir_tests = [
     DirTestCase(
-        files={"/abc/alpha.toml": "", "/abc/beta.toml": ""},
+        files={"/abc/alpha/config.toml": "", "/abc/beta/config.toml": ""},
         expected_layout_names={"alpha", "beta"},
     ),
     DirTestCase(
-        files={"/abc/hello.toml": "", "/abc/world.toml": ""},
+        files={"/abc/hello/config.toml": "", "/abc/world/config.toml": ""},
         expected_layout_names={"hello", "world"},
     ),
     # specified dir gets checked even though there's something in XDG_CONFIG_HOME
     DirTestCase(
         files={
-            "/abc/hello.toml": "",
-            "/abc/world.toml": "",
-            "/home/test/.config/rezide/omg.toml": "",
+            "/abc/hello/config.toml": "",
+            "/abc/world/config.toml": "",
+            "/home/test/.config/rezide/omg/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
     # specified dir gets checked even though there's something in HOME/.rezide
     DirTestCase(
         files={
-            "/abc/hello.toml": "",
-            "/abc/world.toml": "",
-            "/home/test/.rezide/omg.toml": "",
+            "/abc/hello/config.toml": "",
+            "/abc/world/config.toml": "",
+            "/home/test/.rezide/omg/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
@@ -66,33 +66,34 @@ def test_throws_error_if_specified_dir_doesnt_exist(test_case, test_env):
 xdg_dir_tests = [
     DirTestCase(
         files={
-            "/home/test/.config/rezide/alpha.toml": "",
-            "/home/test/.config/rezide/beta.toml": "",
+            "/home/test/.config/rezide/alpha/config.toml": "",
+            "/home/test/.config/rezide/beta/config.toml": "",
         },
         expected_layout_names={"alpha", "beta"},
     ),
     DirTestCase(
         files={
-            "/home/test/.config/rezide/hello.toml": "",
-            "/home/test/.config/rezide/world.toml": "",
+            "/home/test/.config/rezide/hello/config.toml": "",
+            "/home/test/.config/rezide/world/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
     DirTestCase(
         files={
-            "/home/test/.config/rezide/hello.toml": "",
-            "/home/test/.config/rezide/world.toml": "",
-            "/home/test/.rezide/omg.toml": "",
+            "/home/test/.config/rezide/hello/config.toml": "",
+            "/home/test/.config/rezide/world/config.toml": "",
+            "/home/test/.rezide/omg/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
     DirTestCase(
         files={
-            "/abc/hello.toml": "",
-            "/abc/world.toml": "",
-            "/home/test/.config/rezide/hello.toml": "",
-            "/home/test/.config/rezide/world.toml": "",
-            "/home/test/.rezide/omg.toml": "",
+            "/abc/hello/config.toml": "",
+            "/abc/world/config.toml": "",
+            "/home/test/.config/rezide/hello/config.toml": "",
+            "/home/test/.config/rezide/world/config.toml": "",
+            "/home/test/.config/rezide/README.md": "",
+            "/home/test/.rezide/omg/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
@@ -109,13 +110,16 @@ def test_lists_layouts_from_xdg_config_home(test_case, test_env):
 
 home_dir_tests = [
     DirTestCase(
-        files={"/home/test/.rezide/alpha.toml": "", "/home/test/.rezide/beta.toml": ""},
+        files={
+            "/home/test/.rezide/alpha/config.toml": "",
+            "/home/test/.rezide/beta/config.toml": "",
+        },
         expected_layout_names={"alpha", "beta"},
     ),
     DirTestCase(
         files={
-            "/home/test/.rezide/hello.toml": "",
-            "/home/test/.rezide/world.toml": "",
+            "/home/test/.rezide/hello/config.toml": "",
+            "/home/test/.rezide/world/config.toml": "",
         },
         expected_layout_names={"hello", "world"},
     ),
@@ -170,26 +174,26 @@ class LayoutFilePathTestCase(NamedTuple):
 layout_file_path_tests = [
     LayoutFilePathTestCase(
         files={
-            "/home/test/.config/rezide/alpha.toml": "",
-            "/home/test/.config/rezide/beta.toml": "",
+            "/home/test/.config/rezide/alpha/config.toml": "",
+            "/home/test/.config/rezide/beta/config.toml": "",
         },
         layout_name_to_find="alpha",
-        expected_path="/home/test/.config/rezide/alpha.toml",
+        expected_path="/home/test/.config/rezide/alpha/config.toml",
     ),
     LayoutFilePathTestCase(
         files={
-            "/home/test/.config/rezide/alpha.toml": "",
-            "/home/test/.config/rezide/beta.toml": "",
+            "/home/test/.config/rezide/alpha/config.toml": "",
+            "/home/test/.config/rezide/beta/config.toml": "",
         },
         layout_name_to_find="beta",
-        expected_path="/home/test/.config/rezide/beta.toml",
+        expected_path="/home/test/.config/rezide/beta/config.toml",
     ),
     LayoutFilePathTestCase(
         files={
-            "/home/test/.rezide/yay.toml": "",
+            "/home/test/.rezide/yay/config.toml": "",
         },
         layout_name_to_find="yay",
-        expected_path="/home/test/.rezide/yay.toml",
+        expected_path="/home/test/.rezide/yay/config.toml",
     ),
 ]
 
@@ -205,7 +209,7 @@ def test_get_layout_file_path(test_case, test_env):
 
 def test_cant_find_layout(test_env):
     """Raise an error if the layout can't be found in the config dir"""
-    filestore = fakes.FakeFilestore({"/home/test/.config/rezide/abc.toml": ""})
+    filestore = fakes.FakeFilestore({"/home/test/.config/rezide/abc/config.toml": ""})
     dir = config_dir.ConfigDir(filestore, test_env)
     with pytest.raises(RuntimeError):
         dir.get_layout_file_path("def")

@@ -28,6 +28,37 @@ def test_tree_creation():
     assert actual_tree == expected_tree
 
 
+def test_not_enough_children():
+    tree_dict = {
+        "split": "horizontal",
+        "sizes": [50],
+        "children": [
+            {
+                "mark": "moo",
+                "command": "cowsay moo",
+            },
+        ],
+    }
+    with pytest.raises(RuntimeError):
+        tree.TreeFactory().create_tree(tree_dict)
+
+
+def test_node_has_no_data():
+    tree_dict = {
+        "split": "horizontal",
+        "sizes": [50, 50],
+        "children": [
+            {
+                "mark": "moo",
+                "command": "cowsay moo",
+            },
+            {},
+        ],
+    }
+    with pytest.raises(RuntimeError):
+        tree.TreeFactory().create_tree(tree_dict)
+
+
 def test_complicated_tree_creation():
     """It's a lot of code, but I figure we need one complex test, and we can't
     do much besides handwrite it.

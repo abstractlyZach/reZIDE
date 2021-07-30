@@ -10,38 +10,35 @@ from tests import fakes
 
 
 def test_returns_result_from_tree_factory():
-    config_reader = fakes.FakeConfig(
-        {
-            "ide": {
-                "split": "horizontal",
-                "children": ["left window", "right window"],
-                "sizes": [50, 50],
-            },
-            "left window": {
-                "command": 'alacritty -e sh -c "echo left window!"',
-                "mark": "left window",
-            },
-            "right window": {
-                "command": 'alacritty -e sh -c "echo right window!"',
-                "mark": "right window",
-            },
-        }
-    )
+    config_dict = {
+        "root": {
+            "split": "horizontal",
+            "children": ["left window", "right window"],
+            "sizes": [50, 50],
+        },
+        "left window": {
+            "command": 'alacritty -e sh -c "echo left window!"',
+            "mark": "left window",
+        },
+        "right window": {
+            "command": 'alacritty -e sh -c "echo right window!"',
+            "mark": "right window",
+        },
+    }
     tree_stub = mock.MagicMock()
-    parser = config_parser.ConfigParser(config_reader, fakes.FakeTreeFactory(tree_stub))
-    assert parser.get_tree("ide") == tree_stub
+    parser = config_parser.ConfigParser(config_dict, fakes.FakeTreeFactory(tree_stub))
+    assert parser.get_tree() == tree_stub
 
 
 class SuccessfulConfigParserTestCase(NamedTuple):
     config_dict: Dict
-    layout_name: str
     expected_tree: Dict
 
 
 test_cases = [
     SuccessfulConfigParserTestCase(
         config_dict={
-            "ide": {
+            "root": {
                 "split": "horizontal",
                 "children": ["left window", "right window"],
                 "sizes": [50, 50],
@@ -58,7 +55,6 @@ test_cases = [
         expected_tree={
             "split": "horizontal",
             "sizes": [50, 50],
-            "mark": "ide",
             "children": [
                 {
                     "command": 'alacritty -e sh -c "echo left window!"',
@@ -70,11 +66,10 @@ test_cases = [
                 },
             ],
         },
-        layout_name="ide",
     ),
     SuccessfulConfigParserTestCase(
         config_dict={
-            "3 windows": {
+            "root": {
                 "split": "horizontal",
                 "children": ["left side", "right window"],
                 "sizes": [50, 50],
@@ -86,21 +81,17 @@ test_cases = [
             },
             "top-left window": {
                 "command": 'alacritty -e sh -c "echo I\'m in the top left!"',
-                "mark": "top-left window",
             },
             "bottom-left window": {
                 "command": 'alacritty -e sh -c "echo I\'m in the bottom left!"',
-                "mark": "bottom-left window",
             },
             "right window": {
                 "command": 'alacritty -e sh -c "echo right window!"',
-                "mark": "right window",
             },
         },
         expected_tree={
             "split": "horizontal",
             "sizes": [50, 50],
-            "mark": "3 windows",
             "children": [
                 {
                     "split": "vertical",
@@ -123,32 +114,28 @@ test_cases = [
                 },
             ],
         },
-        layout_name="3 windows",
     ),
 ]
 
 
 @pytest.mark.parametrize("test_case", test_cases)
 def test_passes_correct_tree_to_tree_factory(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     expected_tree = test_case.expected_tree
     spy_tree_factory = mock.MagicMock()
-    parser = config_parser.ConfigParser(config_reader, spy_tree_factory)
-    parser.get_tree(test_case.layout_name)
+    parser = config_parser.ConfigParser(test_case.config_dict, spy_tree_factory)
+    parser.get_tree()
     spy_tree_factory.create_tree.assert_called_once_with(expected_tree)
 
 
 class ConfigParserExceptionTestCase(NamedTuple):
     config_dict: Dict
     expected_error_class: Type[Exception]
-    layout_name: str
 
 
 exception_test_cases = [
     ConfigParserExceptionTestCase(
         config_dict={},
         expected_error_class=KeyError,
-        layout_name="",
     ),
     # layout name doesn't exist in config
     ConfigParserExceptionTestCase(
@@ -168,19 +155,17 @@ exception_test_cases = [
             },
         },
         expected_error_class=KeyError,
-        layout_name="abc",
     ),
 ]
 
 
 @pytest.mark.parametrize("test_case", exception_test_cases)
 def test_config_parser_exceptions(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        test_case.config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     with pytest.raises(test_case.expected_error_class):
-        parser.get_tree(test_case.layout_name)
+        parser.get_tree()
 
 
 validation_test_cases = [
@@ -188,7 +173,6 @@ validation_test_cases = [
     ConfigParserExceptionTestCase(
         config_dict={"ide": {"split": "horizontal"}},
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # invalid field in section
     ConfigParserExceptionTestCase(
@@ -201,7 +185,6 @@ validation_test_cases = [
             }
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     ConfigParserExceptionTestCase(
         config_dict={
@@ -219,7 +202,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # children are not defined
     ConfigParserExceptionTestCase(
@@ -235,7 +217,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # missing fields
     ConfigParserExceptionTestCase(
@@ -253,7 +234,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # number of children don't match number of sizes
     ConfigParserExceptionTestCase(
@@ -281,7 +261,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # less than 2 children
     ConfigParserExceptionTestCase(
@@ -293,7 +272,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     ConfigParserExceptionTestCase(
         config_dict={
@@ -308,7 +286,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # extra junk in section
     ConfigParserExceptionTestCase(
@@ -321,7 +298,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # extra junk in window
     ConfigParserExceptionTestCase(
@@ -342,7 +318,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     ConfigParserExceptionTestCase(
         config_dict={
@@ -361,16 +336,14 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
 ]
 
 
 @pytest.mark.parametrize("test_case", validation_test_cases)
 def test_parser_validation(test_case):
-    config_reader = fakes.FakeConfig(test_case.config_dict)
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        test_case.config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     with pytest.raises(test_case.expected_error_class):
         parser.validate()
@@ -378,26 +351,22 @@ def test_parser_validation(test_case):
 
 def test_parser_validation_happy_path():
     # perfectly good config
-    config_reader = fakes.FakeConfig(
-        {
-            "ide": {
-                "split": "horizontal",
-                "children": ["left window", "right window"],
-                "sizes": [50, 50],
-                "is_layout": True,
-            },
-            "left window": {
-                "command": 'alacritty -e sh -c "echo left window!"',
-                "mark": "left window",
-            },
-            "right window": {
-                "command": 'alacritty -e sh -c "echo right window!"',
-                "mark": "right window",
-            },
-        }
-    )
+    config_dict = {
+        "ide": {
+            "split": "horizontal",
+            "children": ["left window", "right window"],
+            "sizes": [50, 50],
+            "is_layout": True,
+        },
+        "left window": {
+            "command": 'alacritty -e sh -c "echo left window!"',
+        },
+        "right window": {
+            "command": 'alacritty -e sh -c "echo right window!"',
+        },
+    }
     parser = config_parser.ConfigParser(
-        config_reader, fakes.FakeTreeFactory(mock.MagicMock())
+        config_dict, fakes.FakeTreeFactory(mock.MagicMock())
     )
     # no exception raised
     parser.validate()

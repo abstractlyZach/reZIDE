@@ -82,10 +82,11 @@ def main(
 def open(context: click.Context, layout_name: str) -> None:
     """Open the IDE of your choice"""
     context.obj: Dict[str, Any]  # type: ignore[misc]
-    config_reader = config_readers.TomlReader(
-        filestore.LocalFilestore(), env=context.obj["env"]
-    )
-    parser = config_parser.ConfigParser(config_reader, tree.TreeFactory())
+    config_directory = context.obj["config_dir"]
+    config_file_path = config_directory.get_layout_file_path(layout_name)
+    config_reader = config_readers.TomlReader(filestore.LocalFilestore())
+    config_dict = config_reader.read(config_file_path)
+    parser = config_parser.ConfigParser(config_dict, tree.TreeFactory())
     window_manager = sway.Sway()
     layout = layouts.LayoutManager(parser, window_manager)
     application = Rezide(context.obj["env"], layout)
@@ -119,5 +120,4 @@ class Rezide(object):
         logging.debug(f"Env is {env}")
 
     def run(self, layout_name: str) -> None:
-        self._layout.select(layout_name)
         self._layout.spawn_windows()

@@ -1,4 +1,4 @@
-[python]
+[root]
 split = "horizontal"
 children = ['terminals', 'documentation']
 sizes = [50, 50]
