@@ -355,7 +355,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
     # sizes don't add up to 100
     ConfigParserExceptionTestCase(
@@ -383,7 +382,6 @@ validation_test_cases = [
             },
         },
         expected_error_class=RuntimeError,
-        layout_name="ide",
     ),
 ]
 
