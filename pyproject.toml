@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rezide"
-version = "0.9.1"
+version = "0.10.0"
 description = ""
 authors = ["abstractlyZach <zach3lee@gmail.com>"]
 
