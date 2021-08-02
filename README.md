@@ -34,13 +34,9 @@ Because that's how acronyms work.
 
 Credits to [@hyangda](https://github.com/hyangda) for brainstorming this great name with me 😄
 ## Screencap
-(insert cool screencap here)
-
-(this one's just a placeholder)
-
 Click to go to Youtube!
 
-[![early-screencap](https://img.youtube.com/vi/g_AgwusS9m8/hqdefault.jpg)](https://youtu.be/g_AgwusS9m8)
+[![early-screencap](docs/screencaps/rice.gif)](https://youtu.be/g_AgwusS9m8)
 
 ## Requirements
 ### One of these tiling window managers:
