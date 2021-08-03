@@ -6,6 +6,9 @@ _a comfy custom IDE where you can feel right at home_ 🏡
 
 Use simple, declarative configuration files to create complex IDEs with a single command!
 
+[![screencap](docs/screencaps/rice.gif)](https://youtu.be/g_AgwusS9m8)
+(Click to go to Youtube)
+
 ## What's it like?
 Think of it like any available [IDE](https://www.jetbrains.com/pycharm/), except:
 
@@ -33,10 +36,6 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 Because that's how acronyms work.
 
 Credits to [@hyangda](https://github.com/hyangda) for brainstorming this great name with me 😄
-## Screencap
-Click to go to Youtube!
-
-[![early-screencap](docs/screencaps/rice.gif)](https://youtu.be/g_AgwusS9m8)
 
 ## Requirements
 ### One of these tiling window managers:
