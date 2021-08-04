@@ -68,20 +68,20 @@ pip install reZIDE
 ## How to use
 ### Quickstart
 1. copy examples to `~/.rezide`
-```sh
-git clone https://github.com/abstractlyZach/reZIDE
-cp -r reZIDE/examples "${HOME}/.rezide"
-```
+    ```sh
+    git clone https://github.com/abstractlyZach/reZIDE
+    cp -r reZIDE/examples "${HOME}/.rezide"
+    ```
 1. Update the config file to match your system's needs. Adjustment instructions can be found inside the file that we're going to edit
-```sh
-# open config with vi. use whatever editor you prefer
-vi ~/.rezide/rice/config.toml
-```
+    ```sh
+    # open config with vi. use whatever editor you prefer
+    vi ~/.rezide/rice/config.toml
+    ```
 1. spawn windows
-```sh
-# spawn windows for the "rice" layout
-rzd open rice
-```
+    ```sh
+    # spawn windows for the "rice" layout
+    rzd open rice
+    ```
 
 ### Detailed instructions
 Run this command for documentation on how to use `reZIDE`:
