@@ -22,6 +22,14 @@ Or think of it like [tmux](https://www.ocf.berkeley.edu/~ckuehl/tmux/), except:
 * You don't need to learn new movement commands (use the commands that you already use for your window manager)
 * You aren't restricted to applications with a Terminal User Interface (you can open web browsers, pdf previews, video players, etc.)
 
+## Who's it for?
+You'll probably like this if you:
+* use a tiling window manager or are interested in tiling window managers
+* enjoy the Unix philosophy ("have a lot of tools in your toolbox that each do one job well and play nicely with others")
+
+This probably isn't the thing you're looking for if you:
+* want something that "just works". Having lots of tools means you have to do some amount of learning about each tool before you can use them. A lot of that burden is mitigated by copying other people's config files, but in general, tiling window managers have a bit of a learning curve so I would say that this project may not the best fit for people that are looking for a "just works" type of product.
+
 ## What's it stand for?
 ```
 ⬅️⬅️(Zach's)
